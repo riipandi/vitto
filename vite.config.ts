@@ -8,8 +8,8 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 export default defineConfig({
   plugins: [tailwindcss(), vitto({ minify: isProduction }), tsconfigPaths()],
-  server: { port: 3000, strictPort: true, cors: { origin: '*' } },
-  preview: { port: 3000, strictPort: true },
+  server: { port: 3000, strictPort: false, cors: { origin: '*' } },
+  preview: { port: 3000, strictPort: false },
   build: {
     manifest: true,
     emptyOutDir: true,

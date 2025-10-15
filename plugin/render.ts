@@ -5,6 +5,7 @@ import { type Options as MinifyOptions, minify as swcMinify } from '@swc/html'
 import vento, { type Options as VentoOptions } from 'ventojs'
 import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js'
 import type { Manifest, Plugin, ResolvedConfig } from 'vite'
+import postsHooks from '../hooks/posts'
 import { _console } from './logger'
 import { DEFAULT_OPTS, MINIFY_OPTIONS, type VittoOptions } from './options'
 
@@ -33,9 +34,6 @@ async function renderVentoToHtml(
     ...(ventoOptionsOverride || {}),
   }
   const vnt = vento(ventoOptions)
-
-  // Use autoTrim plugin to to trim the whitespace from around tags.
-  // @see: https://vento.js.org/plugins/auto-trim/
   vnt.use(autoTrim({ tags: [...defaultTags] }))
 
   const includesDir = typeof ventoOptions.includes === 'string' ? ventoOptions.includes : ''
@@ -67,7 +65,6 @@ async function renderVentoToHtml(
 
 /**
  * Read and parse the Vite manifest file, returning main JS and CSS assets.
- * Uses type Manifest for type safety.
  */
 function getViteAssets(): { main: string; css: string[] } {
   const manifestPath = path.resolve(viteRoot, viteOutDir, '.vite/manifest.json')
@@ -75,10 +72,8 @@ function getViteAssets(): { main: string; css: string[] } {
     try {
       const raw = fs.readFileSync(manifestPath, 'utf-8')
       const manifest: Manifest = JSON.parse(raw)
-      // Try to get main entry from 'index.html' key
       let main = manifest['index.html']?.file || ''
       let css = manifest['index.html']?.css || []
-      // Fallback: find the first JS/TS entry if 'index.html' is missing
       if (!main) {
         const first = Object.values(manifest).find(
           (entry) =>
@@ -106,20 +101,27 @@ async function findVtoFiles(pagesDir: string): Promise<string[]> {
 }
 
 /**
+ * Helper to get data context for a given page.
+ * You can extend this to support per-page hooks in the future.
+ */
+async function getPageData(/* pagePath?: string, params?: any */) {
+  // For now, always use postsHooks. You can add logic for per-page hooks here.
+  return postsHooks()
+}
+
+/**
  * Vite plugin for Vento template engine integration.
  */
 export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
   return {
     name: 'vitto',
 
-    // Remove default HTML input from rolldownOptions if present
     config(config) {
       if (config.build?.rolldownOptions?.input) {
         delete config.build.rolldownOptions.input
       }
     },
 
-    // Update viteRoot and viteOutDir after Vite config is resolved
     configResolved(config: ResolvedConfig) {
       viteRoot = config.root
       viteOutDir = config.build.outDir || 'dist'
@@ -138,23 +140,22 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       const viteAssets = opts.assets ?? getViteAssets()
       _console.debug('Detected Vite assets:', viteAssets)
       for (const filePath of files) {
-        renderVentoToHtml(
+        const data = await getPageData()
+        const html = await renderVentoToHtml(
           {
             filePath,
-            data: {},
+            data,
             isDev: false,
             assets: viteAssets,
             minify: opts.minify ?? false,
           },
           opts.ventoOptions
-        ).then((html) => {
-          // Output path: preserve nested structure
-          const relPath = path.relative(pagesDir, filePath)
-          const outName = relPath.replace(/\.vto$/, '.html')
-          const outPath = path.resolve(viteRoot, viteOutDir, outName)
-          fs.mkdirSync(path.dirname(outPath), { recursive: true })
-          fs.writeFileSync(outPath, html, 'utf-8')
-        })
+        )
+        const relPath = path.relative(pagesDir, filePath)
+        const outName = relPath.replace(/\.vto$/, '.html')
+        const outPath = path.resolve(viteRoot, viteOutDir, outName)
+        fs.mkdirSync(path.dirname(outPath), { recursive: true })
+        fs.writeFileSync(outPath, html, 'utf-8')
       }
       _console.log('Vitto build finished!')
     },
@@ -168,10 +169,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       const viteAssets = opts.assets ?? getViteAssets()
       _console.debug('Detected Vite assets:', viteAssets)
       for (const filePath of files) {
+        const data = await getPageData()
         const html = await renderVentoToHtml(
           {
             filePath,
-            data: {},
+            data,
             isDev: false,
             assets: viteAssets,
             minify: opts.minify ?? false,
@@ -215,15 +217,15 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'
         )
         let vtoPath = path.resolve(`${pagesDir + pageUrl}.vto`)
-        // Fallback: if not found, try .../index.vto
         if (!fs.existsSync(vtoPath)) {
           vtoPath = path.resolve(`${pagesDir + pageUrl}/index.vto`)
         }
         if (fs.existsSync(vtoPath)) {
+          const data = await getPageData()
           const html = await renderVentoToHtml(
             {
               filePath: vtoPath,
-              data: {},
+              data,
               isDev: true,
               assets: opts.assets ?? undefined,
               minify: opts.minify ?? false,
@@ -237,10 +239,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         // Fallback to 404.vto if page not found
         const notFoundPath = path.resolve(pagesDir, '404.vto')
         if (fs.existsSync(notFoundPath)) {
+          const data = await getPageData()
           const html = await renderVentoToHtml(
             {
               filePath: notFoundPath,
-              data: {},
+              data,
               isDev: true,
               assets: opts.assets ?? undefined,
               minify: opts.minify ?? false,

@@ -1,0 +1,24 @@
+{{ set pageTitle = "Blog" }}
+{{ layout "layouts/site.vto" }}
+
+<section class="items-center justify-center flex flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white dark:from-gray-900 dark:to-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <div class="text-center">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white dark:text-gray-100">
+        Latest Posts
+      </h1>
+    </div>
+    <!-- Blog Posts List -->
+    <div class="mt-12">
+      <ul class="space-y-4">
+        {{ for post of posts }}
+          <li class="bg-white bg-opacity-10 dark:bg-gray-900 dark:bg-opacity-70 rounded p-4 text-left border border-gray-700">
+            <h3 class="text-xl font-bold mb-2 text-black dark:text-gray-100">{{ post.title }}</h3>
+            <p class="mb-2 text-gray-950 dark:text-gray-300">{{ post.body }}</p>
+            <a href="/blog/{{ post.id }}" class="text-blue-500 dark:text-blue-400 hover:underline">Read more</a>
+          </li>
+        {{ /for }}
+      </ul>
+    </div>
+  </div>
+</section>

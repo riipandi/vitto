@@ -39,6 +39,11 @@ export interface VittoOptions {
    * Options to pass to Vento template engine.
    */
   ventoOptions?: Partial<VentoOptions>
+
+  /**
+   * Directory containing hook scripts.
+   */
+  hooksDir?: string
 }
 
 /**
