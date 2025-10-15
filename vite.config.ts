@@ -2,6 +2,7 @@ import { resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import postHook from './hooks/post'
 import postsHook from './hooks/posts'
 import vitto from './plugin'
 
@@ -10,10 +11,20 @@ const isProduction = process.env.NODE_ENV === 'production'
 export default defineConfig({
   plugins: [
     vitto({
-      minify: isProduction,
+      minify: !isProduction,
       hooks: {
-        blog: postsHook,
+        blog: postsHook, // For blog.vto - list of posts
+        post: postHook, // For post.vto - single post detail
+        posts: postsHook, // For static generation data source
       },
+      staticGen: [
+        {
+          template: 'post', // Use post.vto template
+          dataHook: 'posts', // Get data from posts hook
+          getParams: (post) => ({ id: post.id, slug: post.id }),
+          getPath: (post) => `blog/${post.id}.html`, // Output path
+        },
+      ],
     }),
     tailwindcss(),
     tsconfigPaths(),

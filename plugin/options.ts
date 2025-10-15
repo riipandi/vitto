@@ -2,6 +2,35 @@ import type { Options as MinifyOptions } from '@swc/html'
 import type { Options as VentoOptions } from 'ventojs'
 
 /**
+ * Configuration for static generation of dynamic pages.
+ */
+export interface StaticGenConfig {
+  /**
+   * Template file name (without .vto extension) to use for generation.
+   * @example 'post'
+   */
+  template: string
+
+  /**
+   * Hook name to fetch data for generating pages.
+   * @example 'posts'
+   */
+  dataHook: string
+
+  /**
+   * Function to extract route params from each data item.
+   * @example (post) => ({ id: post.id, slug: post.slug })
+   */
+  getParams: (item: any) => Record<string, any>
+
+  /**
+   * Function to generate output path from data item.
+   * @example (post) => `blog/${post.id}.html`
+   */
+  getPath: (item: any) => string
+}
+
+/**
  * Options for the Vitto Vite plugin.
  */
 export interface VittoOptions {
@@ -83,6 +112,23 @@ export interface VittoOptions {
    * - Returned data is automatically injected into template context
    */
   hooks?: Record<string, (params?: any) => Promise<any>>
+
+  /**
+   * Configuration for static generation of dynamic pages.
+   *
+   * This allows you to pre-render pages with dynamic content at build time.
+   *
+   * @example
+   * staticGen: [
+   *   {
+   *     template: 'post',
+   *     dataHook: 'posts',
+   *     getParams: (post) => ({ id: post.id }),
+   *     getPath: (post) => `blog/${post.id}.html`
+   *   }
+   * ]
+   */
+  staticGen?: StaticGenConfig[]
 }
 
 /**
@@ -95,6 +141,7 @@ export const DEFAULT_OPTS: VittoOptions = {
   minify: false,
   assets: undefined,
   hooksDir: 'hooks',
+  staticGen: [],
 }
 
 // Configuration for HTML minifier
