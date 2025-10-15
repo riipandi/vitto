@@ -73,7 +73,27 @@ async function renderVentoToHtml(
 
   // Prepare template context with user data and Vite assets
   const viteAssets = assets ?? { main: '', css: [] }
-  const context = { ...data, isDev, viteAssets }
+
+  // Create renderAssets function with closure over isDev and viteAssets
+  const renderAssets = () => {
+    if (isDev) {
+      return '<script type="module" src="/src/main.ts"></script>'
+    }
+
+    let html = ''
+    if (viteAssets.main) {
+      html += `<script type="module" src="/${viteAssets.main}"></script>\n`
+    }
+    if (viteAssets.css?.length) {
+      for (const href of viteAssets.css) {
+        html += `  <link rel="stylesheet" href="/${href}">\n`
+      }
+    }
+    return html
+  }
+
+  // Include renderAssets in the context data
+  const context = { ...data, isDev, viteAssets, renderAssets }
 
   // Render the template with the prepared context
   const result = await vnt.run(relPath, context)

@@ -3,19 +3,7 @@
 <head>
   {{ include "partials/head.vto" }}
   <title>{{ pageTitle ? pageTitle + ' - ' + (siteName || 'VentoSite') : (siteName || 'VentoSite') |> safe }}</title>
-
-{{ if isDev }}
-  <script type="module" src="/src/main.ts"></script>
-{{ /if }}
-{{ if !isDev }}
-  <script type="module" src="/{{ viteAssets.main }}"></script>
-  {{ if viteAssets.css && viteAssets.css.length }}
-    {{ for href of viteAssets.css }}
-      <link rel="stylesheet" href="/{{ href }}">
-    {{ /for }}
-  {{ /if }}
-{{ /if }}
-
+  {{ renderAssets() |> safe }}
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
   <!-- Skip to main content for accessibility -->
