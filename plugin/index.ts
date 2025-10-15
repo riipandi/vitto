@@ -1,40 +1,63 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { type Options as MinifyOptions, minify as swcMinify } from '@swc/html'
 import vento, { type Options as VentoOptions } from 'ventojs'
 import type { Manifest, Plugin, ResolvedConfig } from 'vite'
 import { _console } from './logger'
-import { DEFAULT_OPTS, type VittoOptions } from './options'
+import { DEFAULT_OPTS, MINIFY_OPTIONS, type VittoOptions } from './options'
 
 // Store Vite root and output directory, updated after config is resolved
 let viteRoot = process.cwd()
 let viteOutDir = 'dist'
 
+interface RenderOptions {
+  filePath: string
+  data?: Record<string, unknown>
+  isDev?: boolean
+  assets?: { main: string; css: string[] }
+  minify?: boolean | MinifyOptions
+}
+
 /**
  * Render a Vento template file to HTML string.
- * @param filePath - Path to the .vto file
- * @param data - Data context for the template
- * @param isDev - Whether in development mode
- * @param assets - Vite assets (JS/CSS) to inject
+ * @param opts - Render options
  */
-async function renderVentoToHtml(
-  filePath: string,
-  data: Record<string, unknown> = {},
+async function renderVentoToHtml({
+  filePath,
+  data = {},
   isDev = false,
-  assets?: { main: string; css: string[] }
-) {
+  assets,
+  minify = false,
+}: RenderOptions) {
   const ventoOptions: VentoOptions = {
     includes: path.resolve(viteRoot, 'src'),
   }
   const vnt = vento(ventoOptions)
   const includesDir = typeof ventoOptions.includes === 'string' ? ventoOptions.includes : ''
   const relPath = path.relative(includesDir, filePath)
-  const context = {
-    ...data,
-    isDev,
-    viteAssets: assets,
-  }
+  const viteAssets = assets ?? { main: '', css: [] }
+  const context = { ...data, isDev, viteAssets }
+
   const result = await vnt.run(relPath, context)
-  return result?.content || ''
+  const htmlContent = result?.content || ''
+
+  // Determine minify options
+  let shouldMinify = false
+  let minifyOpts = MINIFY_OPTIONS
+  if (typeof minify === 'object' && minify !== null) {
+    shouldMinify = true
+    minifyOpts = { ...MINIFY_OPTIONS, ...minify }
+  } else if (minify === true) {
+    shouldMinify = true
+    minifyOpts = MINIFY_OPTIONS
+  }
+
+  if (shouldMinify) {
+    const minifiedHtml = await swcMinify(htmlContent, minifyOpts)
+    return minifiedHtml.code
+  }
+
+  return htmlContent
 }
 
 /**
@@ -50,10 +73,13 @@ function getViteAssets(): { main: string; css: string[] } {
       // Try to get main entry from 'index.html' key
       let main = manifest['index.html']?.file || ''
       let css = manifest['index.html']?.css || []
-      // Fallback: find the first JS entry if 'index.html' is missing
+      // Fallback: find the first JS/TS entry if 'index.html' is missing
       if (!main) {
         const first = Object.values(manifest).find(
-          (entry) => typeof entry === 'object' && entry.file && entry.file.endsWith('.js')
+          (entry) =>
+            typeof entry === 'object' &&
+            entry.file &&
+            (entry.file.endsWith('.js') || entry.file.endsWith('.ts'))
         ) as { file: string; css?: string[] } | undefined
         main = first?.file || ''
         css = first?.css || []
@@ -71,7 +97,7 @@ function getViteAssets(): { main: string; css: string[] } {
  */
 export default function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
   return {
-    name: 'vite-vitto',
+    name: 'vitto',
 
     // Remove default HTML input from rolldownOptions if present
     config(config) {
@@ -84,49 +110,58 @@ export default function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
     configResolved(config: ResolvedConfig) {
       viteRoot = config.root
       viteOutDir = config.build.outDir || 'dist'
-      _console.log('Vite config resolved:', config.root, 'outDir:', viteOutDir)
     },
 
     buildStart() {
-      _console.log('Vento plugin options:', opts)
+      _console.log('Vitto build started, options:', opts)
     },
 
     /**
      * After Vite build is finished, render all .vto pages to HTML files.
      */
     closeBundle() {
-      _console.log('Build finished!')
-      const pagesDir = path.resolve(viteRoot, DEFAULT_OPTS.pagesDir || 'src/pages')
+      const pagesDir = path.resolve(viteRoot, opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages')
       const files = fs.readdirSync(pagesDir)
-      const viteAssets = getViteAssets()
-      _console.log('Detected Vite assets:', viteAssets)
+      const viteAssets = opts.assets ?? getViteAssets()
+      _console.debug('Detected Vite assets:', viteAssets)
       for (const file of files) {
         if (file.endsWith('.vto')) {
           const filePath = path.join(pagesDir, file)
-          renderVentoToHtml(filePath, {}, false, viteAssets).then((html) => {
-            // Output as index.html or <name>.html
-            const outName =
-              file === 'index.vto' ? 'index.html' : `${path.basename(file, '.vto')}.html`
+          renderVentoToHtml({
+            filePath,
+            data: {},
+            isDev: false,
+            assets: viteAssets,
+            minify: opts.minify ?? false,
+          }).then((html) => {
+            const formattedOutName = `${path.basename(file, '.vto')}.html`
+            const outName = file === 'index.vto' ? 'index.html' : formattedOutName
             const outPath = path.resolve(viteRoot, viteOutDir, outName)
             fs.writeFileSync(outPath, html, 'utf-8')
-            _console.log(`Generated: ${outName}`)
           })
         }
       }
+      _console.log('Vitto build finished!')
     },
 
     /**
      * During bundle generation, emit HTML files for each .vto page.
      */
     async generateBundle(_, _bundle) {
-      const pagesDir = path.resolve(viteRoot, opts.pagesDir || 'src/pages')
+      const pagesDir = path.resolve(viteRoot, opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages')
       const files = fs.readdirSync(pagesDir)
-      const viteAssets = getViteAssets()
-      _console.log('Detected Vite assets:', viteAssets)
+      const viteAssets = opts.assets ?? getViteAssets()
+      _console.debug('Detected Vite assets:', viteAssets)
       for (const file of files) {
         if (file.endsWith('.vto')) {
           const filePath = path.join(pagesDir, file)
-          const html = await renderVentoToHtml(filePath, {}, false, viteAssets)
+          const html = await renderVentoToHtml({
+            filePath,
+            data: {},
+            isDev: false,
+            assets: viteAssets,
+            minify: opts.minify ?? false,
+          })
           const outName =
             file === 'index.vto' ? 'index.html' : `${path.basename(file, '.vto')}.html`
           this.emitFile({
@@ -160,17 +195,35 @@ export default function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
         // Map URL to .vto page
         const pageUrl = url === '/' ? '/index' : url
-        const vtoPath = path.resolve(viteRoot, `src/pages${pageUrl}.vto`)
+        const vtoPath = path.resolve(
+          viteRoot,
+          `${opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'}${pageUrl}.vto`
+        )
         if (fs.existsSync(vtoPath)) {
-          const html = await renderVentoToHtml(vtoPath, {}, true)
+          const html = await renderVentoToHtml({
+            filePath: vtoPath,
+            data: {},
+            isDev: true,
+            assets: opts.assets ?? undefined,
+            minify: opts.minify ?? false,
+          })
           res.setHeader('Content-Type', 'text/html')
           res.end(html)
           return
         }
         // Fallback to 404.vto if page not found
-        const notFoundPath = path.resolve(viteRoot, 'src/pages/404.vto')
+        const notFoundPath = path.resolve(
+          viteRoot,
+          `${opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'}/404.vto`
+        )
         if (fs.existsSync(notFoundPath)) {
-          const html = await renderVentoToHtml(notFoundPath, {}, true)
+          const html = await renderVentoToHtml({
+            filePath: notFoundPath,
+            data: {},
+            isDev: true,
+            assets: opts.assets ?? undefined,
+            minify: opts.minify ?? false,
+          })
           res.statusCode = 404
           res.setHeader('Content-Type', 'text/html')
           res.end(html)

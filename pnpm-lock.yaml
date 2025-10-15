@@ -21,6 +21,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.2.6
         version: 2.2.6
+      '@swc/html':
+        specifier: ^1.13.20
+        version: 1.13.20
       '@tailwindcss/vite':
         specifier: ^4.1.14
         version: 4.1.14(rolldown-vite@7.1.17(@types/node@24.7.2)(jiti@2.6.1))
@@ -222,6 +225,73 @@ packages:
 
   '@rolldown/pluginutils@1.0.0-beta.43':
     resolution: {integrity: sha512-5Uxg7fQUCmfhax7FJke2+8B6cqgeUJUD9o2uXIKXhD+mG0mL6NObmVoi9wXEU1tY89mZKgAYA6fTbftx3q2ZPQ==}
+
+  '@swc/counter@0.1.3':
+    resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
+
+  '@swc/html-darwin-arm64@1.13.20':
+    resolution: {integrity: sha512-i4JhqTd/bt+rG/+Uc78Ce3D9r0O8jBBMVUnbQ8QREoZsyT3cN8ecWh05sxswB63kBbcc8a8uR65iYvUciSBsMg==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@swc/html-darwin-x64@1.13.20':
+    resolution: {integrity: sha512-k4lTekp9rIqb4n/xvQNwLDhKZf83UsufKTUyF4HsEsdUep7CBy5BfozocyC+sDmNIJSF27xjHsj/7kRC6Ote+Q==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@swc/html-linux-arm-gnueabihf@1.13.20':
+    resolution: {integrity: sha512-uCbb0wzInSQ5fHfo2Q7Kl23HjZOokTgKgXIG32vwWcSNqhoDnbDTiy8bxF9CfrCVoNxP166OycEfJ2Aow0keHg==}
+    engines: {node: '>=10'}
+    cpu: [arm]
+    os: [linux]
+
+  '@swc/html-linux-arm64-gnu@1.13.20':
+    resolution: {integrity: sha512-SGmmo6V5IXWOcDRcnQwJ44hEWtERGuJ7Fd9qgElErUZlx4kri9nS8MbudGViLyYm/ElClUs51sgxGqrg1F2TYA==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@swc/html-linux-arm64-musl@1.13.20':
+    resolution: {integrity: sha512-HrqXdFuBeCe3nfSn4NSizPrtth4lsLJPF1LwwqYHgsE1bAuUkIOEgWmtcLlG1hZ7AhonLX+CIT0JNiSN0ALE7w==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@swc/html-linux-x64-gnu@1.13.20':
+    resolution: {integrity: sha512-4F7MY4p7YQ/WjyPCwuAtWICyZSief1uoE6stMCIC4yVm5ybwbWKJqLPrd0lbC9W0jllk4TYHoUYI6WAc7jCJKA==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@swc/html-linux-x64-musl@1.13.20':
+    resolution: {integrity: sha512-aL6BNlq2vIC2nS+Y0OEHZcOit9BFig0bzb78fSfK8eCz8+/ZIQujgLRxnKw2smAPtMBwS00mqaQPeRJt0J60bQ==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@swc/html-win32-arm64-msvc@1.13.20':
+    resolution: {integrity: sha512-x2APd7wcxaer8cjKL6V9J+Y8dCUbxyrLC2GyB7xopL4TLfzqcY6V6jRWKB8eT41pF4ZqF3GqFv73jPZk1HNyOw==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@swc/html-win32-ia32-msvc@1.13.20':
+    resolution: {integrity: sha512-PZYEc8M32pGazbRv2NVxakHe8XqGUTUmLgORlZFG1mW6c2/wSUl6+J/C/4+Q8lQu2IjeUdCd8HHovpoKPXR/EA==}
+    engines: {node: '>=10'}
+    cpu: [ia32]
+    os: [win32]
+
+  '@swc/html-win32-x64-msvc@1.13.20':
+    resolution: {integrity: sha512-hYYsqFgeR0/rao2dPkyHnAArqpu364IxhbJIUhjRr6uv2nQn1KiKS6vLtoZkR4GiVAHkOi8Vl7verEPoDBiaXQ==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@swc/html@1.13.20':
+    resolution: {integrity: sha512-WzMTUUVd27Y1/Nhu333YA9bbfXujsn3geENnxa7pFmkA8L3ea+ZtMShJl51IC/X5fr2973ObzhNiFQb3iWF+ig==}
+    engines: {node: '>=14'}
 
   '@tailwindcss/node@4.1.14':
     resolution: {integrity: sha512-hpz+8vFk3Ic2xssIA3e01R6jkmsAhvkQdXlEbRTk6S10xDAtiQiM3FyvZVGsucefq764euO/b8WUW9ysLdThHw==}
@@ -773,6 +843,53 @@ snapshots:
     optional: true
 
   '@rolldown/pluginutils@1.0.0-beta.43': {}
+
+  '@swc/counter@0.1.3': {}
+
+  '@swc/html-darwin-arm64@1.13.20':
+    optional: true
+
+  '@swc/html-darwin-x64@1.13.20':
+    optional: true
+
+  '@swc/html-linux-arm-gnueabihf@1.13.20':
+    optional: true
+
+  '@swc/html-linux-arm64-gnu@1.13.20':
+    optional: true
+
+  '@swc/html-linux-arm64-musl@1.13.20':
+    optional: true
+
+  '@swc/html-linux-x64-gnu@1.13.20':
+    optional: true
+
+  '@swc/html-linux-x64-musl@1.13.20':
+    optional: true
+
+  '@swc/html-win32-arm64-msvc@1.13.20':
+    optional: true
+
+  '@swc/html-win32-ia32-msvc@1.13.20':
+    optional: true
+
+  '@swc/html-win32-x64-msvc@1.13.20':
+    optional: true
+
+  '@swc/html@1.13.20':
+    dependencies:
+      '@swc/counter': 0.1.3
+    optionalDependencies:
+      '@swc/html-darwin-arm64': 1.13.20
+      '@swc/html-darwin-x64': 1.13.20
+      '@swc/html-linux-arm-gnueabihf': 1.13.20
+      '@swc/html-linux-arm64-gnu': 1.13.20
+      '@swc/html-linux-arm64-musl': 1.13.20
+      '@swc/html-linux-x64-gnu': 1.13.20
+      '@swc/html-linux-x64-musl': 1.13.20
+      '@swc/html-win32-arm64-msvc': 1.13.20
+      '@swc/html-win32-ia32-msvc': 1.13.20
+      '@swc/html-win32-x64-msvc': 1.13.20
 
   '@tailwindcss/node@4.1.14':
     dependencies:

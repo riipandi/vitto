@@ -15,18 +15,19 @@
         "typecheck": "tsc -b --noEmit"
     },
     "dependencies": {
-        "consola": "^3.4.2",
         "ventojs": "^2.1.1"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.2.6",
+        "@swc/html": "^1.13.20",
         "@tailwindcss/vite": "^4.1.14",
         "@types/node": "^24.7.2",
+        "consola": "^3.4.2",
         "npm-check-updates": "^19.1.0",
         "tailwindcss": "^4.1.14",
         "typescript": "~5.9.3",
-        "vite": "npm:rolldown-vite@7.1.17",
-        "vite-tsconfig-paths": "^5.1.4"
+        "vite-tsconfig-paths": "^5.1.4",
+        "vite": "npm:rolldown-vite@7.1.17"
     },
     "pnpm": {
         "overrides": {
