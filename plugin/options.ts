@@ -1,4 +1,5 @@
-import { type Options as MinifyOptions } from '@swc/html'
+import type { Options as MinifyOptions } from '@swc/html'
+import type { Options as VentoOptions } from 'ventojs'
 
 /**
  * Options for the Vitto Vite plugin.
@@ -33,6 +34,11 @@ export interface VittoOptions {
    * Override Vite assets (main JS and CSS) for template injection.
    */
   assets?: { main: string; css: string[] }
+
+  /**
+   * Options to pass to Vento template engine.
+   */
+  ventoOptions?: Partial<VentoOptions>
 }
 
 /**

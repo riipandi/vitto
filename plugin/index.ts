@@ -3,6 +3,7 @@ import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import { type Options as MinifyOptions, minify as swcMinify } from '@swc/html'
 import vento, { type Options as VentoOptions } from 'ventojs'
+import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js'
 import type { Manifest, Plugin, ResolvedConfig } from 'vite'
 import { _console } from './logger'
 import { DEFAULT_OPTS, MINIFY_OPTIONS, type VittoOptions } from './options'
@@ -23,17 +24,20 @@ interface RenderOptions {
  * Render a Vento template file to HTML string.
  * @param opts - Render options
  */
-async function renderVentoToHtml({
-  filePath,
-  data = {},
-  isDev = false,
-  assets,
-  minify = false,
-}: RenderOptions) {
+async function renderVentoToHtml(
+  { filePath, data = {}, isDev = false, assets, minify = false }: RenderOptions,
+  ventoOptionsOverride?: Partial<VentoOptions>
+) {
   const ventoOptions: VentoOptions = {
     includes: path.resolve(viteRoot, 'src'),
+    ...(ventoOptionsOverride || {}),
   }
   const vnt = vento(ventoOptions)
+
+  // Use autoTrim plugin to to trim the whitespace from around tags.
+  // @see: https://vento.js.org/plugins/auto-trim/
+  vnt.use(autoTrim({ tags: [...defaultTags] }))
+
   const includesDir = typeof ventoOptions.includes === 'string' ? ventoOptions.includes : ''
   const relPath = path.relative(includesDir, filePath)
   const viteAssets = assets ?? { main: '', css: [] }
@@ -134,13 +138,16 @@ export default function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       const viteAssets = opts.assets ?? getViteAssets()
       _console.debug('Detected Vite assets:', viteAssets)
       for (const filePath of files) {
-        renderVentoToHtml({
-          filePath,
-          data: {},
-          isDev: false,
-          assets: viteAssets,
-          minify: opts.minify ?? false,
-        }).then((html) => {
+        renderVentoToHtml(
+          {
+            filePath,
+            data: {},
+            isDev: false,
+            assets: viteAssets,
+            minify: opts.minify ?? false,
+          },
+          opts.ventoOptions
+        ).then((html) => {
           // Output path: preserve nested structure
           const relPath = path.relative(pagesDir, filePath)
           const outName = relPath.replace(/\.vto$/, '.html')
@@ -161,13 +168,16 @@ export default function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       const viteAssets = opts.assets ?? getViteAssets()
       _console.debug('Detected Vite assets:', viteAssets)
       for (const filePath of files) {
-        const html = await renderVentoToHtml({
-          filePath,
-          data: {},
-          isDev: false,
-          assets: viteAssets,
-          minify: opts.minify ?? false,
-        })
+        const html = await renderVentoToHtml(
+          {
+            filePath,
+            data: {},
+            isDev: false,
+            assets: viteAssets,
+            minify: opts.minify ?? false,
+          },
+          opts.ventoOptions
+        )
         const relPath = path.relative(pagesDir, filePath)
         const outName = relPath.replace(/\.vto$/, '.html')
         this.emitFile({
@@ -210,13 +220,16 @@ export default function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           vtoPath = path.resolve(`${pagesDir + pageUrl}/index.vto`)
         }
         if (fs.existsSync(vtoPath)) {
-          const html = await renderVentoToHtml({
-            filePath: vtoPath,
-            data: {},
-            isDev: true,
-            assets: opts.assets ?? undefined,
-            minify: opts.minify ?? false,
-          })
+          const html = await renderVentoToHtml(
+            {
+              filePath: vtoPath,
+              data: {},
+              isDev: true,
+              assets: opts.assets ?? undefined,
+              minify: opts.minify ?? false,
+            },
+            opts.ventoOptions
+          )
           res.setHeader('Content-Type', 'text/html')
           res.end(html)
           return
@@ -224,13 +237,16 @@ export default function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         // Fallback to 404.vto if page not found
         const notFoundPath = path.resolve(pagesDir, '404.vto')
         if (fs.existsSync(notFoundPath)) {
-          const html = await renderVentoToHtml({
-            filePath: notFoundPath,
-            data: {},
-            isDev: true,
-            assets: opts.assets ?? undefined,
-            minify: opts.minify ?? false,
-          })
+          const html = await renderVentoToHtml(
+            {
+              filePath: notFoundPath,
+              data: {},
+              isDev: true,
+              assets: opts.assets ?? undefined,
+              minify: opts.minify ?? false,
+            },
+            opts.ventoOptions
+          )
           res.statusCode = 404
           res.setHeader('Content-Type', 'text/html')
           res.end(html)
