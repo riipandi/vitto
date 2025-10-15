@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       ventojs:
-        specifier: ^2.1.1
-        version: 2.1.1
+        specifier: ^2.2.0
+        version: 2.2.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.2.6
@@ -31,8 +31,8 @@ importers:
         specifier: ^3.4.2
         version: 3.4.2
       npm-check-updates:
-        specifier: ^19.1.0
-        version: 19.1.0
+        specifier: ^19.1.1
+        version: 19.1.1
       tailwindcss:
         specifier: ^4.1.14
         version: 4.1.14
@@ -595,8 +595,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  npm-check-updates@19.1.0:
-    resolution: {integrity: sha512-qLtpdzOnuVN9qXrrVazjCRRQ3qh0aILIGwmlkF7w4hP9cRTOHynZYSFKRaVO+3EvzNgnXj0lm/XlWhc2TEOyfA==}
+  npm-check-updates@19.1.1:
+    resolution: {integrity: sha512-vy/uNbaK6Xfj/QzM8OXeALZak67E0uHjUlbdT1YGy4bdj0xlBU6AVd+8bscY8vlDpyzL6Y7mxcrX8kzEDeEpNg==}
     engines: {node: '>=20.0.0', npm: '>=8.12.1'}
     hasBin: true
 
@@ -696,8 +696,8 @@ packages:
   undici-types@7.14.0:
     resolution: {integrity: sha512-QQiYxHuyZ9gQUIrmPo3IA+hUl4KYk8uSA7cHrcKd/l3p1OTpZcM0Tbp9x7FAtXdAYhlasd60ncPpgu6ihG6TOA==}
 
-  ventojs@2.1.1:
-    resolution: {integrity: sha512-DC2MSGVKbgRXcdh5ReSu3IQO2iQq5gUmyMQDFZsy1Jy/NeIB1Dcp+u9CSGAUwD1UtZaGQl4AIrl81DSTHE1lCQ==}
+  ventojs@2.2.0:
+    resolution: {integrity: sha512-i3nGAgn+dc+mTfsEplGHCbgA9QNdGchSI3GRF55TWdHHjz2WcHIHH8pQtjpiVP74ZjmqdccO3bC71xpxuwBWgg==}
 
   vite-tsconfig-paths@5.1.4:
     resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
@@ -1109,7 +1109,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  npm-check-updates@19.1.0: {}
+  npm-check-updates@19.1.1: {}
 
   picocolors@1.1.1: {}
 
@@ -1186,7 +1186,7 @@ snapshots:
 
   undici-types@7.14.0: {}
 
-  ventojs@2.1.1: {}
+  ventojs@2.2.0: {}
 
   vite-tsconfig-paths@5.1.4(rolldown-vite@7.1.17(@types/node@24.7.2)(jiti@2.6.1))(typescript@5.9.3):
     dependencies:
