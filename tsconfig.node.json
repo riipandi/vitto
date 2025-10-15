@@ -3,6 +3,7 @@
     "compilerOptions": {
         "composite": true,
         "allowSyntheticDefaultImports": true,
+        "allowImportingTsExtensions": true,
         "isolatedModules": true,
         "lib": ["ES2022"],
         "module": "ESNext",
