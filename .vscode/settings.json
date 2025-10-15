@@ -4,6 +4,7 @@
     "editor.defaultFormatter": "biomejs.biome",
     "files.associations": {
         "*.css": "css",
+        "*.vto": "vento",
         "*.yml.example": "yaml"
     },
     "search.exclude": {
@@ -18,7 +19,10 @@
         ["(?:cn|cx|cva|clx|tv)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
         ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"]
     ],
-    "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
+    "tailwindCSS.files.exclude": ["**/**/*.{json,md,js,ts,yml,yaml}", "hooks/**", "plugin/**"],
+    "tailwindCSS.includeLanguages": {
+        "vento": "html"
+    },
     "[css]": {
         "editor.defaultFormatter": "biomejs.biome"
     },

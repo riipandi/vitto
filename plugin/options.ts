@@ -2,29 +2,55 @@ import type { Options as MinifyOptions } from '@swc/html'
 import type { Options as VentoOptions } from 'ventojs'
 
 /**
- * Configuration for static generation of dynamic pages.
+ * Configuration for dynamic route generation.
+ *
+ * Dynamic routes allow you to generate multiple static pages from a single template
+ * based on data fetched from a hook. This is useful for blog posts, products, etc.
+ *
+ * @example
+ * // Generate blog/1.html, blog/2.html, etc. from post.vto template
+ * {
+ *   template: 'post',
+ *   dataSource: 'posts',
+ *   getParams: (post) => ({ id: post.id }),
+ *   getPath: (post) => `blog/${post.id}.html`
+ * }
  */
-export interface StaticGenConfig {
+export interface DynamicRouteConfig {
   /**
    * Template file name (without .vto extension) to use for generation.
+   * This template will be used to render each dynamic page.
+   *
    * @example 'post'
    */
   template: string
 
   /**
    * Hook name to fetch data for generating pages.
+   * Must match a key in the `hooks` option.
+   *
    * @example 'posts'
    */
-  dataHook: string
+  dataSource: string
 
   /**
    * Function to extract route params from each data item.
+   * These params will be passed to the page hook when rendering.
+   *
+   * @param item - A single item from the data source array
+   * @returns Object containing params to pass to the page hook
+   *
    * @example (post) => ({ id: post.id, slug: post.slug })
    */
   getParams: (item: any) => Record<string, any>
 
   /**
-   * Function to generate output path from data item.
+   * Function to generate output file path from data item.
+   * This determines where the generated HTML file will be saved.
+   *
+   * @param item - A single item from the data source array
+   * @returns Output path relative to build output directory
+   *
    * @example (post) => `blog/${post.id}.html`
    */
   getPath: (item: any) => string
@@ -114,21 +140,28 @@ export interface VittoOptions {
   hooks?: Record<string, (params?: any) => Promise<any>>
 
   /**
-   * Configuration for static generation of dynamic pages.
+   * Configuration for dynamic route generation.
    *
-   * This allows you to pre-render pages with dynamic content at build time.
+   * Dynamic routes allow you to generate multiple static HTML pages from a single template.
+   * This is useful for content like blog posts, products, documentation pages, etc.
+   *
+   * During development, these routes are handled dynamically (e.g., /blog/1, /blog/2).
+   * During build, static HTML files are generated for each item (e.g., blog/1.html, blog/2.html).
    *
    * @example
-   * staticGen: [
+   * dynamicRoutes: [
    *   {
-   *     template: 'post',
-   *     dataHook: 'posts',
-   *     getParams: (post) => ({ id: post.id }),
-   *     getPath: (post) => `blog/${post.id}.html`
+   *     template: 'post',              // Use post.vto template
+   *     dataSource: 'posts',           // Fetch data from 'posts' hook
+   *     getParams: (post) => ({        // Extract params for each post
+   *       id: post.id,
+   *       slug: post.slug
+   *     }),
+   *     getPath: (post) => `blog/${post.id}.html`  // Output to blog/1.html, blog/2.html, etc.
    *   }
    * ]
    */
-  staticGen?: StaticGenConfig[]
+  dynamicRoutes?: DynamicRouteConfig[]
 }
 
 /**
@@ -141,7 +174,7 @@ export const DEFAULT_OPTS: VittoOptions = {
   minify: false,
   assets: undefined,
   hooksDir: 'hooks',
-  staticGen: [],
+  dynamicRoutes: [],
 }
 
 // Configuration for HTML minifier

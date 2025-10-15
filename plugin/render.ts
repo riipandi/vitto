@@ -109,6 +109,43 @@ async function findVtoFiles(pagesDir: string): Promise<string[]> {
 }
 
 /**
+ * Create dynamic route patterns from dynamicRoutes config.
+ * Extracts the base path from getPath function.
+ *
+ * @example
+ * // For getPath: (post) => `blog/${post.id}.html`
+ * // Returns: { pattern: /^\/blog\/([^/]+)$/, basePath: 'blog' }
+ */
+function createDynamicRoutePatterns(opts: VittoOptions) {
+  const routes: Array<{
+    pattern: RegExp
+    basePath: string
+    template: string
+  }> = []
+
+  for (const config of opts.dynamicRoutes || []) {
+    // Try to extract base path from a sample getPath call
+    const samplePath = config.getPath({ id: ':id', slug: ':slug' })
+    const pathWithoutHtml = samplePath.replace(/\.html$/, '')
+
+    // Extract base path (everything before the dynamic segment)
+    const parts = pathWithoutHtml.split('/')
+    const basePath = parts.slice(0, -1).join('/')
+
+    // Create regex pattern to match URLs like /blog/123 or /blog/my-slug
+    const pattern = new RegExp(`^/${basePath}/([^/]+)$`)
+
+    routes.push({
+      pattern,
+      basePath,
+      template: config.template,
+    })
+  }
+
+  return routes
+}
+
+/**
  * Vitto Vite plugin for rendering Vento templates.
  */
 export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
@@ -135,23 +172,21 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
     async generateBundle(_, bundle) {
       const pagesDir = path.resolve(viteRoot, opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages')
       const files = await findVtoFiles(pagesDir)
-
-      // Get Vite assets from the bundle
       const viteAssets = opts.assets ?? getViteAssetsFromBundle(bundle)
 
       if (!viteAssets.main) {
         _console.warn('No main asset found. HTML files may not include JS/CSS.')
       }
 
-      // Render regular template files (exclude templates used in staticGen)
-      const staticGenTemplates = (opts.staticGen || []).map((config) => `${config.template}.vto`)
+      // Render regular template files (exclude templates used in dynamicRoutes)
+      const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
 
       for (const filePath of files) {
         const fileName = path.basename(filePath)
 
-        // Skip templates that are used for static generation
-        if (staticGenTemplates.includes(fileName)) {
-          _console.debug(`Skipping ${fileName} (used for static generation)`)
+        // Skip templates that are used for dynamic routes
+        if (dynamicTemplates.includes(fileName)) {
+          _console.debug(`Skipping ${fileName} (used for dynamic routes)`)
           continue
         }
 
@@ -178,26 +213,26 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         })
       }
 
-      // Handle static generation of dynamic pages
-      const staticGenConfigs = opts.staticGen || []
-      for (const config of staticGenConfigs) {
+      // Handle dynamic route generation
+      const dynamicRouteConfigs = opts.dynamicRoutes || []
+      for (const config of dynamicRouteConfigs) {
         const templatePath = path.resolve(pagesDir, `${config.template}.vto`)
         if (!fs.existsSync(templatePath)) {
           _console.warn(`Template not found: ${templatePath}`)
           continue
         }
 
-        const dataHook = opts.hooks?.[config.dataHook]
+        const dataHook = opts.hooks?.[config.dataSource]
         if (!dataHook) {
-          _console.warn(`Data hook not found: ${config.dataHook}`)
+          _console.warn(`Data source hook not found: ${config.dataSource}`)
           continue
         }
 
         const hookResult = await dataHook({})
-        const dataItems = Array.isArray(hookResult) ? hookResult : hookResult[config.dataHook]
+        const dataItems = Array.isArray(hookResult) ? hookResult : hookResult[config.dataSource]
 
         if (!Array.isArray(dataItems)) {
-          _console.warn(`Data hook ${config.dataHook} did not return an array`)
+          _console.warn(`Data source hook ${config.dataSource} did not return an array`)
           continue
         }
 
@@ -242,6 +277,12 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      * Configure development server to handle .vto template requests.
      */
     configureServer(server) {
+      // Create dynamic route patterns from dynamicRoutes config
+      const dynamicRoutePatterns = createDynamicRoutePatterns(opts)
+
+      // Get list of templates used in dynamicRoutes (these should not be accessible directly)
+      const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
+
       server.middlewares.use(async (req, res, next) => {
         if (req.method !== 'GET') return next()
 
@@ -263,35 +304,37 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'
         )
 
-        // Special handling for /blog/slug pattern -> use post.vto
-        const blogPostMatch = url.match(/^\/blog\/([^/]+)$/)
-        if (blogPostMatch) {
-          const [, slug] = blogPostMatch
-          const postVtoPath = path.resolve(pagesDir, 'post.vto')
+        // Handle dynamic routes
+        for (const route of dynamicRoutePatterns) {
+          const match = url.match(route.pattern)
+          if (match) {
+            const [, slug] = match
+            const templatePath = path.resolve(pagesDir, `${route.template}.vto`)
 
-          if (fs.existsSync(postVtoPath)) {
-            const query = parseQuery(`?${search}`)
-            const params = {
-              ...query,
-              id: slug,
-              slug: slug,
+            if (fs.existsSync(templatePath)) {
+              const query = parseQuery(`?${search}`)
+              const params = {
+                ...query,
+                id: slug,
+                slug: slug,
+              }
+
+              const data = await getPageData(templatePath, opts, params)
+              const html = await renderVentoToHtml(
+                {
+                  filePath: templatePath,
+                  data,
+                  isDev: true,
+                  assets: opts.assets ?? undefined,
+                  minify: opts.minify ?? false,
+                },
+                opts.ventoOptions
+              )
+
+              res.setHeader('Content-Type', 'text/html')
+              res.end(html)
+              return
             }
-
-            const data = await getPageData(postVtoPath, opts, params)
-            const html = await renderVentoToHtml(
-              {
-                filePath: postVtoPath,
-                data,
-                isDev: true,
-                assets: opts.assets ?? undefined,
-                minify: opts.minify ?? false,
-              },
-              opts.ventoOptions
-            )
-
-            res.setHeader('Content-Type', 'text/html')
-            res.end(html)
-            return
           }
         }
 
@@ -303,6 +346,36 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         }
 
         if (fs.existsSync(vtoPath)) {
+          const fileName = path.basename(vtoPath)
+
+          // Block direct access to templates used in dynamicRoutes
+          if (dynamicTemplates.includes(fileName)) {
+            const notFoundPath = path.resolve(pagesDir, '404.vto')
+            if (fs.existsSync(notFoundPath)) {
+              const data = await getPageData(notFoundPath, opts)
+              const html = await renderVentoToHtml(
+                {
+                  filePath: notFoundPath,
+                  data,
+                  isDev: true,
+                  assets: opts.assets ?? undefined,
+                  minify: opts.minify ?? false,
+                },
+                opts.ventoOptions
+              )
+              res.statusCode = 404
+              res.setHeader('Content-Type', 'text/html')
+              res.end(html)
+              return
+            }
+
+            // Fallback 404 response
+            res.statusCode = 404
+            res.setHeader('Content-Type', 'text/plain')
+            res.end('404 Not Found')
+            return
+          }
+
           const query = parseQuery(`?${search}`)
           const data = await getPageData(vtoPath, opts, query)
           const html = await renderVentoToHtml(

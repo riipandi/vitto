@@ -17,10 +17,10 @@ export default defineConfig({
         post: postHook, // For post.vto - single post detail
         posts: postsHook, // For static generation data source
       },
-      staticGen: [
+      dynamicRoutes: [
         {
           template: 'post', // Use post.vto template
-          dataHook: 'posts', // Get data from posts hook
+          dataSource: 'posts', // Get data from posts hook
           getParams: (post) => ({ id: post.id, slug: post.id }),
           getPath: (post) => `blog/${post.id}.html`, // Output path
         },
