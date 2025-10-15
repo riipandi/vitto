@@ -6,11 +6,12 @@ import { parseQuery } from 'ufo'
 import vento, { type Options as VentoOptions } from 'ventojs'
 import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js'
 import type { Plugin, ResolvedConfig } from 'vite'
-import { getPageData } from './hooks'
+import { createDynamicRoutePatterns, getPageData } from './hooks'
 import { _console } from './logger'
 import { DEFAULT_OPTS, MINIFY_OPTIONS, type VittoOptions } from './options'
 
 // Global variable to store Vite root directory
+// This is set in configResolved hook and used throughout the plugin
 let viteRoot = process.cwd()
 
 /**
@@ -31,36 +32,68 @@ interface RenderOptions {
 
 /**
  * Render a Vento template file to an HTML string.
+ *
+ * This function:
+ * 1. Initializes the Vento template engine with the provided options
+ * 2. Applies auto-trim plugin to remove unnecessary whitespace
+ * 3. Injects data and Vite assets into the template context
+ * 4. Renders the template to HTML
+ * 5. Optionally minifies the output HTML
+ *
+ * @param options - Rendering options including file path, data, and minification settings
+ * @param ventoOptionsOverride - Optional Vento engine configuration overrides
+ * @returns The rendered HTML string
+ *
+ * @example
+ * const html = await renderVentoToHtml({
+ *   filePath: 'src/pages/index.vto',
+ *   data: { title: 'Home' },
+ *   isDev: false,
+ *   assets: { main: 'main.js', css: ['style.css'] },
+ *   minify: true
+ * })
  */
 async function renderVentoToHtml(
   { filePath, data = {}, isDev = false, assets, minify = false }: RenderOptions,
   ventoOptionsOverride?: Partial<VentoOptions>
 ) {
+  // Configure Vento template engine with includes directory
   const ventoOptions: VentoOptions = {
     includes: path.resolve(viteRoot, 'src'),
     ...(ventoOptionsOverride || {}),
   }
   const vnt = vento(ventoOptions)
+
+  // Apply auto-trim plugin to remove unnecessary whitespace from templates
   vnt.use(autoTrim({ tags: [...defaultTags] }))
 
+  // Calculate relative path from includes directory to template file
   const includesDir = typeof ventoOptions.includes === 'string' ? ventoOptions.includes : ''
   const relPath = path.relative(includesDir, filePath)
+
+  // Prepare template context with user data and Vite assets
   const viteAssets = assets ?? { main: '', css: [] }
   const context = { ...data, isDev, viteAssets }
 
+  // Render the template with the prepared context
   const result = await vnt.run(relPath, context)
   const htmlContent = result?.content || ''
 
+  // Determine if minification should be applied
   let shouldMinify = false
   let minifyOpts = MINIFY_OPTIONS
+
   if (typeof minify === 'object' && minify !== null) {
+    // User provided custom minify options
     shouldMinify = true
     minifyOpts = { ...MINIFY_OPTIONS, ...minify }
   } else if (minify === true) {
+    // User enabled minification with default options
     shouldMinify = true
     minifyOpts = MINIFY_OPTIONS
   }
 
+  // Minify HTML if enabled
   if (shouldMinify) {
     const minifiedHtml = await swcMinify(htmlContent, minifyOpts)
     return minifiedHtml.code
@@ -70,20 +103,33 @@ async function renderVentoToHtml(
 }
 
 /**
- * Extract Vite-generated assets from the build manifest in bundle.
+ * Extract Vite-generated assets (JS and CSS files) from the build bundle.
+ *
+ * This function scans the Vite bundle to find:
+ * - Main entry point JavaScript file (marked with isEntry: true)
+ * - All CSS files generated during the build
+ *
+ * These assets are later injected into HTML templates via the viteAssets context variable.
+ *
+ * @param bundle - The Vite build bundle object containing all generated files
+ * @returns Object with main JS file and array of CSS files
+ *
+ * @example
+ * const assets = getViteAssetsFromBundle(bundle)
+ * // Returns: { main: 'assets/main-abc123.js', css: ['assets/style-def456.css'] }
  */
 function getViteAssetsFromBundle(bundle: Record<string, any>): { main: string; css: string[] } {
   let main = ''
   const css: string[] = []
 
-  // Find main JS entry and CSS files from the bundle
+  // Iterate through all files in the bundle
   for (const [fileName, chunk] of Object.entries(bundle)) {
-    // Skip null or non-object entries
+    // Skip null or non-object entries (safety check)
     if (!chunk || typeof chunk !== 'object') {
       continue
     }
 
-    // Check if this is an entry point JS file
+    // Find the main entry point JavaScript file
     if ('isEntry' in chunk && chunk.isEntry === true && fileName.endsWith('.js')) {
       main = fileName
     }
@@ -99,6 +145,16 @@ function getViteAssetsFromBundle(bundle: Record<string, any>): { main: string; c
 
 /**
  * Find all .vto template files in the pages directory.
+ *
+ * Recursively scans the pages directory for all files with .vto extension.
+ * These templates will be rendered to HTML during the build process.
+ *
+ * @param pagesDir - Absolute path to the pages directory
+ * @returns Array of absolute paths to all .vto template files
+ *
+ * @example
+ * const files = await findVtoFiles('/project/src/pages')
+ * // Returns: ['/project/src/pages/index.vto', '/project/src/pages/about.vto', ...]
  */
 async function findVtoFiles(pagesDir: string): Promise<string[]> {
   const files: string[] = []
@@ -109,88 +165,106 @@ async function findVtoFiles(pagesDir: string): Promise<string[]> {
 }
 
 /**
- * Create dynamic route patterns from dynamicRoutes config.
- * Extracts the base path from getPath function.
+ * Vitto Vite plugin for rendering Vento templates to static HTML.
+ *
+ * This plugin integrates the Vento template engine with Vite to provide:
+ * - Server-side rendering of .vto templates to HTML
+ * - Static site generation with dynamic routes
+ * - Hot module reloading in development mode
+ * - HTML minification in production builds
+ * - Automatic asset injection (JS/CSS)
+ *
+ * @param opts - Plugin configuration options
+ * @returns Vite plugin instance
  *
  * @example
- * // For getPath: (post) => `blog/${post.id}.html`
- * // Returns: { pattern: /^\/blog\/([^/]+)$/, basePath: 'blog' }
- */
-function createDynamicRoutePatterns(opts: VittoOptions) {
-  const routes: Array<{
-    pattern: RegExp
-    basePath: string
-    template: string
-  }> = []
-
-  for (const config of opts.dynamicRoutes || []) {
-    // Try to extract base path from a sample getPath call
-    const samplePath = config.getPath({ id: ':id', slug: ':slug' })
-    const pathWithoutHtml = samplePath.replace(/\.html$/, '')
-
-    // Extract base path (everything before the dynamic segment)
-    const parts = pathWithoutHtml.split('/')
-    const basePath = parts.slice(0, -1).join('/')
-
-    // Create regex pattern to match URLs like /blog/123 or /blog/my-slug
-    const pattern = new RegExp(`^/${basePath}/([^/]+)$`)
-
-    routes.push({
-      pattern,
-      basePath,
-      template: config.template,
-    })
-  }
-
-  return routes
-}
-
-/**
- * Vitto Vite plugin for rendering Vento templates.
+ * // vite.config.ts
+ * export default defineConfig({
+ *   plugins: [
+ *     vitto({
+ *       minify: true,
+ *       hooks: { posts: postsHook },
+ *       dynamicRoutes: [{
+ *         template: 'post',
+ *         dataSource: 'posts',
+ *         getParams: (post) => ({ id: post.id }),
+ *         getPath: (post) => `blog/${post.id}.html`
+ *       }]
+ *     })
+ *   ]
+ * })
  */
 export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
   return {
     name: 'vitto',
 
+    /**
+     * Modify Vite configuration before it's resolved.
+     * Removes default rolldown input to prevent conflicts with our custom HTML generation.
+     */
     config(config) {
       if (config.build?.rolldownOptions?.input) {
         delete config.build.rolldownOptions.input
       }
     },
 
+    /**
+     * Store Vite configuration values after they're resolved.
+     * We need the root directory for resolving template paths.
+     */
     configResolved(config: ResolvedConfig) {
       viteRoot = config.root
     },
 
+    /**
+     * Log when the build process starts.
+     */
     buildStart() {
       _console.log('Vitto build started')
     },
 
     /**
-     * Use generateBundle to emit files - this way they appear in Vite's output log.
+     * Generate static HTML files from templates during the build process.
+     *
+     * This hook is called by Vite during the build phase. It:
+     * 1. Finds all .vto template files in the pages directory
+     * 2. Extracts Vite assets (JS/CSS) from the bundle
+     * 3. Renders regular pages (excluding dynamic route templates)
+     * 4. Generates static HTML files for dynamic routes
+     * 5. Emits all HTML files to the bundle (so they appear in build output)
+     *
+     * The emitFile() call is important because it makes Vite aware of these
+     * files and includes them in the build output and statistics.
      */
     async generateBundle(_, bundle) {
       const pagesDir = path.resolve(viteRoot, opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages')
       const files = await findVtoFiles(pagesDir)
+
+      // Extract JS and CSS assets from the Vite bundle
       const viteAssets = opts.assets ?? getViteAssetsFromBundle(bundle)
 
       if (!viteAssets.main) {
         _console.warn('No main asset found. HTML files may not include JS/CSS.')
       }
 
-      // Render regular template files (exclude templates used in dynamicRoutes)
+      // Get list of templates that are used for dynamic routes
+      // These should not be rendered as standalone pages
       const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
 
+      // Render regular template files (static pages)
       for (const filePath of files) {
         const fileName = path.basename(filePath)
 
-        // Skip templates that are used for dynamic routes
+        // Skip templates that are used for dynamic route generation
         if (dynamicTemplates.includes(fileName)) {
           _console.debug(`Skipping ${fileName} (used for dynamic routes)`)
           continue
         }
 
+        // Fetch data for this page via hooks
         const data = await getPageData(filePath, opts)
+
+        // Render template to HTML
         const html = await renderVentoToHtml(
           {
             filePath,
@@ -202,10 +276,12 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           opts.ventoOptions
         )
 
+        // Calculate output path relative to pages directory
         const relPath = path.relative(pagesDir, filePath)
         const outName = relPath.replace(/\.vto$/, '.html')
 
-        // Emit file to bundle (this makes it appear in Vite's output log)
+        // Emit HTML file to Vite bundle
+        // This makes the file appear in build output and statistics
         this.emitFile({
           type: 'asset',
           fileName: outName,
@@ -213,21 +289,25 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         })
       }
 
-      // Handle dynamic route generation
+      // Generate static HTML files for dynamic routes
       const dynamicRouteConfigs = opts.dynamicRoutes || []
       for (const config of dynamicRouteConfigs) {
         const templatePath = path.resolve(pagesDir, `${config.template}.vto`)
+
+        // Verify template file exists
         if (!fs.existsSync(templatePath)) {
           _console.warn(`Template not found: ${templatePath}`)
           continue
         }
 
+        // Verify data source hook exists
         const dataHook = opts.hooks?.[config.dataSource]
         if (!dataHook) {
           _console.warn(`Data source hook not found: ${config.dataSource}`)
           continue
         }
 
+        // Fetch all items from the data source
         const hookResult = await dataHook({})
         const dataItems = Array.isArray(hookResult) ? hookResult : hookResult[config.dataSource]
 
@@ -238,11 +318,16 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
         _console.start(`Generating ${dataItems.length} pages from ${config.template}.vto`)
 
+        // Generate a static HTML file for each item
         for (const item of dataItems) {
           try {
+            // Extract route parameters for this item
             const params = config.getParams(item)
+
+            // Fetch page-specific data (will transform to singular form)
             const pageData = await getPageData(templatePath, opts, params)
 
+            // Render template with this item's data
             const html = await renderVentoToHtml(
               {
                 filePath: templatePath,
@@ -254,9 +339,10 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               opts.ventoOptions
             )
 
+            // Get output path for this item (e.g., 'blog/1.html')
             const outPath = config.getPath(item)
 
-            // Emit file to bundle (this makes it appear in Vite's output log)
+            // Emit HTML file to Vite bundle
             this.emitFile({
               type: 'asset',
               fileName: outPath,
@@ -274,21 +360,34 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
     },
 
     /**
-     * Configure development server to handle .vto template requests.
+     * Configure the development server to handle .vto template requests.
+     *
+     * This middleware intercepts HTTP requests and:
+     * 1. Checks if the URL matches a dynamic route pattern
+     * 2. Checks if the URL maps to a static .vto template
+     * 3. Blocks direct access to templates used in dynamic routes
+     * 4. Renders the appropriate template with data from hooks
+     * 5. Returns 404 for non-existent pages
+     *
+     * The middleware runs on every GET request in development mode,
+     * providing hot reloading and dynamic route handling.
      */
     configureServer(server) {
-      // Create dynamic route patterns from dynamicRoutes config
+      // Pre-calculate dynamic route patterns for efficient matching
       const dynamicRoutePatterns = createDynamicRoutePatterns(opts)
 
-      // Get list of templates used in dynamicRoutes (these should not be accessible directly)
+      // Get list of templates that should not be directly accessible
       const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
 
       server.middlewares.use(async (req, res, next) => {
+        // Only handle GET requests
         if (req.method !== 'GET') return next()
 
+        // Parse URL into pathname and query string
         const [pathname, search = ''] = req.url?.split('?') ?? ['/']
         const url = pathname || '/'
 
+        // Skip requests for static files, Vite internal routes, etc.
         if (
           /\.[a-zA-Z0-9]+$/.test(url) ||
           url.startsWith('/@vite/') ||
@@ -304,22 +403,29 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'
         )
 
-        // Handle dynamic routes
+        // Check if URL matches any dynamic route pattern
         for (const route of dynamicRoutePatterns) {
           const match = url.match(route.pattern)
           if (match) {
+            // Extract the dynamic segment (e.g., post ID or slug)
             const [, slug] = match
             const templatePath = path.resolve(pagesDir, `${route.template}.vto`)
 
             if (fs.existsSync(templatePath)) {
+              // Parse query parameters
               const query = parseQuery(`?${search}`)
+
+              // Combine query params with route params
               const params = {
                 ...query,
                 id: slug,
                 slug: slug,
               }
 
+              // Fetch data for this specific item
               const data = await getPageData(templatePath, opts, params)
+
+              // Render template with item data
               const html = await renderVentoToHtml(
                 {
                   filePath: templatePath,
@@ -338,9 +444,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           }
         }
 
-        // Handle regular routes
+        // Handle regular static routes (not dynamic)
         const pageUrl = url === '/' ? '/index' : url
         let vtoPath = path.resolve(`${pagesDir + pageUrl}.vto`)
+
+        // Try index.vto if direct path doesn't exist (e.g., /about -> /about/index.vto)
         if (!fs.existsSync(vtoPath)) {
           vtoPath = path.resolve(`${pagesDir + pageUrl}/index.vto`)
         }
@@ -348,9 +456,12 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         if (fs.existsSync(vtoPath)) {
           const fileName = path.basename(vtoPath)
 
-          // Block direct access to templates used in dynamicRoutes
+          // Block direct access to templates used in dynamic routes
+          // e.g., accessing /post directly should return 404
           if (dynamicTemplates.includes(fileName)) {
             const notFoundPath = path.resolve(pagesDir, '404.vto')
+
+            // Try to render custom 404 page
             if (fs.existsSync(notFoundPath)) {
               const data = await getPageData(notFoundPath, opts)
               const html = await renderVentoToHtml(
@@ -369,13 +480,14 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               return
             }
 
-            // Fallback 404 response
+            // Fallback to plain text 404
             res.statusCode = 404
             res.setHeader('Content-Type', 'text/plain')
             res.end('404 Not Found')
             return
           }
 
+          // Render the static page template
           const query = parseQuery(`?${search}`)
           const data = await getPageData(vtoPath, opts, query)
           const html = await renderVentoToHtml(
@@ -394,7 +506,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           return
         }
 
-        // Handle 404
+        // No matching template found, return 404
         const notFoundPath = path.resolve(pagesDir, '404.vto')
         if (fs.existsSync(notFoundPath)) {
           const data = await getPageData(notFoundPath, opts)
@@ -417,6 +529,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         next()
       })
 
+      // Watch for changes in source files and trigger full page reload
       server.watcher.add([
         path.resolve(viteRoot, 'src/**/*.vto'),
         path.resolve(viteRoot, 'src/**/*.ts'),
@@ -425,6 +538,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         path.resolve(viteRoot, 'src/**/*.json'),
       ])
 
+      // Trigger full reload when watched files change
       server.watcher.on('change', (file) => {
         if (file.endsWith('.vto') || file.startsWith(path.resolve(viteRoot, 'src/'))) {
           server.ws.send({ type: 'full-reload' })
