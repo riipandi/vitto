@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "biomejs.biome",
+        "bradlc.vscode-tailwindcss",
+        "darkriszty.markdown-table-prettify",
+        "EditorConfig.EditorConfig",
+        "fill-labs.dependi"
+    ],
+    "unwantedRecommendations": []
+}

@@ -1,0 +1,64 @@
+{
+    "biome.configurationPath": "biome.json",
+    "typescript.enablePromptUseWorkspaceTsdk": false,
+    "editor.defaultFormatter": "biomejs.biome",
+    "files.associations": {
+        "*.css": "css",
+        "*.yml.example": "yaml"
+    },
+    "search.exclude": {
+        "**/.husky": true,
+        "**/.output": true,
+        "**/.sonda": true,
+        "**/build": true
+    },
+    "tailwindCSS.experimental.classRegex": [
+        // @ref: https://www.tailwind-variants.org/docs/getting-started
+        // @ref: https://github.com/paolotiu/tailwind-intellisense-regex-list
+        ["(?:cn|cx|cva|clx|tv)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+        ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"]
+    ],
+    "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
+    "[css]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports.biome": "explicit"
+        },
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true
+    },
+    "[json]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "darkriszty.markdown-table-prettify"
+    },
+    "[tailwindcss]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports.biome": "explicit"
+        },
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports.biome": "explicit"
+        },
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true
+    }
+}
