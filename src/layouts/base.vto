@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="{{ lang || 'en' }}" data-lt-theme="" data-lt-scheme="light">
+<head>
+  {{ include "partials/head.vto" }}
+  <title>{{ pageTitle ? pageTitle + ' - ' + (siteName || 'VentoSite') : (siteName || 'VentoSite') |> safe }}</title>
+
+{{ if isDev }}
+  <script type="module" src="/src/main.ts"></script>
+{{ /if }}
+{{ if !isDev }}
+  <script type="module" src="/{{ viteAssets.main }}"></script>
+  {{ if viteAssets.css && viteAssets.css.length }}
+    {{ for href of viteAssets.css }}
+      <link rel="stylesheet" href="/{{ href }}">
+    {{ /for }}
+  {{ /if }}
+{{ /if }}
+
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50">
+    Skip to main content
+  </a>
+
+  {{ content }}
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+
+  {{# <!-- Additional scripts can be injected here -->
+  {{ if scripts }}
+    {{ for script of scripts }}
+      <script src="{{ script }}"></script>
+    {{ /for }}
+  {{ /if }} #}}
+
+  {{ if inlineScripts }}
+    <script>{{ inlineScripts | safe }}</script>
+  {{ /if }}
+</body>
+</html>

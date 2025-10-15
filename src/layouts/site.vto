@@ -1,0 +1,40 @@
+{{ layout "layouts/base.vto" }}
+
+<div class="flex flex-col min-h-screen">
+  <!-- Header -->
+  {{ include "partials/header.vto" }}
+
+  <!-- Main Content -->
+  <main id="main-content" class="flex grow fade-in">
+    <!-- Page Content -->
+    {{ content }}
+  </main>
+
+  <!-- Footer -->
+  {{ include "partials/footer.vto" }}
+</div>
+
+<!-- JavaScript -->
+<script>
+  // Dark mode toggle functionality
+  function toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+  }
+
+  // Initialize dark mode from localStorage
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.documentElement.classList.add('dark');
+  }
+
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.querySelector('[aria-label="Toggle menu"]');
+    if (mobileMenuButton) {
+      mobileMenuButton.addEventListener('click', function() {
+        // Mobile menu toggle logic can be added here
+        console.log('Mobile menu toggled');
+      });
+    }
+  });
+</script>
