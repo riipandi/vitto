@@ -11,9 +11,6 @@ importers:
 
   .:
     dependencies:
-      consola:
-        specifier: ^3.4.2
-        version: 3.4.2
       ventojs:
         specifier: ^2.1.1
         version: 2.1.1
@@ -30,6 +27,9 @@ importers:
       '@types/node':
         specifier: ^24.7.2
         version: 24.7.2
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       npm-check-updates:
         specifier: ^19.1.0
         version: 19.1.0
