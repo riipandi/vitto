@@ -77,7 +77,19 @@ async function renderVentoToHtml(
   // Create renderAssets function with closure over isDev and viteAssets
   const renderAssets = () => {
     if (isDev) {
-      return '<script type="module" src="/src/main.ts"></script>'
+      // In dev mode, add suspense wrapper to prevent FOUC (Flash of Unstyled Content)
+      return `<script type="module" src="/src/main.ts"></script>
+  <style id="vite-suspense-styles">
+    body { visibility: hidden; opacity: 0; transition: opacity 0.2s ease-in; }
+    body.vite-ready { visibility: visible; opacity: 1; }
+  </style>
+  <script type="module">
+    await import('/src/main.ts'); /* Wait for Vite client and main module to load */
+    await new Promise(resolve => setTimeout(resolve, 50)); /* Small delay to ensure styles are applied */
+    document.body.classList.add('vite-ready'); /* Show content */
+    document.getElementById('vite-suspense-styles')?.remove(); /* Remove suspense styles */
+  </script>
+      `.trim()
     }
 
     let html = ''
