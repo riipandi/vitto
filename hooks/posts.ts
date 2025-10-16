@@ -18,7 +18,7 @@ export default defineHooks('posts', async (params) => {
   // Otherwise, fetch list of posts
   const url = withQuery('https://jsonplaceholder.typicode.com/posts', {
     _page: params?._page ?? 1,
-    _limit: params?._limit ?? 10,
+    _limit: params?._limit ?? 100,
   })
 
   const res = await fetch(url)

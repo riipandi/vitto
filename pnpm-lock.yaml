@@ -11,6 +11,15 @@ importers:
 
   .:
     dependencies:
+      itty-chroma:
+        specifier: ^1.0.6
+        version: 1.0.6
+      itty-time:
+        specifier: ^2.0.2
+        version: 2.0.2
+      picospinner:
+        specifier: ^3.0.0
+        version: 3.0.0
       ventojs:
         specifier: ^2.2.0
         version: 2.2.0
@@ -27,9 +36,6 @@ importers:
       '@types/node':
         specifier: ^24.7.2
         version: 24.7.2
-      consola:
-        specifier: ^3.4.2
-        version: 3.4.2
       npm-check-updates:
         specifier: ^19.1.1
         version: 19.1.1
@@ -400,10 +406,6 @@ packages:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
 
-  consola@3.4.2:
-    resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
-    engines: {node: ^14.18.0 || >=16.10.0}
-
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
     engines: {node: '>=6.0'}
@@ -440,6 +442,12 @@ packages:
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+
+  itty-chroma@1.0.6:
+    resolution: {integrity: sha512-2tEGyVAZXlkJPNFFmuQUsNkvYhelHzvwiDUM0DJ+qCzkiqTkjCTgGxWxLJ07R0D/KskP3occI9wGoPctp/CYkg==}
+
+  itty-time@2.0.2:
+    resolution: {integrity: sha512-95U9Xo3Qggz/e82ewZQJw8x76HgiMvbrijzoPy6nCTae4FZEwbcVJgrB57Kvddf8Q5pQdgJKTX6euFJpDr6Low==}
 
   jiti@2.6.1:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
@@ -609,6 +617,10 @@ packages:
   picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
+
+  picospinner@3.0.0:
+    resolution: {integrity: sha512-lGA1TNsmy2bxvRsTI2cV01kfTwKzZjnZSDmF9llYNyMHMrU4sP87lQ5taiIKm88L3cbswjl008nwyGc3WpNvzg==}
+    engines: {node: '>=18.0.0'}
 
   postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
@@ -981,8 +993,6 @@ snapshots:
 
   chownr@3.0.0: {}
 
-  consola@3.4.2: {}
-
   debug@4.4.3:
     dependencies:
       ms: 2.1.3
@@ -1004,6 +1014,10 @@ snapshots:
   globrex@0.1.2: {}
 
   graceful-fs@4.2.11: {}
+
+  itty-chroma@1.0.6: {}
+
+  itty-time@2.0.2: {}
 
   jiti@2.6.1: {}
 
@@ -1120,6 +1134,8 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@4.0.3: {}
+
+  picospinner@3.0.0: {}
 
   postcss@8.5.6:
     dependencies:

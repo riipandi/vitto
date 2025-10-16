@@ -2,12 +2,14 @@ import fs from 'node:fs'
 import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import { type Options as MinifyOptions, minify as swcMinify } from '@swc/html'
+import { chroma } from 'itty-chroma'
+import { duration } from 'itty-time'
+import { Spinner } from 'picospinner'
 import { parseQuery } from 'ufo'
 import vento, { type Options as VentoOptions } from 'ventojs'
 import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js'
 import type { Plugin, ResolvedConfig } from 'vite'
 import { createDynamicRoutePatterns, getPageData } from './hooks'
-import { _console } from './logger'
 import { DEFAULT_OPTS, MINIFY_OPTIONS, type VittoOptions } from './options'
 
 // Global variable to store Vite root directory
@@ -252,7 +254,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      * Log when the build process starts.
      */
     buildStart() {
-      _console.log('Vitto build started')
+      chroma.log('✓ Vitto build started')
     },
 
     /**
@@ -276,7 +278,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       const viteAssets = opts.assets ?? getViteAssetsFromBundle(bundle)
 
       if (!viteAssets.main) {
-        _console.warn('No main asset found. HTML files may not include JS/CSS.')
+        chroma.log('ℹ No main asset found. HTML files may not include JS/CSS.')
       }
 
       // Get list of templates that are used for dynamic routes
@@ -289,7 +291,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
         // Skip templates that are used for dynamic route generation
         if (dynamicTemplates.includes(fileName)) {
-          _console.debug(`Skipping ${fileName} (used for dynamic routes)`)
+          chroma.log(`ℹ Skipping ${fileName} (used for dynamic routes)`)
           continue
         }
 
@@ -328,14 +330,14 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
         // Verify template file exists
         if (!fs.existsSync(templatePath)) {
-          _console.warn(`Template not found: ${templatePath}`)
+          chroma.log(`Template not found: ${templatePath}`)
           continue
         }
 
         // Verify data source hook exists
         const dataHook = opts.hooks?.[config.dataSource]
         if (!dataHook) {
-          _console.warn(`Data source hook not found: ${config.dataSource}`)
+          chroma.log(`Data source hook not found: ${config.dataSource}`)
           continue
         }
 
@@ -344,11 +346,16 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         const dataItems = Array.isArray(hookResult) ? hookResult : hookResult[config.dataSource]
 
         if (!Array.isArray(dataItems)) {
-          _console.warn(`Data source hook ${config.dataSource} did not return an array`)
+          chroma.log(`Data source hook ${config.dataSource} did not return an array`)
           continue
         }
 
-        _console.start(`Generating ${dataItems.length} pages from ${config.template}.vto`)
+        const totalItems = dataItems.length
+        const spinner = new Spinner(`Generating ${totalItems} pages from ${config.template}.vto`)
+        spinner.start()
+
+        const startTime = Date.now()
+        let processedCount = 0
 
         // Generate a static HTML file for each item
         for (const item of dataItems) {
@@ -380,15 +387,29 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               fileName: outPath,
               source: html,
             })
+
+            // Update progress
+            processedCount++
+            const elapsed = duration(Date.now() - startTime, { parts: 2 })
+            const percentage = Math.round((processedCount / totalItems) * 100)
+            spinner.setText(
+              `Generated ${processedCount}/${totalItems} pages (${percentage}%) - ${elapsed} elapsed`
+            )
           } catch (error) {
-            _console.error(`Error generating page for item:`, item, error)
+            chroma.log(`ⅹ Error generating page for item:`, item, error)
           }
         }
 
-        _console.success(`Generated ${dataItems.length} pages`)
+        // Stop spinner and show summary
+        spinner.stop()
+        const totalTime = duration(Date.now() - startTime, { parts: 2 })
+        const avgTime = duration((Date.now() - startTime) / totalItems, { parts: 2 })
+        chroma.log(
+          `✓ Generated ${totalItems} pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
+        )
       }
 
-      _console.success('Vitto rendering completed!')
+      chroma.log('✓ Vitto rendering completed!')
     },
 
     /**
