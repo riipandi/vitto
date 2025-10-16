@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { VittoOptions } from './options'
+import type { VittoOptions } from './options'
 
 /**
  * Define a hook for injecting dynamic data into page templates.
