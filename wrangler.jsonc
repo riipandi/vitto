@@ -13,6 +13,7 @@
     "$schema": "https://www.unpkg.com/wrangler@4.43.0/config-schema.json",
     "name": "vitto",
     "compatibility_date": "2025-09-15",
+    "compatibility_flags": ["nodejs_compat"],
     "pages_build_output_dir": "dist",
     "dev": {
         "host": "127.0.0.1",
