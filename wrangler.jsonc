@@ -1,0 +1,32 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * - https://developers.cloudflare.com/workers/wrangler/configuration
+ * - https://developers.cloudflare.com/workers/runtime-apis/bindings
+ * - https://developers.cloudflare.com/workers/static-assets/binding
+ *
+ * Build configurations:
+ * - Build command: `pnpm run build`
+ * - Deploy command: `pnpm exec wrangler pages deploy`
+ * - Non-production branch deploy command: `pnpm exec wrangler versions upload`
+ */
+{
+    "$schema": "https://www.unpkg.com/wrangler@4.43.0/config-schema.json",
+    "name": "vitto",
+    "compatibility_date": "2025-09-15",
+    "pages_build_output_dir": "dist",
+    "dev": {
+        "host": "127.0.0.1",
+        "port": 3000
+    },
+    "placement": {
+        "mode": "smart"
+    },
+    "vars": {
+        /* Build -> Variables and secrets */
+        "WRANGLER_SEND_METRICS": "false",
+        "NEXT_TELEMETRY_DISABLED": "1",
+        "COREPACK_INTEGRITY_KEYS": "0",
+        "NODE_VERSION": "22.20.0",
+        "PNPM_VERSION": "10.18.3"
+    }
+}
