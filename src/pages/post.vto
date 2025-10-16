@@ -1,41 +1,49 @@
 {{ set pageTitle = post ? post.title : "Post Not Found" }}
 {{ layout "layouts/site.vto" }}
 
-<section class="items-center justify-center flex flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white dark:from-gray-900 dark:to-gray-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-    {{ if post }}
-      <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white dark:text-gray-100">
+<div class="-z-10 fixed inset-0">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-white dark:from-gray-950 dark:to-black"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/5 via-transparent to-transparent dark:from-blue-500/10">
+    </div>
+</div>
+
+<div class="w-full bg-white dark:bg-gray-900 py-12 md:py-20">
+  {{ if post }}
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
           {{ post.title }}
         </h1>
-        <p class="text-sm text-gray-200 dark:text-gray-400">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
           Post ID: {{ post.id }} | User ID: {{ post.userId }}
         </p>
       </div>
 
-      <div class="bg-white bg-opacity-10 dark:bg-gray-900 dark:bg-opacity-70 rounded-lg p-8 border border-gray-700">
-        <div class="prose prose-lg max-w-none text-gray-950 dark:text-gray-300">
-          {{ post.body }}
-        </div>
+      <article class="prose prose-lg max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
+        {{ post.body }}
+      </article>
 
-        <div class="mt-8 pt-8 border-t border-gray-700">
-          <a href="/blog" class="inline-flex items-center text-blue-500 dark:text-blue-400 hover:underline">
-            ← Back to all posts
-          </a>
-        </div>
-      </div>
-    {{ else }}
-      <div class="text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white dark:text-gray-100">
-          Post Not Found
-        </h1>
-        <p class="text-xl text-gray-200 dark:text-gray-400 mb-8">
-          The post you're looking for doesn't exist.
-        </p>
-        <a href="/blog" class="inline-flex items-center px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors">
-          ← Back to all posts
+      <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
+        <a href="/blog" class="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-medium">
+          <span class="transition-transform group-hover:-translate-x-1">←</span>
+          Back to all posts
         </a>
       </div>
-    {{ /if }}
-  </div>
-</section>
+    </div>
+  {{ else }}
+    <div class="flex min-h-[80vh] flex-col items-center justify-center">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+          Post Not Found
+        </h1>
+        <p class="text-base md:text-lg mb-8 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          The post you're looking for doesn't exist.
+        </p>
+        <a href="/blog" class="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-medium text-lg">
+          <span class="transition-transform group-hover:-translate-x-1">←</span>
+          Back to all posts
+        </a>
+      </div>
+    </div>
+  {{ /if }}
+</div>

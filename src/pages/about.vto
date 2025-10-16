@@ -1,23 +1,13 @@
-{{ set pageTitle = "Homepage" }}
+{{ set pageTitle = "About" }}
 {{ layout "layouts/site.vto" }}
 
-<section class="items-center justify-center flex flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-    <div class="text-center">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6">
-        About {{ siteName || 'VentoSite' }}
-      </h1>
-      <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-        {{ heroDescription || 'A modern web application built with Vento template engine. <br/> Fast, reliable, and easy to use.' }}
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/about">
-          <litte-button variant="primary" size="lg">Learn more</litte-button>
-        </a>
-        <a href="/contact">
-          <litte-button variant="secondary" size="lg">Get Started</litte-button>
-        </a>
-      </div>
-    </div>
+<div class="flex min-h-[80vh] flex-col items-center justify-center space-y-12 w-full bg-white dark:bg-gray-900">
+  <div class="text-center">
+    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+      About {{ siteName || 'VentoSite' }}
+    </h1>
+    <p class="text-base md:text-lg mb-8 dark:text-gray-200 max-w-3xl mx-auto">
+      {{ heroDescription || 'A modern web application built with Vento template engine. <br/> Fast, reliable, and easy to use.' }}
+    </p>
   </div>
-</section>
+</div>

@@ -1,35 +1,30 @@
 {{ layout "layouts/base.vto" }}
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-lg w-full space-y-8 text-center">
-    <!-- 404 Illustration -->
-    <div class="mx-auto flex items-center justify-center size-24 rounded-full bg-yellow-100 dark:bg-yellow-900">
-      <svg class="size-18 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.5-1.01-5.986-2.709M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    </div>
-
-    <!-- Error Content -->
+  <div class="relative flex max-w-lg w-full space-y-8 text-center flex-col px-4 py-16 sm:px-6 lg:px-8">
     <div>
-      <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-4">404</h1>
-      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+      <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6">404</h1>
+      <h2 class="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
         Page Not Found
       </h2>
       <p class="text-gray-600 dark:text-gray-400 mb-8">
+        Sorry, we couldn't find the page you're looking for. <br/>
         The page you're looking for doesn't exist or has been moved.
       </p>
     </div>
 
-    <!-- Pagefind Search -->
-    <div class="mb-6">
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-        Try searching for what you need:
-      </p>
-      <div id="search" class="text-left"></div>
-    </div>
+    {{ if !isDev }}
+      <!-- Pagefind Search -->
+      <div class="mb-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Try searching for what you need:
+        </p>
+        <div id="search" class="text-left"></div>
+      </div>
+    {{ /if }}
 
     <!-- Actions -->
-    <div class="space-y-4">
+    <div class="space-y-4 md:space-y-0 md:space-x-4 flex items-center flex-col md:flex-row w-full max-w-none mx-auto">
       <a
         href="/"
         class="block w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
@@ -38,7 +33,7 @@
       </a>
       <button
         onclick="window.history.back()"
-        class="w-full cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium py-3 px-4 rounded-lg transition-colors"
+        class="block w-full cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium py-3 px-4 rounded-lg transition-colors"
       >
         Go Back
       </button>
@@ -50,8 +45,8 @@
         You might be looking for:
       </p>
       <div class="flex flex-wrap justify-center gap-4 md:gap-6 text-sm">
-        <a href="/" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-          Home
+        <a href="/blog" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
+          Blog
         </a>
         <a href="/about" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
           About

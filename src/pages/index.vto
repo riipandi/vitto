@@ -1,26 +1,29 @@
 {{ set pageTitle = "Homepage" }}
 {{ layout "layouts/site.vto" }}
 
-<div class="items-center justify-center flex flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white flex-col">
-  <div class="flex gap-4 mb-6">
-    <a href="https://vite.dev" target="_blank" rel="noopener">
-      <img src="/vite.svg" class="h-24 p-6 transition duration-300 hover:drop-shadow-[0_0_2em_#646cffaa]" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener">
-      <img src="/typescript.svg" class="h-24 p-6 transition duration-300 hover:drop-shadow-[0_0_2em_#3178c6aa]" alt="TypeScript logo" />
+<div class="-z-10 fixed inset-0">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-white dark:from-gray-950 dark:to-black"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-500/5 via-transparent to-transparent dark:from-orange-500/10">
+    </div>
+</div>
+
+<div class="flex flex-col items-center justify-center space-y-12 w-full bg-white dark:bg-gray-900">
+  <div class="flex items-center space-x-6 gap-6 md:gap-10 w-full max-w-xl mx-auto justify-center">
+    <img src="/vite.svg" class="size-18" alt="Vite logo" />
+    <img src="/favicon.svg" class="size-18" alt="Vento logo" />
+  </div>
+  <ol class="max-w-xl space-y-4 text-center font-medium font-sans text-gray-700 tracking-wide dark:text-gray-300 w-full">
+    <li>
+      Get started by editing
+      <code class="ml-2 inline-block rounded-sm bg-gradient-to-r from-gray-200/80 to-gray-100/80 px-2 py-0.5 font-medium text-gray-900 text-sm tracking-normal dark:from-gray-800 dark:to-gray-900 dark:text-gray-100">
+        src/pages/index.vto
+      </code>
+    </li>
+    <li>Save and see your changes instantly.</li>
+  </ol>
+  <div class="-mt-1 flex flex-wrap justify-center gap-4">
+    <a target="_blank" rel="noopener noreferrer" href="https://deploy.workers.cloudflare.com/?url=https://github.com/riipandi/vite-vento-mpa">
+      <img src="https://deploy.workers.cloudflare.com/button" class="h-9 w-auto transition-transform duration-300 ease-in-out hover:scale-105" alt="Deploy to Cloudflare Workers" />
     </a>
   </div>
-  <h1 class="text-5xl font-bold mb-6 text-center">Vite + Vento + TypeScript</h1>
-  <div class="card p-8 bg-neutral-800/60 rounded-xl shadow-lg mb-6 w-auto min-w-sm flex justify-center">
-    <button
-      id="counter"
-      type="button"
-      class="rounded-lg border border-transparent px-4 py-2 text-base font-medium bg-neutral-900 hover:border-[#646cff] focus:outline-none focus:ring-4 focus:ring-blue-400 transition-colors"
-    >
-      Counter
-    </button>
-  </div>
-  <p class="text-gray-200 text-center">
-    Click on the Vite and TypeScript logos to learn more
-  </p>
 </div>
