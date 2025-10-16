@@ -1,0 +1,17 @@
+<!-- Pagefind Search -->
+<link href="/assets/pagefind-ui.css" rel="stylesheet">
+<script src="/assets/pagefind-ui.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    new PagefindUI({
+      element: "#search",
+      showSubResults: true,
+      showImages: false,
+      excerptLength: 15,
+      processResult: function(result) {
+        // Customize result if needed
+        return result;
+      }
+    });
+  });
+</script>

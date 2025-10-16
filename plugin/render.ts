@@ -4,6 +4,7 @@ import path from 'node:path'
 import { type Options as MinifyOptions, minify as swcMinify } from '@swc/html'
 import { chroma } from 'itty-chroma'
 import { duration } from 'itty-time'
+import * as pagefind from 'pagefind'
 import { Spinner } from 'picospinner'
 import { parseQuery } from 'ufo'
 import vento, { type Options as VentoOptions } from 'ventojs'
@@ -12,9 +13,9 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { createDynamicRoutePatterns, getPageData } from './hooks'
 import { DEFAULT_OPTS, MINIFY_OPTIONS, type VittoOptions } from './options'
 
-// Global variable to store Vite root directory
-// This is set in configResolved hook and used throughout the plugin
+// Global variables to store Vite configuration
 let viteRoot = process.cwd()
+let viteConfig: ResolvedConfig
 
 /**
  * Options for rendering a Vento template to HTML.
@@ -244,10 +245,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
     /**
      * Store Vite configuration values after they're resolved.
-     * We need the root directory for resolving template paths.
+     * We need the root directory and build config for resolving paths.
      */
     configResolved(config: ResolvedConfig) {
       viteRoot = config.root
+      viteConfig = config
     },
 
     /**
@@ -410,6 +412,78 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       }
 
       chroma.log('✓ Vitto rendering completed!')
+    },
+
+    /**
+     * Generate Pagefind search index after the build is complete.
+     *
+     * This hook runs after all files have been written to disk.
+     * It uses the Vite outDir configuration to determine where to:
+     * 1. Read HTML files for indexing
+     * 2. Write the generated Pagefind index
+     */
+    async closeBundle() {
+      // Skip Pagefind index generation if disabled
+      if (opts.enableSearchIndex === false) {
+        chroma.log('ℹ Pagefind search indexing is disabled')
+        return
+      }
+
+      try {
+        // Get the output directory from Vite config (defaults to 'dist')
+        const outDir = path.resolve(viteRoot, viteConfig.build.outDir || 'dist')
+        const pagefindDir = path.join(outDir, 'assets')
+
+        // Verify output directory exists
+        if (!fs.existsSync(outDir)) {
+          chroma.log(`⚠ Output directory not found: ${outDir}`)
+          chroma.log('⚠ Skipping Pagefind index generation')
+          return
+        }
+
+        chroma.log('✓ Generating Pagefind search index...')
+        const spinner = new Spinner('Generating search index with Pagefind')
+        spinner.start()
+        const startTime = Date.now()
+
+        // Create a Pagefind search index
+        // TODO: Expose `PagefindServiceConfig` options to vite.config.ts
+        const { index, errors } = await pagefind.createIndex({
+          rootSelector: 'html',
+          writePlayground: false,
+          keepIndexUrl: true,
+          verbose: false,
+        })
+
+        if (!index) {
+          spinner.stop()
+          chroma.log('✗ Failed to create Pagefind index')
+          if (errors && errors.length > 0) {
+            for (const error of errors) {
+              chroma.log(`  - ${error}`)
+            }
+          }
+          return
+        }
+
+        // Index all HTML files in the output directory
+        const { page_count } = await index.addDirectory({
+          glob: '**/*.{html}',
+          path: outDir,
+        })
+
+        // Write the index to disk
+        await index.writeFiles({
+          outputPath: pagefindDir,
+        })
+
+        spinner.stop()
+        const elapsed = duration(Date.now() - startTime, { parts: 2 })
+        chroma.log(`✓ Indexed ${page_count} pages in ${elapsed}`)
+        chroma.log(`✓ Search index written to: ${path.relative(viteRoot, pagefindDir)}`)
+      } catch (error) {
+        chroma.log('✗ Error generating Pagefind index:', error)
+      }
     },
 
     /**

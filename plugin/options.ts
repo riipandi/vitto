@@ -162,6 +162,56 @@ export interface VittoOptions {
    * ]
    */
   dynamicRoutes?: DynamicRouteConfig[]
+
+  /**
+   * Enable automatic search index generation using Pagefind after build.
+   *
+   * When enabled, Pagefind will index all generated HTML files in the output directory
+   * and create a client-side search index. The search UI can then be added to your site
+   * to provide fast, static search functionality without a backend.
+   *
+   * The index is generated in the `closeBundle` hook after all files are written to disk.
+   * Index files are written to `<outDir>/pagefind/` directory.
+   *
+   * @default true
+   *
+   * @example
+   * // Enable search indexing (default)
+   * enableSearchIndex: true
+   *
+   * @example
+   * // Disable search indexing
+   * enableSearchIndex: false
+   *
+   * @example
+   * // Use Pagefind UI in your templates
+   * // 1. Add search container
+   * <div id="search"></div>
+   *
+   * // 2. Load Pagefind UI (in your layout or page)
+   * <link href="/assets/pagefind-ui.css" rel="stylesheet">
+   * <script src="/assets/pagefind-ui.js"></script>
+   * <script>
+   *   window.addEventListener('DOMContentLoaded', () => {
+   *     new PagefindUI({
+   *       element: "#search",
+   *       showSubResults: true,
+   *       showImages: false
+   *     });
+   *   });
+   * </script>
+   *
+   * @remarks
+   * - Requires all HTML files to be written before indexing
+   * - Index generation happens automatically after `vite build`
+   * - Output directory is determined from Vite's `build.outDir` config
+   * - Pagefind is optimized for static sites and runs entirely in the browser
+   * - No server-side search backend required
+   * - Supports multilingual content and custom filtering
+   *
+   * @see {@link https://pagefind.app/ | Pagefind Documentation}
+   */
+  enableSearchIndex?: boolean
 }
 
 /**
@@ -175,6 +225,7 @@ export const DEFAULT_OPTS: VittoOptions = {
   assets: undefined,
   hooksDir: 'hooks',
   dynamicRoutes: [],
+  enableSearchIndex: true,
 }
 
 // Configuration for HTML minifier

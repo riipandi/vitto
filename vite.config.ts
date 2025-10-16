@@ -11,6 +11,7 @@ export default defineConfig({
   plugins: [
     vitto({
       minify: isProduction,
+      enableSearchIndex: true,
       hooks: {
         blog: postsHook, // For blog.vto - list of posts
         posts: postsHook, // Data source for dynamic routes

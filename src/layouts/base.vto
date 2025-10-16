@@ -4,6 +4,7 @@
   {{ include "partials/head.vto" }}
   <title>{{ pageTitle ? pageTitle + ' - ' + (siteName || 'VentoSite') : (siteName || 'VentoSite') |> safe }}</title>
   {{ renderAssets() |> safe }}
+  {{ include "partials/pagefind.vto" }}
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
   <!-- Skip to main content for accessibility -->
@@ -16,16 +17,5 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>lucide.createIcons();</script>
-
-  {{# <!-- Additional scripts can be injected here -->
-  {{ if scripts }}
-    {{ for script of scripts }}
-      <script src="{{ script }}"></script>
-    {{ /for }}
-  {{ /if }} #}}
-
-  {{ if inlineScripts }}
-    <script>{{ inlineScripts | safe }}</script>
-  {{ /if }}
 </body>
 </html>
