@@ -65,9 +65,59 @@ export interface DynamicRouteConfig {
 export type OutputStrategy = 'html' | 'directory'
 
 /**
+ *  Title with template interface.
+ */
+export interface TitleWithTemplate {
+  /**
+   * Title template string, e.g., '%s | My Site'
+   * %s will be replaced with the page title.
+   *
+   * @example '%s | My Site'
+   */
+  template: string
+
+  /**
+   * Default title if none is provided.
+   *
+   * @example 'My Site'
+   */
+  default: string
+}
+
+/**
+ * Metadata interface for page templates.
+ */
+export interface Metadata {
+  /**
+   * Site title.
+   */
+  title: string | TitleWithTemplate
+
+  /**
+   * Site description.
+   */
+  description?: string
+
+  /**
+   * Site keywords.
+   */
+  keywords?: string[] | string
+
+  /**
+   * Additional metadata fields.
+   */
+  [key: string]: any
+}
+
+/**
  * Options for the Vitto Vite plugin.
  */
 export interface VittoOptions {
+  /**
+   * Site metadata to inject into all page templates.
+   */
+  metadata: Metadata
+
   /**
    * Directory containing page templates.
    * @default 'src/pages'
@@ -263,7 +313,7 @@ export const PAGEFIND_OPTIONS: PagefindServiceConfig = {
 /**
  * Default options for Vitto plugin.
  */
-export const DEFAULT_OPTS: VittoOptions = {
+export const DEFAULT_OPTS: Omit<VittoOptions, 'metadata'> = {
   pagesDir: 'src/pages',
   layoutsDir: 'src/layouts',
   partialsDir: 'src/partials',
