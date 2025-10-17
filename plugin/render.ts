@@ -410,8 +410,6 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           `✨ Generated ${totalItems} pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
         )
       }
-
-      chroma.log('✨ Vitto rendering completed!')
     },
 
     /**
