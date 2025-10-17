@@ -1,5 +1,5 @@
 import { withQuery } from 'ufo'
-import { defineHooks } from '../plugin'
+import { defineHooks } from 'vitto'
 
 export default defineHooks('posts', async (params) => {
   // If id or slug is provided, fetch single post

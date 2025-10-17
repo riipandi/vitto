@@ -1,0 +1,72 @@
+{
+    "name": "vitto",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Vite plugin for generating a static site using the Vento templating engine.",
+    "author": "Aris Ripandi <aris@duck.com>",
+    "license": "MIT",
+    "homepage": "https://github.com/riipandi/vitto",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/riipandi/vitto"
+    },
+    "bugs": {
+        "url": "https://github.com/riipandi/vitto/issues"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": "./dist/index.js",
+        "./package.json": "./package.json"
+    },
+    "scripts": {
+        "build": "tsdown",
+        "dev": "tsdown --watch",
+        "prepublishOnly": "NODE_ENV=production tsdown",
+        "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
+        "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
+        "cleanup": "pnpm dlx del-cli dist node_modules .turbo",
+        "lint": "biome lint . --write",
+        "check": "biome check . --write",
+        "typecheck": "tsc --noEmit"
+    },
+    "peerDependencies": {
+        "vite": "^7.1.10"
+    },
+    "dependencies": {
+        "@swc/html": "^1.13.20",
+        "itty-chroma": "^1.0.6",
+        "itty-time": "^2.0.2",
+        "pagefind": "^1.4.0",
+        "picospinner": "^3.0.0",
+        "ufo": "^1.6.1",
+        "ventojs": "^2.2.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.2.6",
+        "@types/node": "^24.8.1",
+        "tsdown": "^0.15.7",
+        "typescript": "~5.9.3",
+        "vite": "^7.1.10"
+    },
+    "files": [
+        "dist/**/*",
+        "!tests/**/*",
+        "!dist/**/*.*.map",
+        "!tests/**/*.*.map",
+        "package.json",
+        "LICENSE",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "vite",
+        "vite-plugin",
+        "vento",
+        "ssg",
+        "hmr"
+    ]
+}

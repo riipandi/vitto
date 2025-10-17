@@ -1,0 +1,43 @@
+{
+    "$schema": "https://turborepo.com/schema.json",
+    "noUpdateNotifier": true,
+    "concurrency": "8",
+    "globalEnv": ["NODE_ENV", "TZ", "CI"],
+    "ui": "stream",
+    "tasks": {
+        "build": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", ".env*"],
+            "outputs": ["dist/**"]
+        },
+        "lint": {},
+        "check": {},
+        "typecheck": {
+            "dependsOn": ["^build"]
+        },
+        "dev": {
+            "dependsOn": ["^build"],
+            "persistent": true,
+            "cache": false
+        },
+        "start": {
+            "cache": false,
+            "dependsOn": ["^build"],
+            "persistent": true
+        },
+        "cleanup": {
+            "cache": false
+        },
+        "prepublishOnly": {
+            "cache": true
+        },
+        "publish:npm": {
+            "dependsOn": ["^build"],
+            "cache": true
+        },
+        "publish:dry": {
+            "dependsOn": ["^build"],
+            "cache": true
+        }
+    }
+}
