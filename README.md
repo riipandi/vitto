@@ -6,28 +6,28 @@
 
 <p align="left">
     <a href="https://www.typescriptlang.org">
-        <img src="https://img.shields.io/badge/TypeScript-v5.9-blue.svg?logo=TypeScript&logoColor=blue" alt="TypeScript v5.9" />
+        <img src="https://img.shields.io/badge/TypeScript-v5.9-blue.svg?logo=TypeScript&logoColor=blue" alt="TypeScript v5.9">
     </a>
     <a href="https://github.com/riipandi/vitto/graphs/contributors">
-        <img src="https://img.shields.io/github/license/riipandi/vitto?color=green" alt="License" />
+        <img src="https://img.shields.io/github/license/riipandi/vitto?color=green" alt="License">
     <a href="https://www.npmjs.com/package/vitto">
-        <img src="https://img.shields.io/npm/dm/vitto?color=orange" alt="npm downloads" />
+        <img src="https://img.shields.io/npm/dm/vitto?color=orange" alt="npm downloads">
     </a>
     </a>
     <a href="https://github.com/riipandi/vitto/graphs/contributors">
-        <img src="https://img.shields.io/badge/Contributions-welcome-gray.svg?labelColor=blue" alt="Contributions welcome" />
+        <img src="https://img.shields.io/badge/Contributions-welcome-gray.svg?labelColor=blue" alt="Contributions welcome">
     </a>
     <!-- <a href="https://github.com/riipandi/vitto/releases">
-        <img src="https://img.shields.io/github/v/release/riipandi/vitto?logo=npm&logoColor=white" alt="Release" />
+        <img src="https://img.shields.io/github/v/release/riipandi/vitto?logo=npm&logoColor=white" alt="Release">
     </a>
     <a href="https://github.com/riipandi/vitto/actions/workflows/ci-test.yml">
-        <img src="https://github.com/riipandi/vitto/actions/workflows/ci-test.yml/badge.svg" alt="CI Test" />
+        <img src="https://github.com/riipandi/vitto/actions/workflows/ci-test.yml/badge.svg" alt="CI Test">
     </a>
     <a href="https://github.com/riipandi/vitto/actions/workflows/ci-build.yml">
-        <img src="https://github.com/riipandi/vitto/actions/workflows/ci-build.yml/badge.svg" alt="CI Build" />
+        <img src="https://github.com/riipandi/vitto/actions/workflows/ci-build.yml/badge.svg" alt="CI Build">
     </a>
     <a href="https://github.com/riipandi/vitto/actions/workflows/release.yml">
-        <img src="https://github.com/riipandi/vitto/actions/workflows/release.yml/badge.svg" alt="CI Release" />
+        <img src="https://github.com/riipandi/vitto/actions/workflows/release.yml/badge.svg" alt="CI Release">
     </a> -->
 </p>
 

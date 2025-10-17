@@ -1,18 +1,18 @@
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="{{ description || 'A modern website built with Vite and Vento' }}" />
-<meta name="author" content="{{ author || 'Your Name' }}" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="{{ description || 'A modern website built with Vite and Vento' }}">
+<meta name="author" content="{{ author || 'Your Name' }}">
 
 <!-- Favicon -->
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.ico">
 
 <title>{{ pageTitle ? pageTitle + ' - ' + (siteName || 'Vitto') : (siteName || 'Vitto') |> safe }}</title>
 
 {{ if !isDev }}
 <!-- Pagefind Search -->
-<link href="/_pagefind/pagefind-ui.css" rel="stylesheet" />
+<link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
 <script src="/_pagefind/pagefind-ui.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', (event) => {

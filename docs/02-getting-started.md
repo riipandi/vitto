@@ -139,8 +139,8 @@ Create `src/layouts/base.vto`:
 <!DOCTYPE html>
 <html lang="{{ lang || 'en' }}">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ pageTitle ? pageTitle : (siteName || 'Vitto') |> safe }}</title>
   {{ renderAssets() |> safe }}
 </head>
