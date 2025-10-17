@@ -1,6 +1,6 @@
 {
     "name": "vitto",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "type": "module",
     "description": "Vite plugin for generating a static site using the Vento templating engine.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -19,8 +19,7 @@
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
-        ".": "./dist/index.js",
-        "./package.json": "./package.json"
+        ".": "./dist/index.js"
     },
     "scripts": {
         "build": "tsdown",

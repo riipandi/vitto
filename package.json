@@ -1,11 +1,12 @@
 {
     "name": "vitto-repo",
+    "version": "0.0.3",
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "turbo run dev",
         "build": "turbo run build",
         "start": "turbo run start --filter=website",
+        "dev": "turbo run dev --filter={vitto,website}",
         "cleanup": "turbo cleanup --cache=local:rw && pnpm dlx rimraf pnpm-lock.yaml node_modules",
         "create-vitto": "turbo run dev --filter=create-vitto --log-prefix=none --no-daemon --",
         "update-deps": "npm-check-updates --configFileName .ncurc.json",

@@ -30,6 +30,7 @@ export default defineConfig({
   ],
   server: { port: 3000, strictPort: false, cors: { origin: '*' } },
   preview: { port: 3000, strictPort: false },
+  clearScreen: false,
   build: {
     manifest: true,
     emptyOutDir: true,

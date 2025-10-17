@@ -30,9 +30,8 @@
         "target": "esnext",
         "useDefineForClassFields": false,
         "verbatimModuleSyntax": true,
-        "outDir": "dist",
-        "rootDir": "src"
+        "outDir": "dist"
     },
     "include": ["src", "tsdown.config.ts"],
-    "exclude": ["node_modules", "dist"]
+    "exclude": ["node_modules", "dist", "template-*"]
 }
