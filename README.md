@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/vitto)](https://www.npmjs.com/package/vitto)
 [![npm downloads](https://img.shields.io/npm/dm/vitto)](https://www.npmjs.com/package/vitto)
-[![license-mit](https://img.shields.io/badge/License-MIT-greens.svg)][license-mit]
+[![license-mit](https://img.shields.io/badge/License-MIT-greens.svg)](./LICENSE)
 
 Vite plugin for generating a static site using the [Vento](https://vento.js.org) templating engine.
 
@@ -141,10 +141,17 @@ We welcome contributions! Please see our [Contributing Guide](./docs/13-contribu
 
 ## License
 
-Licensed under the [MIT license][license-mit].
+Licensed under the [MIT license][tldr-mit].
 
 Copyrights in this project are retained by their contributors.
 
-See the [LICENSE][license-mit] file for more information.
+See the [LICENSE](./LICENSE) file for more information.
 
-[license-mit]: https://github.com/riipandi/vitto/blob/main/LICENSE
+---
+
+<sub>🤫 Psst! If you like my work you can support me via [GitHub sponsors](https://github.com/sponsors/riipandi).</sub>
+
+[![Made by](https://badgen.net/badge/icon/Aris%20Ripandi?label=Made+by&color=black&labelColor=black)][riipandi-x]
+
+[tldr-mit]: https://www.tldrlegal.com/license/mit-license
+[riipandi-x]: https://x.com/intent/follow?screen_name=riipandi
