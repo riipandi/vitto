@@ -109,12 +109,12 @@ export default defineConfig({
 For comprehensive documentation, visit our [docs folder](./docs) or check out these guides:
 
 ### Getting Started
-- [Getting Started](./docs/01-getting-started.md) - Installation and basic setup
-- [Configuration](./docs/02-configuration.md) - Configure Vitto for your project
+- [Introduction](./docs/01-introduction.md) - What is Vitto and why use it
+- [Getting Started](./docs/02-getting-started.md) - Installation and basic setup
+- [Configuration](./docs/03-configuration.md) - Configure Vitto for your project
 
 ### Core Concepts
-- [Templates](./docs/03-templates.md) - Working with Vento templates
-- [Layouts & Partials](./docs/04-layouts-partials.md) - Reusable template components
+- [Templates](./docs/04-templating.md) - Working with Vento templates
 - [Dynamic Routes](./docs/05-dynamic-routes.md) - Generate pages from data
 - [Hooks System](./docs/06-hooks.md) - Data injection and processing
 

@@ -440,9 +440,9 @@ Documentation is in the `docs/` directory:
 
 ```
 docs/
-├── 01-getting-started.md
-├── 02-configuration.md
-├── 03-templates.md
+├── 01-introduction.md
+├── 02-getting-started.md
+├── 03-configuration.md
 └── ...
 ```
 
