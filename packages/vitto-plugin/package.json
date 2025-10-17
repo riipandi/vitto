@@ -1,6 +1,6 @@
 {
     "name": "vitto",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "type": "module",
     "description": "Vite plugin for generating a static site using the Vento templating engine.",
     "author": "Aris Ripandi <aris@duck.com>",

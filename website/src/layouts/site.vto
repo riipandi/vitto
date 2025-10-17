@@ -6,97 +6,9 @@
 
   <!-- Main Content -->
   <main id="main-content" class="flex grow fade-in">
-    <!-- Page Content -->
     {{ content }}
   </main>
 
   <!-- Footer -->
   {{ include "partials/footer.vto" }}
 </div>
-
-<!-- JavaScript -->
-<script>
-  // Dark mode toggle functionality
-  function toggleDarkMode() {
-    document.documentElement.classList.toggle('dark');
-    localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
-  }
-
-  // Initialize dark mode from localStorage
-  if (localStorage.getItem('darkMode') === 'true') {
-    document.documentElement.classList.add('dark');
-  }
-
-  // Mobile menu toggle
-  document.addEventListener('DOMContentLoaded', function() {
-    const mobileMenuButton = document.querySelector('[aria-label="Toggle menu"]');
-    if (mobileMenuButton) {
-      mobileMenuButton.addEventListener('click', function() {
-        // Mobile menu toggle logic can be added here
-        console.log('Mobile menu toggled');
-      });
-    }
-  });
-</script>
-
-{{# Script for mobile menu toggle #}}
-<script>
-  // Mobile menu toggle
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-  const menuIcon = document.getElementById('menu-icon');
-  const closeIcon = document.getElementById('close-icon');
-
-  function toggleMenu() {
-    const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
-
-    // Toggle menu visibility
-    mobileMenu.classList.toggle('hidden');
-    mobileMenuOverlay.classList.toggle('hidden');
-
-    // Toggle icons
-    menuIcon.classList.toggle('hidden');
-    closeIcon.classList.toggle('hidden');
-
-    // Update aria-expanded
-    mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
-
-    // Prevent body scroll when menu is open
-    if (!isExpanded) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-  }
-
-  function closeMenu() {
-    mobileMenu.classList.add('hidden');
-    mobileMenuOverlay.classList.add('hidden');
-    menuIcon.classList.remove('hidden');
-    closeIcon.classList.add('hidden');
-    mobileMenuButton.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
-
-  if (mobileMenuButton && mobileMenu) {
-    // Toggle menu on button click
-    mobileMenuButton.addEventListener('click', toggleMenu);
-
-    // Close menu when clicking overlay
-    mobileMenuOverlay.addEventListener('click', closeMenu);
-
-    // Close menu when clicking a link
-    const menuLinks = mobileMenu.querySelectorAll('a');
-    menuLinks.forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
-
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
-        closeMenu();
-      }
-    });
-  }
-</script>

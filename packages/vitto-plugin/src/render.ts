@@ -58,7 +58,8 @@ interface RenderOptions {
  */
 async function renderVentoToHtml(
   { filePath, data = {}, isDev = false, assets, minify = false }: RenderOptions,
-  ventoOptionsOverride?: Partial<VentoOptions>
+  ventoOptionsOverride?: Partial<VentoOptions>,
+  currentUrl?: string
 ) {
   // Configure Vento template engine with includes directory
   const ventoOptions: VentoOptions = {
@@ -107,8 +108,14 @@ async function renderVentoToHtml(
     return html
   }
 
-  // Include renderAssets in the context data
-  const context = { ...data, isDev, viteAssets, renderAssets }
+  const context = {
+    ...data,
+    isDev,
+    viteAssets,
+    renderAssets,
+    currentUrl: currentUrl || '/',
+    currentPath: currentUrl || '/',
+  }
 
   // Render the template with the prepared context
   const result = await vnt.run(relPath, context)
@@ -287,7 +294,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       // These should not be rendered as standalone pages
       const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
 
-      // Render regular template files (static pages)
+      // Render regular pages (excluding dynamic route templates)
       for (const filePath of files) {
         const fileName = path.basename(filePath)
 
@@ -301,6 +308,10 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         const data = await getPageData(filePath, opts)
 
         // Render template to HTML
+        const relPath = path.relative(pagesDir, filePath)
+        const outName = relPath.replace(/\.vto$/, '.html')
+        const urlPath = `/${outName.replace(/index\.html$/, '').replace(/\.html$/, '')}`
+
         const html = await renderVentoToHtml(
           {
             filePath,
@@ -309,12 +320,13 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
             assets: viteAssets,
             minify: opts.minify ?? false,
           },
-          opts.ventoOptions
+          opts.ventoOptions,
+          urlPath // Pass URL path
         )
 
         // Calculate output path relative to pages directory
-        const relPath = path.relative(pagesDir, filePath)
-        const outName = relPath.replace(/\.vto$/, '.html')
+        // const relPath = path.relative(pagesDir, filePath)
+        // const outName = relPath.replace(/\.vto$/, '.html')
 
         // Emit HTML file to Vite bundle
         // This makes the file appear in build output and statistics
@@ -369,6 +381,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
             const pageData = await getPageData(templatePath, opts, params)
 
             // Render template with this item's data
+            const outPath = config.getPath(item)
+            const urlPath = `/${outPath.replace(/\.html$/, '')}`
+
             const html = await renderVentoToHtml(
               {
                 filePath: templatePath,
@@ -377,11 +392,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                 assets: viteAssets,
                 minify: opts.minify ?? false,
               },
-              opts.ventoOptions
+              opts.ventoOptions,
+              urlPath // Pass URL path
             )
-
-            // Get output path for this item (e.g., 'blog/1.html')
-            const outPath = config.getPath(item)
 
             // Emit HTML file to Vite bundle
             this.emitFile({
@@ -501,9 +514,6 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       // Pre-calculate dynamic route patterns for efficient matching
       const dynamicRoutePatterns = createDynamicRoutePatterns(opts)
 
-      // Get list of templates that should not be directly accessible
-      const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
-
       server.middlewares.use(async (req, res, next) => {
         // Only handle GET requests
         if (req.method !== 'GET') return next()
@@ -559,7 +569,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                   assets: opts.assets ?? undefined,
                   minify: opts.minify ?? false,
                 },
-                opts.ventoOptions
+                opts.ventoOptions,
+                url // Pass current URL
               )
 
               res.setHeader('Content-Type', 'text/html')
@@ -579,42 +590,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         }
 
         if (fs.existsSync(vtoPath)) {
-          const fileName = path.basename(vtoPath)
-
-          // Block direct access to templates used in dynamic routes
-          // e.g., accessing /post directly should return 404
-          if (dynamicTemplates.includes(fileName)) {
-            const notFoundPath = path.resolve(pagesDir, '404.vto')
-
-            // Try to render custom 404 page
-            if (fs.existsSync(notFoundPath)) {
-              const data = await getPageData(notFoundPath, opts)
-              const html = await renderVentoToHtml(
-                {
-                  filePath: notFoundPath,
-                  data,
-                  isDev: true,
-                  assets: opts.assets ?? undefined,
-                  minify: opts.minify ?? false,
-                },
-                opts.ventoOptions
-              )
-              res.statusCode = 404
-              res.setHeader('Content-Type', 'text/html')
-              res.end(html)
-              return
-            }
-
-            // Fallback to plain text 404
-            res.statusCode = 404
-            res.setHeader('Content-Type', 'text/plain')
-            res.end('404 Not Found')
-            return
-          }
-
-          // Render the static page template
           const query = parseQuery(`?${search}`)
           const data = await getPageData(vtoPath, opts, query)
+
           const html = await renderVentoToHtml(
             {
               filePath: vtoPath,
@@ -623,7 +601,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               assets: opts.assets ?? undefined,
               minify: opts.minify ?? false,
             },
-            opts.ventoOptions
+            opts.ventoOptions,
+            url // Pass current URL
           )
 
           res.setHeader('Content-Type', 'text/html')
@@ -656,6 +635,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
       // Watch for changes in source files and trigger full page reload
       server.watcher.add([
+        path.resolve(viteRoot, 'src/**/*.html'),
         path.resolve(viteRoot, 'src/**/*.vto'),
         path.resolve(viteRoot, 'src/**/*.ts'),
         path.resolve(viteRoot, 'src/**/*.js'),
@@ -665,7 +645,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
       // Trigger full reload when watched files change
       server.watcher.on('change', (file) => {
-        if (file.endsWith('.vto') || file.startsWith(path.resolve(viteRoot, 'src/'))) {
+        if (
+          file.endsWith('.vto') ||
+          file.endsWith('.html') ||
+          file.startsWith(path.resolve(viteRoot, 'src/'))
+        ) {
           server.ws.send({ type: 'full-reload' })
         }
       })

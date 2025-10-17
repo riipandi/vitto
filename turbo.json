@@ -22,7 +22,7 @@
         },
         "start": {
             "cache": false,
-            "dependsOn": ["^build"],
+            "dependsOn": ["build"],
             "persistent": true
         },
         "cleanup": {

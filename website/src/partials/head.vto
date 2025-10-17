@@ -4,14 +4,15 @@
 <meta name="author" content="{{ author || 'Your Name' }}" />
 
 <!-- Favicon -->
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
-<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
 
 <title>{{ pageTitle ? pageTitle + ' - ' + (siteName || 'Vitto') : (siteName || 'Vitto') |> safe }}</title>
 
+{{ if !isDev }}
 <!-- Pagefind Search -->
-<link href="/assets/pagefind-ui.css" rel="stylesheet">
+<link href="/assets/pagefind-ui.css" rel="stylesheet" />
 <script src="/assets/pagefind-ui.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', (event) => {
@@ -27,3 +28,4 @@
     });
   });
 </script>
+{{ /if }}
