@@ -11,7 +11,7 @@ import vento, { type Options as VentoOptions } from 'ventojs'
 import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js'
 import type { Plugin, ResolvedConfig } from 'vite'
 import { createDynamicRoutePatterns, getPageData } from './hooks'
-import { DEFAULT_OPTS, MINIFY_OPTIONS, type VittoOptions } from './options'
+import { DEFAULT_OPTS, MINIFY_OPTIONS, PAGEFIND_OPTIONS, type VittoOptions } from './options'
 
 // Global variables to store Vite configuration
 let viteRoot = process.cwd()
@@ -518,13 +518,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         spinner.start()
         const startTime = Date.now()
 
-        // Create a Pagefind search index
-        // TODO: Expose `PagefindServiceConfig` options to vite.config.ts
+        // Create a Pagefind search index with merged configuration
+        // Merge default options with user-provided options
         const { index, errors } = await pagefind.createIndex({
-          rootSelector: 'html',
-          writePlayground: false,
-          keepIndexUrl: true,
-          verbose: false,
+          ...PAGEFIND_OPTIONS,
+          ...(opts.pagefindOptions || {}),
         })
 
         if (!index) {

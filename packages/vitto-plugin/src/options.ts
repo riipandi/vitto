@@ -1,4 +1,5 @@
 import type { Options as MinifyOptions } from '@swc/html'
+import type { PagefindServiceConfig } from 'pagefind'
 import type { Options as VentoOptions } from 'ventojs'
 
 /**
@@ -221,6 +222,34 @@ export interface VittoOptions {
   enableSearchIndex?: boolean
 
   /**
+   * Configuration options for Pagefind search indexing.
+   *
+   * These options control how Pagefind generates the search index.
+   * Only applies when `enableSearchIndex` is true.
+   *
+   * @default PAGEFIND_OPTIONS
+   *
+   * @example
+   * // Basic configuration
+   * pagefindOptions: {
+   *   rootSelector: 'main',
+   *   verbose: true
+   * }
+   *
+   * @example
+   * // Advanced configuration with multilingual support
+   * pagefindOptions: {
+   *   rootSelector: 'html',
+   *   forceLanguage: 'en',
+   *   verbose: true,
+   *   excludeSelectors: ['.no-index', 'nav', 'footer']
+   * }
+   *
+   * @see {@link https://pagefind.app/docs/config-options/ | Pagefind Configuration Options}
+   */
+  pagefindOptions?: Partial<PagefindServiceConfig>
+
+  /**
    * Output strategy for generated HTML files.
    *
    * - `'html'`: Generate files as page.html (e.g., about.html, blog.html)
@@ -239,6 +268,13 @@ export interface VittoOptions {
   outputStrategy?: OutputStrategy
 }
 
+export const PAGEFIND_OPTIONS: PagefindServiceConfig = {
+  rootSelector: 'html',
+  writePlayground: false,
+  keepIndexUrl: true,
+  verbose: false,
+}
+
 /**
  * Default options for Vitto plugin.
  */
@@ -251,6 +287,7 @@ export const DEFAULT_OPTS: VittoOptions = {
   hooksDir: 'hooks',
   dynamicRoutes: [],
   enableSearchIndex: true,
+  pagefindOptions: PAGEFIND_OPTIONS,
   outputStrategy: 'html',
 }
 

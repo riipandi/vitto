@@ -12,7 +12,7 @@ export default defineConfig({
     vitto({
       minify: isProduction,
       enableSearchIndex: true,
-      outputStrategy: 'html',
+      outputStrategy: 'pretty',
       hooks: {
         blog: postsHook, // For blog.vto - list of posts
         posts: postsHook, // Data source for dynamic routes
