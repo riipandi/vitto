@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/create-vitto)](https://www.npmjs.com/package/create-vitto)
 [![license-mit](https://img.shields.io/badge/License-MIT-greens.svg)][license-mit]
 
-Quickly scaffold your first Vitto project.
+Quickly scaffold your first [Vitto](https://www.npmjs.com/package/vitto) project.
 
 **Compatibility Note:**
 Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+, 22.12+.
