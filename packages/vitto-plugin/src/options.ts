@@ -197,8 +197,8 @@ export interface VittoOptions {
    * <div id="search"></div>
    *
    * // 2. Load Pagefind UI (in your layout or page)
-   * <link href="/assets/pagefind-ui.css" rel="stylesheet">
-   * <script src="/assets/pagefind-ui.js"></script>
+   * <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
+   * <script src="/_pagefind/pagefind-ui.js"></script>
    * <script>
    *   window.addEventListener('DOMContentLoaded', () => {
    *     new PagefindUI({

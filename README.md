@@ -9,6 +9,17 @@ Vite plugin for generating a static site using the [Vento](https://vento.js.org)
 **Compatibility Note:**
 Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+, 22.12+.
 
+## Features
+
+- 🚀 **Fast Development** - Powered by Vite's lightning-fast HMR
+- 📝 **Vento Templates** - Simple and powerful templating with Vento
+- 🔍 **Built-in Search** - Integrated Pagefind for static search
+- 🎨 **Flexible Styling** - Use any CSS framework (Tailwind, UnoCSS, etc.)
+- 🗂️ **Dynamic Routes** - Generate pages from data sources
+- 🪝 **Hooks System** - Inject data into templates with ease
+- 📦 **Zero Config** - Works out of the box with sensible defaults
+- 🏗️ **Static Output** - Generate fully static sites for any hosting
+
 ## Quick Start
 
 With NPM:
@@ -91,6 +102,42 @@ export default defineConfig({
   ],
 })
 ```
+
+
+## Documentation
+
+For comprehensive documentation, visit our [docs folder](./docs) or check out these guides:
+
+### Getting Started
+- [Getting Started](./docs/01-getting-started.md) - Installation and basic setup
+- [Configuration](./docs/02-configuration.md) - Configure Vitto for your project
+
+### Core Concepts
+- [Templates](./docs/03-templates.md) - Working with Vento templates
+- [Layouts & Partials](./docs/04-layouts-partials.md) - Reusable template components
+- [Dynamic Routes](./docs/05-dynamic-routes.md) - Generate pages from data
+- [Hooks System](./docs/06-hooks.md) - Data injection and processing
+
+### Advanced Features
+- [Search Integration](./docs/07-search.md) - Set up Pagefind search
+- [Deployment](./docs/08-deployment.md) - Deploy to various platforms
+- [Performance](./docs/09-performance.md) - Optimize your site
+
+### Reference
+- [Examples](./docs/10-examples.md) - Real-world examples and use cases
+- [Troubleshooting](./docs/11-troubleshooting.md) - Common issues and solutions
+- [API Reference](./docs/12-api-reference.md) - Complete API documentation
+- [Contributing](./docs/13-contributing.md) - Contribute to Vitto
+
+## Community
+
+- [GitHub Discussions](https://github.com/riipandi/vitto/discussions) - Ask questions and discuss
+- [GitHub Issues](https://github.com/riipandi/vitto/issues) - Report bugs and request features
+<!-- - [Discord](https://discord.gg/vitto) - Join our community (coming soon) -->
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./docs/13-contributing.md) for details.
 
 ## License
 

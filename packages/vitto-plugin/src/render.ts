@@ -516,7 +516,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       try {
         // Get the output directory from Vite config (defaults to 'dist')
         const outDir = path.resolve(viteRoot, viteConfig.build.outDir || 'dist')
-        const pagefindDir = path.join(outDir, 'assets')
+        const pagefindDir = path.join(outDir, '_pagefind')
 
         // Verify output directory exists
         if (!fs.existsSync(outDir)) {
