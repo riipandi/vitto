@@ -1,7 +1,7 @@
-# Create Vitto
+# Vitto
 
-[![npm version](https://img.shields.io/npm/v/create-vitto)](https://www.npmjs.com/package/create-vitto)
-[![npm downloads](https://img.shields.io/npm/dm/create-vitto)](https://www.npmjs.com/package/create-vitto)
+[![npm version](https://img.shields.io/npm/v/vitto)](https://www.npmjs.com/package/vitto)
+[![npm downloads](https://img.shields.io/npm/dm/vitto)](https://www.npmjs.com/package/vitto)
 [![license-mit](https://img.shields.io/badge/License-MIT-greens.svg)][license-mit]
 
 Vite plugin for generating a static site using the [Vento](https://vento.js.org) templating engine.
