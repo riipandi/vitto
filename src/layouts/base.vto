@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ lang || 'en' }}" data-lt-theme="" data-lt-scheme="light">
+<html lang="{{ lang || 'en' }}">
 <head>
   {{ include "partials/head.vto" }}
-  <title>{{ pageTitle ? pageTitle + ' - ' + (siteName || 'Vitto') : (siteName || 'Vitto') |> safe }}</title>
   {{ renderAssets() |> safe }}
-  {{ include "partials/pagefind.vto" }}
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
   <!-- Skip to main content for accessibility -->
