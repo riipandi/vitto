@@ -1,45 +1,27 @@
 {
-    "name": "vitto",
-    "version": "0.0.0",
+    "name": "vitto-repo",
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
-        "preview": "vite preview",
-        "check": "biome check . --write",
+        "dev": "turbo run dev",
+        "build": "turbo run build",
+        "start": "turbo run start --filter=website",
+        "cleanup": "turbo cleanup --cache=local:rw && pnpm dlx rimraf pnpm-lock.yaml node_modules",
+        "update-deps": "npm-check-updates --configFileName .ncurc.json",
+        "publish:dry": "turbo publish:dry --filter=vitto",
+        "publish:npm": "turbo publish:npm --filter=vitto",
         "format": "biome format . --write",
-        "lint": "biome lint . --write",
-        "cleanup": "pnpm dlx del-cli .wrangler dist",
-        "start": "pnpm dlx serve dist -l 3000 -nCL",
-        "cf:deploy": "pnpm -s build && wrangler pages deploy",
-        "cf:preview": "pnpm -s build && wrangler pages dev",
-        "update-deps": "npm-check-updates",
-        "typecheck": "tsc -b --noEmit"
-    },
-    "dependencies": {
-        "itty-chroma": "^1.0.6",
-        "itty-time": "^2.0.2",
-        "pagefind": "^1.4.0",
-        "picospinner": "^3.0.0",
-        "ventojs": "^2.2.0"
+        "lint": "turbo lint --cache=local:rw,remote:r",
+        "check": "turbo check --cache=local:rw,remote:r",
+        "typecheck": "turbo typecheck --cache=local:rw,remote:r"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.2.6",
-        "@swc/html": "^1.13.20",
-        "@tailwindcss/vite": "^4.1.14",
-        "@types/node": "^24.7.2",
         "npm-check-updates": "^19.1.1",
-        "tailwindcss": "^4.1.14",
-        "typescript": "~5.9.3",
-        "ufo": "^1.6.1",
-        "vite-tsconfig-paths": "^5.1.4",
-        "vite": "npm:rolldown-vite@7.1.17",
-        "wrangler": "^4.43.0"
+        "turbo": "^2.5.8"
     },
-    "pnpm": {
-        "overrides": {
-            "vite": "npm:rolldown-vite@7.1.17"
-        }
+    "packageManager": "pnpm@10.18.3",
+    "engines": {
+        "node": ">=22"
     }
 }

@@ -2,6 +2,8 @@
 /.idea
 /.pnp
 /.husky
+.turbo
+.vercel
 .pnp.js
 .DS_Store
 .DS_Store?
@@ -25,11 +27,11 @@ node_modules/
 *.db
 
 # Output directory
-/temp/
-/storage/
-/build/
-/dist/
-/tmp/
+temp/
+build/
+dist/
+tmp/
+out/
 .data
 .cache
 .output

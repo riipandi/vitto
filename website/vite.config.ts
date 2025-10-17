@@ -2,8 +2,8 @@ import { resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import vitto from 'vitto'
 import postsHook from './hooks/posts'
-import vitto from './plugin'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -36,7 +36,7 @@ export default defineConfig({
     minify: isProduction,
     chunkSizeWarningLimit: 1024 * 4,
     reportCompressedSize: false,
-    rolldownOptions: {
+    rollupOptions: {
       input: resolve('src/main.ts'),
     },
   },

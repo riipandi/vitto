@@ -235,11 +235,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
     /**
      * Modify Vite configuration before it's resolved.
-     * Removes default rolldown input to prevent conflicts with our custom HTML generation.
+     * Removes default rollup input to prevent conflicts with our custom HTML generation.
      */
     config(config) {
-      if (config.build?.rolldownOptions?.input) {
-        delete config.build.rolldownOptions.input
+      if (config.build?.rollupOptions?.input) {
+        delete config.build.rollupOptions.input
       }
     },
 
