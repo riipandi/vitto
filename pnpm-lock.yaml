@@ -17,6 +17,9 @@ importers:
       itty-time:
         specifier: ^2.0.2
         version: 2.0.2
+      pagefind:
+        specifier: ^1.4.0
+        version: 1.4.0
       picospinner:
         specifier: ^3.0.0
         version: 3.0.0
@@ -39,9 +42,6 @@ importers:
       npm-check-updates:
         specifier: ^19.1.1
         version: 19.1.1
-      pagefind:
-        specifier: ^1.4.0
-        version: 1.4.0
       tailwindcss:
         specifier: ^4.1.14
         version: 4.1.14
