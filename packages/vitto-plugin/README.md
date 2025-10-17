@@ -4,7 +4,12 @@
 [![npm downloads](https://img.shields.io/npm/dm/vitto)](https://www.npmjs.com/package/vitto)
 [![license-mit](https://img.shields.io/badge/License-MIT-greens.svg)][license-mit]
 
-Vite plugin for generating a static site using the Vento templating engine.
+A minimal static site generator built with [Vite](https://vite.dev/) and the [Vento](https://vento.js.org)
+templating engine.
+
+Vitto combines the speed of Vite's development experience with the simplicity of Vento templates to create
+a modern static site generator. Perfect for documentation sites, blogs, portfolios, and any project that
+needs fast builds and flexible templating without the complexity of larger frameworks.
 
 Visit the [project page](https://github.com/riipandi/vitto) for more detailed information.
 
