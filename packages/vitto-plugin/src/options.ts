@@ -60,9 +60,9 @@ export interface DynamicRouteConfig {
 /**
  * Output strategy for generated HTML files.
  * - 'html': Generate files as page.html (e.g., about.html)
- * - 'pretty': Generate files as page/index.html for clean URLs (e.g., about/index.html)
+ * - 'directory': Generate files as page/index.html for clean URLs (e.g., about/index.html)
  */
-export type OutputStrategy = 'html' | 'pretty'
+export type OutputStrategy = 'html' | 'directory'
 
 /**
  * Options for the Vitto Vite plugin.
@@ -253,7 +253,7 @@ export interface VittoOptions {
    * Output strategy for generated HTML files.
    *
    * - `'html'`: Generate files as page.html (e.g., about.html, blog.html)
-   * - `'pretty'`: Generate files as page/index.html for clean URLs (e.g., about/index.html, blog/index.html)
+   * - `'directory'`: Generate files as page/index.html for clean URLs (e.g., about/index.html, blog/index.html)
    *
    * @default 'html'
    *
@@ -263,7 +263,7 @@ export interface VittoOptions {
    *
    * @example
    * // Pretty URLs (about/index.html, blog/1/index.html)
-   * outputStrategy: 'pretty'
+   * outputStrategy: 'directory'
    */
   outputStrategy?: OutputStrategy
 }

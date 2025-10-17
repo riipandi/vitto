@@ -228,7 +228,7 @@ async function findVtoFiles(pagesDir: string): Promise<string[]> {
  * Convert output path based on output strategy.
  *
  * @param outputPath - Original output path (e.g., 'about.html', 'blog/1.html')
- * @param strategy - Output strategy ('html' or 'pretty')
+ * @param strategy - Output strategy ('html' or 'directory')
  * @returns Converted path based on strategy
  *
  * @example
@@ -236,13 +236,13 @@ async function findVtoFiles(pagesDir: string): Promise<string[]> {
  * convertOutputPath('about.html', 'html') // Returns: 'about.html'
  *
  * @example
- * // pretty strategy
- * convertOutputPath('about.html', 'pretty') // Returns: 'about/index.html'
- * convertOutputPath('blog/1.html', 'pretty') // Returns: 'blog/1/index.html'
+ * // directory strategy
+ * convertOutputPath('about.html', 'directory') // Returns: 'about/index.html'
+ * convertOutputPath('blog/1.html', 'directory') // Returns: 'blog/1/index.html'
  */
-function convertOutputPath(outputPath: string, strategy?: 'html' | 'pretty'): string {
+function convertOutputPath(outputPath: string, strategy?: 'html' | 'directory'): string {
   // If strategy is 'html' or undefined, return original path
-  if (strategy !== 'pretty') {
+  if (strategy !== 'directory') {
     return outputPath
   }
 
@@ -260,20 +260,20 @@ function convertOutputPath(outputPath: string, strategy?: 'html' | 'pretty'): st
  * Convert URL path based on output strategy.
  *
  * @param urlPath - Original URL path (e.g., '/about', '/blog/1')
- * @param strategy - Output strategy ('html' or 'pretty')
+ * @param strategy - Output strategy ('html' or 'directory')
  * @returns URL path that matches the output strategy
  *
  * @example
  * convertUrlPath('/about', 'html') // Returns: '/about'
- * convertUrlPath('/about', 'pretty') // Returns: '/about/'
+ * convertUrlPath('/about', 'directory') // Returns: '/about/'
  */
-function convertUrlPath(urlPath: string, strategy?: 'html' | 'pretty'): string {
+function convertUrlPath(urlPath: string, strategy?: 'html' | 'directory'): string {
   // For html strategy, return as is
-  if (strategy !== 'pretty') {
+  if (strategy !== 'directory') {
     return urlPath
   }
 
-  // For pretty strategy, ensure trailing slash (except for root)
+  // For directory strategy, ensure trailing slash (except for root)
   if (urlPath === '' || urlPath === '/') {
     return '/'
   }
@@ -392,7 +392,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         })
 
         // For 404 page with pretty URLs, also generate 404.html for compatibility
-        if (is404Page && outputStrategy === 'pretty') {
+        if (is404Page && outputStrategy === 'directory') {
           this.emitFile({
             type: 'asset',
             fileName: '404.html',

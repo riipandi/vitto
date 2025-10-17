@@ -41,7 +41,7 @@ interface VittoOptions {
   minify?: boolean | Partial<MinifyOptions>
   enableSearchIndex?: boolean
   pagefindOptions?: Partial<PagefindServiceConfig>
-  outputStrategy?: 'html' | 'pretty'
+  outputStrategy?: 'html' | 'directory'
   dynamicRoutes?: DynamicRouteConfig[]
   hooks?: Record<string, HookFunction>
   assets?: { main: string; css: string[] }
@@ -193,17 +193,17 @@ interface PagefindServiceConfig {
 
 #### `outputStrategy`
 
-- **Type**: `'html' | 'pretty'`
+- **Type**: `'html' | 'directory'`
 - **Default**: `'html'`
 
 Output file strategy for generated pages.
 
 - `'html'`: `about.vto` → `about.html` → `/about.html`
-- `'pretty'`: `about.vto` → `about/index.html` → `/about/`
+- `'directory'`: `about.vto` → `about/index.html` → `/about/`
 
 ```ts
 vitto({
-  outputStrategy: 'pretty'
+  outputStrategy: 'directory'
 })
 ```
 

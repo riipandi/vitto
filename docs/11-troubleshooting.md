@@ -298,10 +298,10 @@ export default defineHooks('posts', async () => {
 }
 ```
 
-2. For "pretty URLs", use `outputStrategy`:
+2. For pretty URLs, use `outputStrategy`:
 ```ts
 vitto({
-  outputStrategy: 'pretty' // Generates: /blog/my-post/index.html
+  outputStrategy: 'directory' // Generates: /blog/my-post/index.html
 })
 ```
 

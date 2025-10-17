@@ -163,7 +163,7 @@ vitto({
 
 ### `outputStrategy`
 
-- **Type**: `'html' | 'pretty'`
+- **Type**: `'html' | 'directory'`
 - **Default**: `'html'`
 
 Determines how HTML files are generated and their URL structure.
@@ -172,13 +172,13 @@ Determines how HTML files are generated and their URL structure.
 - `about.vto` → `about.html` → `/about.html`
 - `blog/post.vto` → `blog/post.html` → `/blog/post.html`
 
-**`'pretty'` strategy**: Generates files as `page/index.html` for clean URLs
+**`'directory'` strategy**: Generates files as `page/index.html` for clean URLs
 - `about.vto` → `about/index.html` → `/about/`
 - `blog/post.vto` → `blog/post/index.html` → `/blog/post/`
 
 ```ts
 vitto({
-  outputStrategy: 'pretty'
+  outputStrategy: 'directory'
 })
 ```
 
@@ -279,7 +279,7 @@ export default defineConfig({
       hooksDir: 'hooks',
       minify: process.env.NODE_ENV === 'production',
       enableSearchIndex: true,
-      outputStrategy: 'pretty',
+      outputStrategy: 'directory',
       hooks: {
         posts: postsHook
       },
