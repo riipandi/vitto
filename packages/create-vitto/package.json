@@ -1,8 +1,8 @@
 {
-    "name": "vitto",
-    "version": "0.0.1",
+    "name": "create-vitto",
+    "version": "0.0.0",
     "type": "module",
-    "description": "Vite plugin for generating a static site using the Vento templating engine.",
+    "description": "Command-line utility to scaffold Vite apps using Vitto.",
     "author": "Aris Ripandi <aris@duck.com>",
     "license": "MIT",
     "homepage": "https://github.com/riipandi/vitto",
@@ -10,7 +10,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/riipandi/vitto",
-        "directory": "packages/vitto-plugin"
+        "directory": "packages/create-vitto"
     },
     "bugs": {
         "url": "https://github.com/riipandi/vitto/issues"
@@ -21,6 +21,9 @@
     "exports": {
         ".": "./dist/index.js",
         "./package.json": "./package.json"
+    },
+    "bin": {
+        "create-vitto": "./bin/create-vitto.js"
     },
     "scripts": {
         "build": "tsdown",
@@ -33,17 +36,10 @@
         "check": "biome check . --write",
         "typecheck": "tsc --noEmit"
     },
-    "peerDependencies": {
-        "vite": "^7.1.10"
-    },
     "dependencies": {
-        "@swc/html": "^1.13.20",
-        "itty-chroma": "^1.0.6",
-        "itty-time": "^2.0.2",
-        "pagefind": "^1.4.0",
-        "picospinner": "^3.0.0",
-        "ufo": "^1.6.1",
-        "ventojs": "^2.2.0"
+        "citty": "^0.1.6",
+        "consola": "^3.4.2",
+        "picospinner": "^3.0.0"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.2.6",
@@ -53,27 +49,29 @@
         "vite": "^7.1.10"
     },
     "files": [
+        "bin/**/*",
         "dist/**/*",
         "!tests/**/*",
         "!dist/**/*.*.map",
         "!tests/**/*.*.map",
         "package.json",
+        "template-*",
         "LICENSE",
         "README.md"
     ],
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "executableFiles": [
+            "./bin/create-vitto.js"
+        ]
     },
     "keywords": [
-        "vite",
-        "vite-plugin",
+        "cli",
         "vento",
-        "ssg",
-        "hmr",
+        "command-line",
+        "utilities",
         "generator",
-        "static",
-        "website",
-        "jamstack"
+        "vite"
     ],
     "engines": {
         "node": "^20.19.0 || >=22.12.0"
