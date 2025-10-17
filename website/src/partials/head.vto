@@ -16,16 +16,19 @@
 <script src="/_pagefind/pagefind-ui.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', (event) => {
-    new PagefindUI({
-      element: "#search",
-      showSubResults: true,
-      showImages: false,
-      excerptLength: 15,
-      processResult: function(result) {
-        // Customize result if needed
-        return result;
-      }
-    });
+    const searchElement = document.querySelector("#search");
+    if (searchElement) {
+      new PagefindUI({
+        element: "#search",
+        showSubResults: true,
+        showImages: false,
+        excerptLength: 15,
+        processResult: function(result) {
+          // Customize result if needed
+          return result;
+        }
+      });
+    }
   });
 </script>
 {{ /if }}
