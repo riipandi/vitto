@@ -256,7 +256,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      * Log when the build process starts.
      */
     buildStart() {
-      chroma.log('✓ Vitto build started')
+      chroma.log('✨ Vitto build started')
     },
 
     /**
@@ -407,11 +407,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         const totalTime = duration(Date.now() - startTime, { parts: 2 })
         const avgTime = duration((Date.now() - startTime) / totalItems, { parts: 2 })
         chroma.log(
-          `✓ Generated ${totalItems} pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
+          `✨ Generated ${totalItems} pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
         )
       }
 
-      chroma.log('✓ Vitto rendering completed!')
+      chroma.log('✨ Vitto rendering completed!')
     },
 
     /**
@@ -441,7 +441,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           return
         }
 
-        chroma.log('✓ Generating Pagefind search index...')
+        chroma.log('✨ Generating Pagefind search index...')
         const spinner = new Spinner('Generating search index with Pagefind')
         spinner.start()
         const startTime = Date.now()
@@ -479,8 +479,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
         spinner.stop()
         const elapsed = duration(Date.now() - startTime, { parts: 2 })
-        chroma.log(`✓ Indexed ${page_count} pages in ${elapsed}`)
-        chroma.log(`✓ Search index written to: ${path.relative(viteRoot, pagefindDir)}`)
+        chroma.log(`✨ Indexed ${page_count} pages in ${elapsed}`)
+        chroma.log(`✨ Search index written to: ${path.relative(viteRoot, pagefindDir)}`)
       } catch (error) {
         chroma.log('✗ Error generating Pagefind index:', error)
       }
