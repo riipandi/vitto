@@ -10,8 +10,8 @@
     </a>
     <a href="https://github.com/riipandi/vitto/graphs/contributors">
         <img src="https://img.shields.io/github/license/riipandi/vitto?color=green" alt="License" />
-    <a href="https://www.npmjs.com/~vitto">
-        <img src="https://img.shields.io/npm/dm/@vitto/element?color=orange" alt="npm downloads" />
+    <a href="https://www.npmjs.com/package/vitto">
+        <img src="https://img.shields.io/npm/dm/vitto?color=orange" alt="npm downloads" />
     </a>
     </a>
     <a href="https://github.com/riipandi/vitto/graphs/contributors">
