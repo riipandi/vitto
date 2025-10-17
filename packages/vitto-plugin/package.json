@@ -1,6 +1,6 @@
 {
     "name": "vitto",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "type": "module",
     "description": "Vite plugin for generating a static site using the Vento templating engine.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -67,6 +67,10 @@
         "vite-plugin",
         "vento",
         "ssg",
-        "hmr"
+        "hmr",
+        "generator",
+        "static",
+        "website",
+        "jamstack"
     ]
 }
