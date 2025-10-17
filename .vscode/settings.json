@@ -5,12 +5,14 @@
     "files.associations": {
         "*.css": "css",
         "*.vto": "vento",
+        "*.yaml.example": "yaml",
         "*.yml.example": "yaml"
     },
     "search.exclude": {
         "**/.husky": true,
         "**/.output": true,
         "**/.sonda": true,
+        "**/dist": true,
         "**/build": true
     },
     "tailwindCSS.experimental.classRegex": [

@@ -2,7 +2,7 @@
     "$schema": "https://turborepo.com/schema.json",
     "noUpdateNotifier": true,
     "concurrency": "8",
-    "globalEnv": ["NODE_ENV", "TZ", "CI"],
+    "globalEnv": ["NODE_ENV", "TZ", "CI", "FORCE_COLOR"],
     "ui": "stream",
     "tasks": {
         "build": {

@@ -4,7 +4,7 @@
         "bradlc.vscode-tailwindcss",
         "darkriszty.markdown-table-prettify",
         "EditorConfig.EditorConfig",
-        "fill-labs.dependi"
-    ],
-    "unwantedRecommendations": []
+        "fill-labs.dependi",
+        "oscarotero.vento-syntax"
+    ]
 }
