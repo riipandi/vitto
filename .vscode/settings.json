@@ -19,7 +19,7 @@
         ["(?:cn|cx|cva|clx|tv)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
         ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"]
     ],
-    "tailwindCSS.files.exclude": ["**/**/*.{json,md,js,ts,yml,yaml}", "hooks/**", "plugin/**"],
+    "tailwindCSS.files.exclude": ["*.{json,md,js,ts,yml,yaml}"],
     "tailwindCSS.includeLanguages": {
         "vento": "html"
     },

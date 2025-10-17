@@ -1,6 +1,6 @@
 {
     "name": "create-vitto",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "type": "module",
     "description": "Command-line utility to scaffold Vite apps using Vitto.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -27,18 +27,18 @@
     },
     "scripts": {
         "build": "tsdown",
-        "dev": "tsdown --watch",
-        "prepublishOnly": "NODE_ENV=production tsdown",
+        "dev": "pnpm build &>/dev/null && NODE_ENV=development node ./bin/create-vitto.js",
         "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
         "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
         "cleanup": "pnpm dlx del-cli dist node_modules .turbo",
+        "prepublishOnly": "NODE_ENV=production tsdown",
         "lint": "biome lint . --write",
         "check": "biome check . --write",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "citty": "^0.1.6",
-        "consola": "^3.4.2",
+        "itty-chroma": "^1.0.6",
         "picospinner": "^3.0.0"
     },
     "devDependencies": {

@@ -80,3 +80,9 @@ slim.report.json
 terraform.tfstate*
 terraform.tfvars*
 !terraform.tfvars.example
+
+# Development purposes
+/my-website/
+/demo-project/
+/example-project/
+/test-project/
