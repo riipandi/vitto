@@ -57,6 +57,13 @@ export interface DynamicRouteConfig {
 }
 
 /**
+ * Output strategy for generated HTML files.
+ * - 'html': Generate files as page.html (e.g., about.html)
+ * - 'pretty': Generate files as page/index.html for clean URLs (e.g., about/index.html)
+ */
+export type OutputStrategy = 'html' | 'pretty'
+
+/**
  * Options for the Vitto Vite plugin.
  */
 export interface VittoOptions {
@@ -212,6 +219,24 @@ export interface VittoOptions {
    * @see {@link https://pagefind.app/ | Pagefind Documentation}
    */
   enableSearchIndex?: boolean
+
+  /**
+   * Output strategy for generated HTML files.
+   *
+   * - `'html'`: Generate files as page.html (e.g., about.html, blog.html)
+   * - `'pretty'`: Generate files as page/index.html for clean URLs (e.g., about/index.html, blog/index.html)
+   *
+   * @default 'html'
+   *
+   * @example
+   * // Traditional output (about.html, blog/1.html)
+   * outputStrategy: 'html'
+   *
+   * @example
+   * // Pretty URLs (about/index.html, blog/1/index.html)
+   * outputStrategy: 'pretty'
+   */
+  outputStrategy?: OutputStrategy
 }
 
 /**
@@ -226,6 +251,7 @@ export const DEFAULT_OPTS: VittoOptions = {
   hooksDir: 'hooks',
   dynamicRoutes: [],
   enableSearchIndex: true,
+  outputStrategy: 'html',
 }
 
 // Configuration for HTML minifier

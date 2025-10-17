@@ -207,35 +207,63 @@ async function findVtoFiles(pagesDir: string): Promise<string[]> {
 }
 
 /**
- * Vitto Vite plugin for rendering Vento templates to static HTML.
+ * Convert output path based on output strategy.
  *
- * This plugin integrates the Vento template engine with Vite to provide:
- * - Server-side rendering of .vto templates to HTML
- * - Static site generation with dynamic routes
- * - Hot module reloading in development mode
- * - HTML minification in production builds
- * - Automatic asset injection (JS/CSS)
- *
- * @param opts - Plugin configuration options
- * @returns Vite plugin instance
+ * @param outputPath - Original output path (e.g., 'about.html', 'blog/1.html')
+ * @param strategy - Output strategy ('html' or 'pretty')
+ * @returns Converted path based on strategy
  *
  * @example
- * // vite.config.ts
- * export default defineConfig({
- *   plugins: [
- *     vitto({
- *       minify: true,
- *       hooks: { posts: postsHook },
- *       dynamicRoutes: [{
- *         template: 'post',
- *         dataSource: 'posts',
- *         getParams: (post) => ({ id: post.id }),
- *         getPath: (post) => `blog/${post.id}.html`
- *       }]
- *     })
- *   ]
- * })
+ * // html strategy
+ * convertOutputPath('about.html', 'html') // Returns: 'about.html'
+ *
+ * @example
+ * // pretty strategy
+ * convertOutputPath('about.html', 'pretty') // Returns: 'about/index.html'
+ * convertOutputPath('blog/1.html', 'pretty') // Returns: 'blog/1/index.html'
  */
+function convertOutputPath(outputPath: string, strategy?: 'html' | 'pretty'): string {
+  // If strategy is 'html' or undefined, return original path
+  if (strategy !== 'pretty') {
+    return outputPath
+  }
+
+  // If already index.html, keep it as is
+  if (outputPath.endsWith('index.html')) {
+    return outputPath
+  }
+
+  // Convert page.html to page/index.html
+  // Convert dir/page.html to dir/page/page.html
+  return outputPath.replace(/\.html$/, '/index.html')
+}
+
+/**
+ * Convert URL path based on output strategy.
+ *
+ * @param urlPath - Original URL path (e.g., '/about', '/blog/1')
+ * @param strategy - Output strategy ('html' or 'pretty')
+ * @returns URL path that matches the output strategy
+ *
+ * @example
+ * convertUrlPath('/about', 'html') // Returns: '/about'
+ * convertUrlPath('/about', 'pretty') // Returns: '/about/'
+ */
+function convertUrlPath(urlPath: string, strategy?: 'html' | 'pretty'): string {
+  // For html strategy, return as is
+  if (strategy !== 'pretty') {
+    return urlPath
+  }
+
+  // For pretty strategy, ensure trailing slash (except for root)
+  if (urlPath === '' || urlPath === '/') {
+    return '/'
+  }
+
+  return urlPath.endsWith('/') ? urlPath : `${urlPath}/`
+}
+
+// Vitto Vite plugin for rendering Vento templates to static HTML.
 export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
   return {
     name: 'vitto',
@@ -290,15 +318,16 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         chroma.log('ℹ No main asset found. HTML files may not include JS/CSS.')
       }
 
+      // Get output strategy (default to 'html')
+      const outputStrategy = opts.outputStrategy || DEFAULT_OPTS.outputStrategy || 'html'
+
       // Get list of templates that are used for dynamic routes
-      // These should not be rendered as standalone pages
       const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
 
       // Render regular pages (excluding dynamic route templates)
       for (const filePath of files) {
         const fileName = path.basename(filePath)
 
-        // Skip templates that are used for dynamic route generation
         if (dynamicTemplates.includes(fileName)) {
           chroma.log(`ℹ Skipping ${fileName} (used for dynamic routes)`)
           continue
@@ -307,11 +336,20 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         // Fetch data for this page via hooks
         const data = await getPageData(filePath, opts)
 
-        // Render template to HTML
+        // Calculate output path relative to pages directory
         const relPath = path.relative(pagesDir, filePath)
-        const outName = relPath.replace(/\.vto$/, '.html')
-        const urlPath = `/${outName.replace(/index\.html$/, '').replace(/\.html$/, '')}`
+        let outName = relPath.replace(/\.vto$/, '.html')
 
+        // Apply output strategy
+        outName = convertOutputPath(outName, outputStrategy)
+
+        // Calculate URL path for currentPath injection
+        const urlPath = convertUrlPath(
+          `/${outName.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
+          outputStrategy
+        )
+
+        // Render template to HTML
         const html = await renderVentoToHtml(
           {
             filePath,
@@ -321,12 +359,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
             minify: opts.minify ?? false,
           },
           opts.ventoOptions,
-          urlPath // Pass URL path
+          urlPath
         )
-
-        // Calculate output path relative to pages directory
-        // const relPath = path.relative(pagesDir, filePath)
-        // const outName = relPath.replace(/\.vto$/, '.html')
 
         // Emit HTML file to Vite bundle
         // This makes the file appear in build output and statistics
@@ -380,10 +414,19 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
             // Fetch page-specific data (will transform to singular form)
             const pageData = await getPageData(templatePath, opts, params)
 
-            // Render template with this item's data
-            const outPath = config.getPath(item)
-            const urlPath = `/${outPath.replace(/\.html$/, '')}`
+            // Get original path from config
+            let outPath = config.getPath(item)
 
+            // Apply output strategy
+            outPath = convertOutputPath(outPath, outputStrategy)
+
+            // Calculate URL path
+            const urlPath = convertUrlPath(
+              `/${outPath.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
+              outputStrategy
+            )
+
+            // Render template with this item's data
             const html = await renderVentoToHtml(
               {
                 filePath: templatePath,
