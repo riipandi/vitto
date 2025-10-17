@@ -358,6 +358,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         const relPath = path.relative(pagesDir, filePath)
         let outName = relPath.replace(/\.vto$/, '.html')
 
+        // Special handling for 404 page with pretty URLs
+        const is404Page = fileName === '404.vto'
+
         // Apply output strategy
         outName = convertOutputPath(outName, outputStrategy)
 
@@ -387,6 +390,15 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           fileName: outName,
           source: html,
         })
+
+        // For 404 page with pretty URLs, also generate 404.html for compatibility
+        if (is404Page && outputStrategy === 'pretty') {
+          this.emitFile({
+            type: 'asset',
+            fileName: '404.html',
+            source: html,
+          })
+        }
       }
 
       // Generate static HTML files for dynamic routes
