@@ -108,13 +108,31 @@ async function renderVentoToHtml(
     return html
   }
 
+  /**
+   * Normalize path for comparison by removing trailing slashes.
+   *
+   * @param path - Path to normalize
+   * @returns Normalized path without trailing slash (except root)
+   *
+   * @example
+   * normalizePath('/about/') // Returns: '/about'
+   * normalizePath('/') // Returns: '/'
+   */
+  function normalizePath(path: string): string {
+    if (path === '/' || !path) return '/'
+    return path.endsWith('/') ? path.slice(0, -1) : path
+  }
+
+  // Normalize currentUrl for consistent comparison
+  const normalizedUrl = normalizePath(currentUrl || '/')
+
+  // Inject all context variables into the template
   const context = {
     ...data,
     isDev,
-    viteAssets,
     renderAssets,
-    currentUrl: currentUrl || '/',
-    currentPath: currentUrl || '/',
+    currentUrl: normalizedUrl,
+    currentPath: normalizedUrl,
   }
 
   // Render the template with the prepared context
