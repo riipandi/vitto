@@ -1,14 +1,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="{{ description || 'A modern website built with Vite and Vento' }}">
-<meta name="author" content="{{ author || 'Your Name' }}">
+<meta name="description" content="{{ getMetadata('description') }}">
+<meta name="author" content="{{ getMetadata('author') }}">
 
 <!-- Favicon -->
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.ico">
 
-<title>{{ pageTitle ? pageTitle + ' - ' + (siteName || 'Vitto') : (siteName || 'Vitto') |> safe }}</title>
+{{# Handle title with template #}}
+{{ set pageTitle = getMetadata('title') }}
+{{ set finalTitle = pageTitle ? pageTitle + ' - ' + (metadata.siteName) : (metadata.siteName) }}
+<title>{{ finalTitle |> safe }}</title>
 
 {{ if !isDev }}
 <!-- Pagefind Search -->
@@ -24,7 +27,6 @@
         showImages: false,
         excerptLength: 15,
         processResult: function(result) {
-          // Customize result if needed
           return result;
         }
       });

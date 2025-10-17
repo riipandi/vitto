@@ -313,7 +313,7 @@ export const PAGEFIND_OPTIONS: PagefindServiceConfig = {
 /**
  * Default options for Vitto plugin.
  */
-export const DEFAULT_OPTS: Omit<VittoOptions, 'metadata'> = {
+export const DEFAULT_OPTS: VittoOptions = {
   pagesDir: 'src/pages',
   layoutsDir: 'src/layouts',
   partialsDir: 'src/partials',
@@ -323,6 +323,9 @@ export const DEFAULT_OPTS: Omit<VittoOptions, 'metadata'> = {
   enableSearchIndex: true,
   pagefindOptions: PAGEFIND_OPTIONS,
   outputStrategy: 'html',
+  metadata: {
+    title: 'Vitto Site',
+  },
 }
 
 // Configuration for HTML minifier

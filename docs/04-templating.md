@@ -71,7 +71,7 @@ You can nest layouts:
 `src/layouts/article.vto`:
 
 ```vento
-{{ set pageTitle = "Homepage" }}
+{{ set title = "Homepage" }}
 {{ layout "layouts/base.vto" }}
 
 <article>
@@ -325,7 +325,7 @@ src/partials/
 `src/pages/blog.vto`:
 
 ```vento
-{{ set pageTitle = "Blog" }}
+{{ set title = "Blog" }}
 {{ layout "layouts/site.vto" }}
 
 <div class="blog-container">

@@ -1,13 +1,16 @@
-{{ set pageTitle = "About" }}
 {{ layout "layouts/site.vto" }}
+
+{{# {{ setMetadata('title', 'About') }} #}}
+{{ setMetadata('description', 'Learn more about Vitto, minimal static site generator built with Vite and the Vento templating engine') }}
 
 <div class="flex min-h-[80vh] flex-col items-center justify-center space-y-12 w-full bg-white dark:bg-gray-900">
   <div class="text-center">
     <h1 class="text-4xl md:text-6xl font-bold mb-6">
-      About {{ siteName || 'Vitto' }}
+      About {{ metadata.siteName }}
     </h1>
     <p class="text-base md:text-lg mb-8 dark:text-gray-200 max-w-3xl mx-auto">
-      {{ heroDescription || 'A modern web application built with Vento template engine. <br/> Fast, reliable, and easy to use.' }}
+      A modern web application built with Vento template engine. <br/> Fast, reliable, and easy to use.
     </p>
   </div>
 </div>
+<

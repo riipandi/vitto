@@ -34,6 +34,37 @@ interface RenderOptions {
 }
 
 /**
+ * Metadata collector for capturing metadata from templates
+ */
+interface MetadataCollector {
+  metadata: Record<string, any>
+  setMetadata: (key: string, value: any) => void
+  getMetadata: (key?: string) => any
+}
+
+/**
+ * Create a metadata collector instance
+ */
+function createMetadataCollector(): MetadataCollector {
+  const metadata: Record<string, any> = {}
+
+  return {
+    metadata,
+    setMetadata(key: string, value: any) {
+      this.metadata[key] = value
+    },
+    getMetadata(key?: string) {
+      // If key is provided, return specific value (or undefined if not found)
+      if (key !== undefined && key !== null && key !== '') {
+        return this.metadata[key]
+      }
+      // If no key, return all metadata
+      return { ...this.metadata }
+    },
+  }
+}
+
+/**
  * Render a Vento template file to an HTML string.
  *
  * This function:
@@ -59,7 +90,8 @@ interface RenderOptions {
 async function renderVentoToHtml(
   { filePath, data = {}, isDev = false, assets, minify = false }: RenderOptions,
   ventoOptionsOverride?: Partial<VentoOptions>,
-  currentUrl?: string
+  currentUrl?: string,
+  globalMetadata?: Record<string, any>
 ) {
   // Configure Vento template engine with includes directory
   const ventoOptions: VentoOptions = {
@@ -77,6 +109,14 @@ async function renderVentoToHtml(
 
   // Prepare template context with user data and Vite assets
   const viteAssets = assets ?? { main: '', css: [] }
+
+  // Create metadata collector
+  const metadataCollector = createMetadataCollector()
+
+  // Merge global metadata with collector
+  if (globalMetadata) {
+    Object.assign(metadataCollector.metadata, globalMetadata)
+  }
 
   // Create renderAssets function with closure over isDev and viteAssets
   const renderAssets = () => {
@@ -108,21 +148,6 @@ async function renderVentoToHtml(
     return html
   }
 
-  /**
-   * Normalize path for comparison by removing trailing slashes.
-   *
-   * @param path - Path to normalize
-   * @returns Normalized path without trailing slash (except root)
-   *
-   * @example
-   * normalizePath('/about/') // Returns: '/about'
-   * normalizePath('/') // Returns: '/'
-   */
-  function normalizePath(path: string): string {
-    if (path === '/' || !path) return '/'
-    return path.endsWith('/') ? path.slice(0, -1) : path
-  }
-
   // Normalize currentUrl for consistent comparison
   const normalizedUrl = normalizePath(currentUrl || '/')
 
@@ -133,6 +158,11 @@ async function renderVentoToHtml(
     renderAssets,
     currentUrl: normalizedUrl,
     currentPath: normalizedUrl,
+    // Inject metadata getter and setter into context
+    setMetadata: metadataCollector.setMetadata.bind(metadataCollector),
+    getMetadata: metadataCollector.getMetadata.bind(metadataCollector),
+    // Spread metadata with prefix for better clarity
+    metadata: metadataCollector.metadata,
   }
 
   // Render the template with the prepared context
@@ -201,6 +231,21 @@ function getViteAssetsFromBundle(bundle: Record<string, any>): { main: string; c
   }
 
   return { main, css }
+}
+
+/**
+ * Normalize path for comparison by removing trailing slashes.
+ *
+ * @param path - Path to normalize
+ * @returns Normalized path without trailing slash (except root)
+ *
+ * @example
+ * normalizePath('/about/') // Returns: '/about'
+ * normalizePath('/') // Returns: '/'
+ */
+function normalizePath(path: string): string {
+  if (path === '/' || !path) return '/'
+  return path.endsWith('/') ? path.slice(0, -1) : path
 }
 
 /**
@@ -380,7 +425,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
             minify: opts.minify ?? false,
           },
           opts.ventoOptions,
-          urlPath
+          urlPath,
+          opts.metadata
         )
 
         // Emit HTML file to Vite bundle
@@ -466,7 +512,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                 minify: opts.minify ?? false,
               },
               opts.ventoOptions,
-              urlPath // Pass URL path
+              urlPath,
+              opts.metadata
             )
 
             // Emit HTML file to Vite bundle
@@ -641,7 +688,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                   minify: opts.minify ?? false,
                 },
                 opts.ventoOptions,
-                url // Pass current URL
+                url,
+                opts.metadata
               )
 
               res.setHeader('Content-Type', 'text/html')
@@ -673,7 +721,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               minify: opts.minify ?? false,
             },
             opts.ventoOptions,
-            url // Pass current URL
+            url,
+            opts.metadata
           )
 
           res.setHeader('Content-Type', 'text/html')
@@ -693,7 +742,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               assets: opts.assets ?? undefined,
               minify: opts.minify ?? false,
             },
-            opts.ventoOptions
+            opts.ventoOptions,
+            undefined,
+            opts.metadata
           )
           res.statusCode = 404
           res.setHeader('Content-Type', 'text/html')

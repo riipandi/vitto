@@ -122,11 +122,11 @@ my-website/
 Create `src/pages/index.vto`:
 
 ```vento
-{{ set pageTitle = "Homepage" }}
+{{ set title = "Homepage" }}
 {{ layout "layouts/site.vto" }}
 
 <main>
-  <h1>{{ pageTitle }}</h1>
+  <h1>{{ title }}</h1>
   <p>{{ description }}</p>
 </main>
 ```
@@ -141,7 +141,7 @@ Create `src/layouts/base.vto`:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ pageTitle ? pageTitle : (siteName || 'Vitto') |> safe }}</title>
+  <title>{{ title ? title : (metadata.siteName) |> safe }}</title>
   {{ renderAssets() |> safe }}
 </head>
 <body>

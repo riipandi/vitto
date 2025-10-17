@@ -50,7 +50,7 @@ Create a template that will be used for all generated pages:
 `src/pages/post.vto`:
 
 ```vento
-{{ set pageTitle = post ? post.title : "Post Not Found" }}
+{{ set title = post ? post.title : "Post Not Found" }}
 {{ layout "layouts/site.vto" }}
 
 <article>
@@ -227,7 +227,7 @@ export default postsHook
 `src/pages/post.vto`:
 
 ```vento
-{{ set pageTitle = post ? post.title : "Post Not Found" }}
+{{ set title = post ? post.title : "Post Not Found" }}
 {{ layout "layouts/site.vto" }}
 
 <article class="blog-post">

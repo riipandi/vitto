@@ -157,7 +157,7 @@ export default defineHooks('tags', async () => {
 `src/pages/blog.vto`:
 
 ```vento
-{{ set pageTitle = "Blog" }}
+{{ set title = "Blog" }}
 {{ layout "layouts/site.vto" }}
 
 <div class="container">
@@ -180,7 +180,7 @@ export default defineHooks('tags', async () => {
 `src/pages/post.vto`:
 
 ```vento
-{{ set pageTitle = post ? post.title : "Post Not Found" }}
+{{ set title = post ? post.title : "Post Not Found" }}
 {{ layout "layouts/site.vto" }}
 
 <article class="blog-post">
@@ -369,7 +369,7 @@ export default defineHooks('projects', () => {
 `src/pages/index.vto`:
 
 ```vento
-{{ set pageTitle = "Portfolio" }}
+{{ set title = "Portfolio" }}
 {{ layout "layouts/site.vto" }}
 
 <section class="hero">
@@ -456,7 +456,7 @@ export const categoriesHook = defineHooks('categories', async () => {
 `src/pages/product.vto`:
 
 ```vento
-{{ set pageTitle = product.name }}
+{{ set title = product.name }}
 {{ layout "layouts/site.vto" }}
 
 <div class="product">
@@ -516,7 +516,7 @@ export default defineHooks('i18n', (params) => {
 `src/pages/index.vto`:
 
 ```vento
-{{ set pageTitle = "Welcome" }}
+{{ set title = "Welcome" }}
 {{ layout "layouts/site.vto" }}
 
 <nav>
