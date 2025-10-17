@@ -1,7 +1,6 @@
 import { resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import vitto from 'vitto'
 import postsHook from './hooks/posts'
 
@@ -27,7 +26,6 @@ export default defineConfig({
       ],
     }),
     tailwindcss(),
-    tsconfigPaths(),
   ],
   server: { port: 3000, strictPort: false, cors: { origin: '*' } },
   preview: { port: 3000, strictPort: false },
