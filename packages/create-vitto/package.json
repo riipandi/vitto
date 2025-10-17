@@ -1,6 +1,6 @@
 {
     "name": "create-vitto",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "type": "module",
     "description": "Command-line utility to scaffold Vite apps using Vitto.",
     "author": "Aris Ripandi <aris@duck.com>",

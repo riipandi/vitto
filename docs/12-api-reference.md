@@ -37,7 +37,6 @@ interface VittoOptions {
   pagesDir?: string
   layoutsDir?: string
   partialsDir?: string
-  hooksDir?: string
   minify?: boolean | Partial<MinifyOptions>
   enableSearchIndex?: boolean
   pagefindOptions?: Partial<PagefindServiceConfig>
@@ -85,19 +84,6 @@ Directory containing partial templates.
 ```ts
 vitto({
   partialsDir: 'src/partials'
-})
-```
-
-#### `hooksDir`
-
-- **Type**: `string`
-- **Default**: `'hooks'`
-
-Directory containing hook files.
-
-```ts
-vitto({
-  hooksDir: 'hooks'
 })
 ```
 

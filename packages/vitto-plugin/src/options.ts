@@ -104,21 +104,6 @@ export interface VittoOptions {
   ventoOptions?: Partial<VentoOptions>
 
   /**
-   * Directory containing hook files for auto-discovery.
-   * Hook files should export a default function created with `defineHooks()`.
-   *
-   * @default 'hooks'
-   * @example
-   * // hooks/posts.ts
-   * import { defineHooks } from './plugin'
-   * export default defineHooks('posts', async () => {
-   *   const res = await fetch('https://api.example.com/posts')
-   *   return res.json()
-   * })
-   */
-  hooksDir?: string
-
-  /**
    * Manual hook registration for injecting dynamic data into page templates.
    *
    * Each hook is a function that returns data to be injected into the template context.
@@ -284,7 +269,6 @@ export const DEFAULT_OPTS: VittoOptions = {
   partialsDir: 'src/partials',
   minify: false,
   assets: undefined,
-  hooksDir: 'hooks',
   dynamicRoutes: [],
   enableSearchIndex: true,
   pagefindOptions: PAGEFIND_OPTIONS,

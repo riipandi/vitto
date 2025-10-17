@@ -58,19 +58,6 @@ vitto({
 })
 ```
 
-### `hooksDir`
-
-- **Type**: `string`
-- **Default**: `'hooks'`
-
-Directory containing hook files for injecting dynamic data.
-
-```ts
-vitto({
-  hooksDir: 'hooks'
-})
-```
-
 ### `minify`
 
 - **Type**: `boolean | Partial<MinifyOptions>`
@@ -276,7 +263,6 @@ export default defineConfig({
       pagesDir: 'src/pages',
       layoutsDir: 'src/layouts',
       partialsDir: 'src/partials',
-      hooksDir: 'hooks',
       minify: process.env.NODE_ENV === 'production',
       enableSearchIndex: true,
       outputStrategy: 'directory',

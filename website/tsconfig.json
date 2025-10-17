@@ -26,5 +26,5 @@
         "useUnknownInCatchVariables": true,
         "verbatimModuleSyntax": true
     },
-    "include": ["src", "plugin", "hooks"]
+    "include": ["src", "hooks"]
 }
