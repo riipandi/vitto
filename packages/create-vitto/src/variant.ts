@@ -1,9 +1,11 @@
-import { chroma } from 'itty-chroma'
+import { styleText } from 'node:util'
+
+type ColorFunction = (text: string) => string
 
 export type TemplateVariant = {
   name: string
   display: string
-  color?: typeof chroma
+  color: ColorFunction
   customCommand?: string
 }
 
@@ -11,27 +13,27 @@ const frameworkVariants: TemplateVariant[] = [
   {
     name: 'basic',
     display: 'Basic',
-    color: chroma.cyan,
+    color: (text: string) => styleText('cyan', text),
   },
   {
     name: 'htmx',
     display: 'HTMX',
-    color: chroma.blue,
+    color: (text: string) => styleText('blue', text),
   },
   {
     name: 'lit',
     display: 'Lit',
-    color: chroma.magenta,
+    color: (text: string) => styleText('magenta', text),
   },
   {
     name: 'open-props',
     display: 'Open Props',
-    color: chroma.green,
+    color: (text: string) => styleText('green', text),
   },
   {
     name: 'tailwindcss',
     display: 'Tailwind CSS',
-    color: chroma.cyan,
+    color: (text: string) => styleText('cyan', text),
   },
 ]
 

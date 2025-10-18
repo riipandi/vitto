@@ -1,7 +1,8 @@
 import { defineCommand, runMain, showUsage } from 'citty'
-import { chroma } from 'itty-chroma'
 import pkg from '../package.json' with { type: 'json' }
 import generateProject from './generate'
+import _console from './logger'
+import { frameworkVariants } from './variant'
 
 const main = defineCommand({
   meta: {
@@ -16,6 +17,27 @@ const main = defineCommand({
       valueHint: 'my-website',
       required: false,
     },
+    preset: {
+      type: 'string',
+      description: 'Preset to use',
+      alias: 'p',
+    },
+    overwrite: {
+      type: 'boolean',
+      description: 'Overwrite existing directory',
+      default: false,
+    },
+    immediate: {
+      type: 'boolean',
+      description: 'Install dependencies and start dev server immediately',
+      alias: 'i',
+      default: false,
+    },
+    templates: {
+      type: 'boolean',
+      description: 'List all available templates',
+      default: false,
+    },
     help: {
       type: 'boolean',
       description: 'Print information about the application',
@@ -28,35 +50,37 @@ const main = defineCommand({
     },
   },
   async run({ args, cmd }) {
-    // Show help page if --help flag is used or no subcommand provided
-    if (args.help || args._.length === 0) {
-      showUsage(cmd)
-      return
-    }
-
-    // Show version info if --version flag is used
     if (args.version) {
-      try {
-        if (args.short) {
-          chroma.log(pkg.version)
-          return
-        }
-        chroma.log(`create-vitto v${pkg.version}`)
-      } catch (error) {
-        chroma.error('Failed to run command:', error)
-        process.exit(1)
-      }
+      _console.log(`create-vitto v${pkg.version}`)
       return
     }
 
-    if (!args.name) {
-      chroma.error('Please provide a project name.')
+    if (args.templates) {
+      _console.log('Available templates:\n')
+      frameworkVariants.forEach((variant) => {
+        _console.log(`  ${variant.color(variant.name.padEnd(15))} - ${variant.display}`)
+      })
+      _console.log('')
+      return
+    }
+
+    if (args.help || !args.name) {
       showUsage(cmd)
       return
+    }
+
+    if (args.preset && !frameworkVariants.find((v) => v.name === args.preset)) {
+      _console.error(
+        `Preset "${args.preset}" not found. Use --templates to see available templates.`
+      )
+      process.exit(1)
     }
 
     return await generateProject({
       name: args.name,
+      preset: args.preset,
+      overwrite: args.overwrite,
+      immediate: args.immediate,
     })
   },
 })

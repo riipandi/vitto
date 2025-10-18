@@ -1,6 +1,6 @@
 {
     "name": "create-vitto",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "type": "module",
     "description": "Command-line utility to scaffold Vite apps using Vitto.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -38,14 +38,16 @@
     },
     "dependencies": {
         "citty": "^0.1.6",
-        "itty-chroma": "^1.0.6",
+        "consola": "^3.4.2",
+        "cross-spawn": "^7.0.6",
         "picospinner": "^3.0.0"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.2.6",
+        "@types/cross-spawn": "^6.0.6",
         "@types/node": "^24.8.1",
         "tsdown": "^0.15.7",
-        "typescript": "~5.9.3",
+        "typescript": "^5.9.3",
         "vite": "^7.1.10"
     },
     "files": [

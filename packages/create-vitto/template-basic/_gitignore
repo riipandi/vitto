@@ -32,8 +32,6 @@ build/
 dist/
 tmp/
 out/
-.data
-.cache
 .output
 .wrangler
 .wireit
@@ -52,8 +50,6 @@ vitest.workspace.*
 # Envars
 .env.*
 !.env.example
-compose.env*
-!compose.env.example
 .*.vars
 
 # Disable this line in your real app
@@ -63,26 +59,6 @@ compose.env*
 /blob-report/
 .playwright/
 
-# Sentry Config File
-.sentryclirc
-
-# Storybook
-*storybook.log
-storybook-static/
-
 # Miscellaneous
 pnpm-exec-summary.json
 slim.report.json
-
-# Terraform
-.terraform/
-.terraform.lock.hcl
-terraform.tfstate*
-terraform.tfvars*
-!terraform.tfvars.example
-
-# Development purposes
-my-website/
-demo-project/
-example-project/
-test-project/

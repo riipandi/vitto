@@ -1,0 +1,22 @@
+{
+    "name": "vitto-basic-starter",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "start": "pnpm dlx serve dist -l 3000 -nCL",
+        "typecheck": "tsc -b --noEmit"
+    },
+    "dependencies": {
+        "ufo": "^1.6.1"
+    },
+    "devDependencies": {
+        "@types/node": "^24.8.1",
+        "typescript": "^5.9.3",
+        "vite": "^7.1.10",
+        "vitto": "^0.0.12"
+    }
+}

@@ -1,6 +1,6 @@
 {
     "name": "vitto",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "type": "module",
     "description": "A minimal static site generator built with Vite and the Vento templating engine.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -48,7 +48,7 @@
         "@biomejs/biome": "^2.2.6",
         "@types/node": "^24.8.1",
         "tsdown": "^0.15.7",
-        "typescript": "~5.9.3",
+        "typescript": "^5.9.3",
         "vite": "^7.1.10"
     },
     "files": [

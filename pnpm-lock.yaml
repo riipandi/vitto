@@ -23,9 +23,12 @@ importers:
       citty:
         specifier: ^0.1.6
         version: 0.1.6
-      itty-chroma:
-        specifier: ^1.0.6
-        version: 1.0.6
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      cross-spawn:
+        specifier: ^7.0.6
+        version: 7.0.6
       picospinner:
         specifier: ^3.0.0
         version: 3.0.0
@@ -33,6 +36,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.2.6
         version: 2.2.6
+      '@types/cross-spawn':
+        specifier: ^6.0.6
+        version: 6.0.6
       '@types/node':
         specifier: ^24.8.1
         version: 24.8.1
@@ -40,7 +46,7 @@ importers:
         specifier: ^0.15.7
         version: 0.15.7(typescript@5.9.3)
       typescript:
-        specifier: ~5.9.3
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
         specifier: ^7.1.10
@@ -80,7 +86,7 @@ importers:
         specifier: ^0.15.7
         version: 0.15.7(typescript@5.9.3)
       typescript:
-        specifier: ~5.9.3
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
         specifier: ^7.1.10
@@ -105,7 +111,7 @@ importers:
         specifier: ^4.1.14
         version: 4.1.14
       typescript:
-        specifier: ~5.9.3
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
         specifier: ^7.1.10
@@ -1094,6 +1100,9 @@ packages:
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
+  '@types/cross-spawn@6.0.6':
+    resolution: {integrity: sha512-fXRhhUkG4H3TQk5dBhQ7m/JDdSNHKwR2BBia62lhwEIq9xGiQKLxd6LymNhn47SjXhsUEPmxi+PKw2OkW4LLjA==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -1159,6 +1168,10 @@ packages:
   cookie@1.0.2:
     resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
     engines: {node: '>=18'}
+
+  cross-spawn@7.0.6:
+    resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
+    engines: {node: '>= 8'}
 
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
@@ -1245,6 +1258,9 @@ packages:
 
   is-arrayish@0.3.4:
     resolution: {integrity: sha512-m6UrgzFVUYawGBh1dUsWR5M2Clqic9RVXC/9f8ceNlv2IcO9j9J/z8UoCLPqtsPBFNzEpfR3xftohbfqDx8EQA==}
+
+  isexe@2.0.0:
+    resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
   itty-chroma@1.0.6:
     resolution: {integrity: sha512-2tEGyVAZXlkJPNFFmuQUsNkvYhelHzvwiDUM0DJ+qCzkiqTkjCTgGxWxLJ07R0D/KskP3occI9wGoPctp/CYkg==}
@@ -1370,6 +1386,10 @@ packages:
     resolution: {integrity: sha512-z2kY1mQlL4J8q5EIsQkLzQjilovKzfNVhX8De6oyE6uHpfFtyBaqUpcl/XzJC/4fjD8vBDyh1zolimIcVrCn9g==}
     hasBin: true
 
+  path-key@3.1.1:
+    resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
+    engines: {node: '>=8'}
+
   path-to-regexp@6.3.0:
     resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
 
@@ -1438,6 +1458,14 @@ packages:
   sharp@0.33.5:
     resolution: {integrity: sha512-haPVm1EkS9pgvHrQ/F3Xy+hgcuMV0Wm9vfIBSiwZ05k+xgb0PkBQpGsAA/oWdDobNaZTH5ppvHtzCFbnSEwHVw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+
+  shebang-command@2.0.0:
+    resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
+    engines: {node: '>=8'}
+
+  shebang-regex@3.0.0:
+    resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
+    engines: {node: '>=8'}
 
   simple-swizzle@0.2.4:
     resolution: {integrity: sha512-nAu1WFPQSMNr2Zn9PGSZK9AGn4t/y97lEm+MXTtUDwfP0ksAIX4nO+6ruD9Jwut4C49SB1Ws+fbXsm/yScWOHw==}
@@ -1598,6 +1626,11 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  which@2.0.2:
+    resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
+    engines: {node: '>= 8'}
+    hasBin: true
 
   workerd@1.20251008.0:
     resolution: {integrity: sha512-HwaJmXO3M1r4S8x2ea2vy8Rw/y/38HRQuK/gNDRQ7w9cJXn6xSl1sIIqKCffULSUjul3wV3I3Nd/GfbmsRReEA==}
@@ -2280,6 +2313,10 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@types/cross-spawn@6.0.6':
+    dependencies:
+      '@types/node': 24.8.1
+
   '@types/estree@1.0.8': {}
 
   '@types/node@24.8.1':
@@ -2332,6 +2369,12 @@ snapshots:
   consola@3.4.2: {}
 
   cookie@1.0.2: {}
+
+  cross-spawn@7.0.6:
+    dependencies:
+      path-key: 3.1.1
+      shebang-command: 2.0.0
+      which: 2.0.2
 
   debug@4.4.3:
     dependencies:
@@ -2434,6 +2477,8 @@ snapshots:
 
   is-arrayish@0.3.4: {}
 
+  isexe@2.0.0: {}
+
   itty-chroma@1.0.6: {}
 
   itty-time@2.0.2: {}
@@ -2535,6 +2580,8 @@ snapshots:
       '@pagefind/linux-arm64': 1.4.0
       '@pagefind/linux-x64': 1.4.0
       '@pagefind/windows-x64': 1.4.0
+
+  path-key@3.1.1: {}
 
   path-to-regexp@6.3.0: {}
 
@@ -2652,6 +2699,12 @@ snapshots:
       '@img/sharp-wasm32': 0.33.5
       '@img/sharp-win32-ia32': 0.33.5
       '@img/sharp-win32-x64': 0.33.5
+
+  shebang-command@2.0.0:
+    dependencies:
+      shebang-regex: 3.0.0
+
+  shebang-regex@3.0.0: {}
 
   simple-swizzle@0.2.4:
     dependencies:
@@ -2777,6 +2830,10 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.1
+
+  which@2.0.2:
+    dependencies:
+      isexe: 2.0.0
 
   workerd@1.20251008.0:
     optionalDependencies:
