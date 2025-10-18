@@ -13,15 +13,12 @@ export default defineConfig({
       enableSearchIndex: true,
       outputStrategy: 'html',
       metadata: {
-        title: {
-          template: '%s - Vitto',
-          default: 'Vitto - Static Site Generator Powered by Vite & Vento',
-        },
+        siteName: 'Vitto',
+        title: 'Vitto - Static Site Generator Powered by Vite & Vento',
         description: `A minimal static site generator built with Vite and the Vento templating engine.`,
         keywords: ['vento', 'ssg', 'vite', 'plugin', 'generator', 'static', 'website', 'jamstack'],
         // Custom metadata fields
         author: 'Aris Ripandi',
-        siteName: 'Vitto',
         social: {
           github: 'https://github.com/riipandi/vitto',
           x: 'https://x.com/intent/follow?screen_name=riipandi',

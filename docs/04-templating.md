@@ -48,8 +48,9 @@ Layouts wrap your page content. The page content is available as the `content` v
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }}</title>
-  <meta name="description" content="{{ description }}">
+  <meta name="description" content="{{ metadata.description }}">
+  {{ set pageTitle = metadata.title ? `${metadata.title} - ${metadata.siteName}` : metadata.siteName }}
+  <title>{{ pageTitle |> safe }}</title>
   {{ renderAssets() |> safe }}
 </head>
 <body>
@@ -71,7 +72,6 @@ You can nest layouts:
 `src/layouts/article.vto`:
 
 ```vento
-{{ set title = "Homepage" }}
 {{ layout "layouts/base.vto" }}
 
 <article>
@@ -95,7 +95,7 @@ Partials are reusable template components.
 ```vento
 <header>
   <nav>
-    <a href="/">Home</a>
+    <a href="/">{{ metadata.siteName }}</a>
     <a href="/about.html">About</a>
     <a href="/blog.html">Blog</a>
   </nav>
@@ -121,6 +121,36 @@ Partials are reusable template components.
   <h3>{{ title }}</h3>
   <p>{{ content }}</p>
 </div>
+```
+
+## Metadata Access
+
+The `metadata` object configured in your `vite.config.ts` is automatically available in all templates:
+
+```vento
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ metadata.title }}</title>
+  <meta name="description" content="{{ metadata.description }}">
+  <meta name="keywords" content="{{ metadata.keywords }}">
+  {{# Access custom metadata fields #}}
+  <meta name="author" content="{{ metadata.author }}">
+  <html lang="{{ metadata.language }}">
+</head>
+<body>
+  <h1>Welcome to {{ metadata.siteName }}</h1>
+</body>
+</html>
+```
+
+### Page-Specific Titles
+
+Combine page title with site name:
+
+```vento
+{{ set pageTitle = metadata.title ? `${metadata.title} - ${metadata.siteName}` : metadata.siteName }}
+<title>{{ pageTitle }}</title>
 ```
 
 ## Vitto-Specific Features
@@ -251,15 +281,26 @@ You can add custom filters via `ventoOptions`:
 
 ```ts
 // vite.config.ts
-vitto({
-  ventoOptions: {
-    filters: {
-      dateFormat: (date: Date, format: string) => {
-        // Your date formatting logic
-        return formattedDate
+import { defineConfig } from 'vite'
+import vitto from 'vitto'
+
+export default defineConfig({
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site'
+      },
+      ventoOptions: {
+        filters: {
+          dateFormat: (date: Date, format: string) => {
+            // Your date formatting logic
+            return formattedDate
+          }
+        }
       }
-    }
-  }
+    })
+  ]
 })
 ```
 
@@ -300,6 +341,7 @@ Layouts should focus on structure. Move complex logic to hooks or partials.
 {{# Good #}}
 {{ blogPost.title }}
 {{ author.name }}
+{{ metadata.siteName }}
 
 {{# Avoid #}}
 {{ x }}
@@ -320,16 +362,41 @@ src/partials/
     └── meta-tags.vto
 ```
 
+### 6. Leverage Metadata Configuration
+
+Store site-wide information in metadata instead of hardcoding:
+
+```ts
+// vite.config.ts
+vitto({
+  metadata: {
+    siteName: 'My Blog',
+    title: 'My Blog',
+    description: 'A blog about web development',
+    author: 'John Doe',
+    social: {
+      twitter: '@johndoe',
+      github: 'johndoe'
+    }
+  }
+})
+```
+
+```vento
+<!-- In templates -->
+<meta name="author" content="{{ metadata.author }}">
+<a href="https://twitter.com/{{ metadata.social.twitter }}">Twitter</a>
+```
+
 ## Complete Example
 
 `src/pages/blog.vto`:
 
 ```vento
-{{ set title = "Blog" }}
 {{ layout "layouts/site.vto" }}
 
 <div class="blog-container">
-  <h1>{{ title }}</h1>
+  <h1>{{ metadata.siteName }} Blog</h1>
 
   {{ if posts && posts.length > 0 }}
     <div class="posts-grid">

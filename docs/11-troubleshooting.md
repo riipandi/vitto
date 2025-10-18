@@ -89,6 +89,41 @@ import vitto from 'vitto' // Correct
 // not: import vitto from '@vitto/core'
 ```
 
+### Missing Required Metadata
+
+**Problem**: Error about missing required metadata configuration
+
+```
+Error: metadata is required in VittoOptions
+```
+
+**Solution**: Ensure `metadata` is provided with required fields:
+
+```ts
+// Wrong - missing metadata
+vitto({
+  pagesDir: 'src/pages'
+})
+
+// Correct - metadata is required
+vitto({
+  metadata: {
+    siteName: 'My Site',    // Required
+    title: 'My Site'        // Required
+  },
+  pagesDir: 'src/pages'
+})
+```
+
+Minimum required fields:
+- `siteName` (string)
+- `title` (string)
+
+Optional fields:
+- `description` (string)
+- `keywords` (string[] or string)
+- Any custom metadata fields
+
 ### Build Hangs or Takes Too Long
 
 **Problem**: Build process never completes
@@ -102,6 +137,12 @@ export default defineHooks('data', async () => {
   const data = await defineHooks('data', ...)() // Don't call hooks recursively
   return data
 })
+
+// Good - proper hook implementation
+export default defineHooks('data', async () => {
+  const response = await fetch(url)
+  return await response.json()
+})
 ```
 
 2. Add timeouts to external API calls:
@@ -113,7 +154,9 @@ try {
   const response = await fetch(url, { signal: controller.signal })
   return await response.json()
 } catch (error) {
-  console.error('Request timed out')
+  if (error.name === 'AbortError') {
+    console.error('Request timed out')
+  }
   return []
 } finally {
   clearTimeout(timeout)
@@ -123,6 +166,10 @@ try {
 3. Enable verbose logging:
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   pagefindOptions: {
     verbose: true
   }
@@ -152,12 +199,17 @@ NODE_OPTIONS="--max-old-space-size=4096" npm run build
 3. Reduce data in hooks:
 ```ts
 // Only return necessary fields
-return posts.map(post => ({
-  slug: post.slug,
-  title: post.title,
-  excerpt: post.excerpt
-  // Don't include full content here
-}))
+export default defineHooks('posts', async () => {
+  const allPosts = await fetchPosts()
+
+  return allPosts.map(post => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    date: post.date
+    // Don't include full content here for list pages
+  }))
+})
 ```
 
 ## Template Errors
@@ -176,6 +228,10 @@ return posts.map(post => ({
 2. Verify `layoutsDir` configuration:
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   layoutsDir: 'src/layouts' // Default
 })
 ```
@@ -200,6 +256,10 @@ ls src/layouts/base.vto
 2. Check `partialsDir` setting:
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   partialsDir: 'src/partials'
 })
 ```
@@ -212,7 +272,13 @@ vitto({
 
 1. Check hook is registered:
 ```ts
+import postsHook from './hooks/posts'
+
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   hooks: {
     posts: postsHook // Make sure this is included
   }
@@ -224,7 +290,7 @@ vitto({
 export default defineHooks('posts', async () => {
   const data = await fetchData()
   console.log('Posts data:', data) // Debug
-  return data // Must return something
+  return data // Must return something (array, object, etc.)
 })
 ```
 
@@ -232,11 +298,18 @@ export default defineHooks('posts', async () => {
 ```vento
 {{ if posts && posts.length > 0 }}
   {{ for post of posts }}
-    {{ post.title }}
+    <h2>{{ post.title }}</h2>
   {{ /for }}
 {{ else }}
   <p>No posts found</p>
 {{ /if }}
+```
+
+4. Check metadata is available:
+```vento
+{{# Metadata is always available #}}
+<h1>{{ metadata.siteName }}</h1>
+<meta name="description" content="{{ metadata.description }}">
 ```
 
 ### HTML Not Rendering (Escaped)
@@ -251,6 +324,9 @@ export default defineHooks('posts', async () => {
 
 {{# Correct - HTML is rendered #}}
 {{ content |> safe }}
+
+{{# Also use safe for renderAssets #}}
+{{ renderAssets() |> safe }}
 ```
 
 ## Dynamic Routes Issues
@@ -263,14 +339,24 @@ export default defineHooks('posts', async () => {
 
 1. Verify configuration:
 ```ts
-dynamicRoutes: [
-  {
-    template: 'post',        // Must match template name (without .vto)
-    dataSource: 'posts',     // Must match hook name
-    getParams: (post) => ({ slug: post.slug }),
-    getPath: (post) => `blog/${post.slug}.html` // Must include .html
-  }
-]
+vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
+  hooks: {
+    posts: postsHook,
+    post: postHook
+  },
+  dynamicRoutes: [
+    {
+      template: 'post',        // Must match template name (without .vto)
+      dataSource: 'posts',     // Must match hook name
+      getParams: (post) => ({ slug: post.slug }),
+      getPath: (post) => `blog/${post.slug}.html` // Must include .html
+    }
+  ]
+})
 ```
 
 2. Check template exists:
@@ -281,7 +367,13 @@ ls src/pages/post.vto
 3. Ensure hook returns array:
 ```ts
 export default defineHooks('posts', async () => {
-  return [] // Must return array, even if empty
+  try {
+    const posts = await fetchPosts()
+    return posts // Must return array
+  } catch (error) {
+    console.error('Failed to fetch posts:', error)
+    return [] // Return empty array on error
+  }
 })
 ```
 
@@ -294,14 +386,27 @@ export default defineHooks('posts', async () => {
 1. Check `getPath` function:
 ```ts
 {
-  getPath: (post) => `blog/${post.slug}.html` // Generates: /blog/my-post.html
+  // For /blog/my-post.html
+  getPath: (post) => `blog/${post.slug}.html`
 }
 ```
 
 2. For pretty URLs, use `outputStrategy`:
 ```ts
 vitto({
-  outputStrategy: 'directory' // Generates: /blog/my-post/index.html
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
+  outputStrategy: 'directory', // Generates: /blog/my-post/index.html
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (post) => ({ slug: post.slug }),
+      getPath: (post) => `blog/${post.slug}.html`
+    }
+  ]
 })
 ```
 
@@ -314,18 +419,37 @@ vitto({
 1. Ensure hook accepts params:
 ```ts
 export const postHook = defineHooks('post', async (params) => {
+  if (!params?.slug) {
+    console.error('Slug parameter missing')
+    return null
+  }
+
   console.log('Received params:', params)
-  // Use params here
   return await fetchPost(params.slug)
 })
 ```
 
 2. Register parameterized hook:
 ```ts
+import { postsHook, postHook } from './hooks/posts'
+
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   hooks: {
-    post: postHook // Individual post hook
-  }
+    posts: postsHook, // List of all posts
+    post: postHook    // Individual post with params
+  },
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (post) => ({ slug: post.slug }), // These params go to postHook
+      getPath: (post) => `blog/${post.slug}.html`
+    }
+  ]
 })
 ```
 
@@ -342,6 +466,10 @@ vitto({
 import myHook from './hooks/myHook'
 
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   hooks: {
     myData: myHook // Use this name in templates: {{ myData }}
   }
@@ -350,11 +478,21 @@ vitto({
 
 2. Verify hook exports correctly:
 ```ts
-// Named export
-export const myHook = defineHooks('myData', async () => { ... })
+// Named export (good for multiple hooks)
+export const myHook = defineHooks('myData', async () => {
+  return await fetchData()
+})
 
-// Default export (preferred)
-export default defineHooks('myData', async () => { ... })
+// Default export (preferred for single hook per file)
+export default defineHooks('myData', async () => {
+  return await fetchData()
+})
+
+// Both (best practice)
+export const myHook = defineHooks('myData', async () => {
+  return await fetchData()
+})
+export default myHook
 ```
 
 ### Async Hook Errors
@@ -365,12 +503,12 @@ export default defineHooks('myData', async () => { ... })
 
 1. Always use async/await:
 ```ts
-// Wrong
+// Wrong - don't use .then()
 export default defineHooks('data', () => {
-  fetch(url).then(r => r.json()) // Don't use .then()
+  return fetch(url).then(r => r.json())
 })
 
-// Correct
+// Correct - use async/await
 export default defineHooks('data', async () => {
   const response = await fetch(url)
   return await response.json()
@@ -382,7 +520,11 @@ export default defineHooks('data', async () => {
 export default defineHooks('data', async () => {
   try {
     const response = await fetch(url)
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
     return await response.json()
   } catch (error) {
     console.error('Hook failed:', error)
@@ -400,19 +542,34 @@ export default defineHooks('data', async () => {
 1. Use absolute paths:
 ```ts
 import path from 'node:path'
+import fs from 'node:fs/promises'
 
-const filePath = path.join(process.cwd(), 'content', 'data.json')
+export default defineHooks('data', async () => {
+  const filePath = path.join(process.cwd(), 'content', 'data.json')
+
+  try {
+    const content = await fs.readFile(filePath, 'utf-8')
+    return JSON.parse(content)
+  } catch (error) {
+    console.error('Failed to read file:', filePath, error)
+    return {}
+  }
+})
 ```
 
-2. Check file exists:
+2. Check file exists before reading:
 ```ts
 import fs from 'node:fs/promises'
 
 try {
   await fs.access(filePath)
   const content = await fs.readFile(filePath, 'utf-8')
+  return JSON.parse(content)
 } catch (error) {
-  console.error('File not found:', filePath)
+  if (error.code === 'ENOENT') {
+    console.error('File not found:', filePath)
+  }
+  return {}
 }
 ```
 
@@ -427,7 +584,11 @@ try {
 1. Ensure search is enabled:
 ```ts
 vitto({
-  enableSearchIndex: true
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
+  enableSearchIndex: true // Default is true
 })
 ```
 
@@ -437,7 +598,7 @@ npm run build
 npm run preview
 ```
 
-Search doesn't work in development mode!
+**Important**: Search doesn't work in development mode (`npm run dev`)!
 
 3. Check search files exist:
 ```bash
@@ -457,11 +618,16 @@ ls dist/_pagefind/
 </main>
 ```
 
-2. Check `rootSelector`:
+2. Check `rootSelector` configuration:
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   pagefindOptions: {
-    rootSelector: 'main' // Must match your HTML structure
+    rootSelector: 'html',  // Default
+    verbose: true          // Enable for debugging
   }
 })
 ```
@@ -470,9 +636,13 @@ vitto({
 ```vento
 {{# Wrong - excludes from search #}}
 <article data-pagefind-ignore>
+  {{ content |> safe }}
+</article>
 
-{{# Correct #}}
+{{# Correct - includes in search #}}
 <article data-pagefind-body>
+  {{ content |> safe }}
+</article>
 ```
 
 ### Search Index Too Large
@@ -481,21 +651,32 @@ vitto({
 
 **Solution**:
 
-1. Index only main content:
+1. Configure exclusions:
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   pagefindOptions: {
     rootSelector: 'main',
-    excludeSelectors: ['nav', 'footer', 'aside', '.sidebar']
+    excludeSelectors: ['nav', 'footer', 'aside', '.sidebar', '.comments']
   }
 })
 ```
 
 2. Use `data-pagefind-ignore` for large sections:
 ```vento
-<div data-pagefind-ignore>
-  <div class="comments">...</div>
-</div>
+<article data-pagefind-body>
+  <h1>{{ post.title }}</h1>
+  <div class="content">{{ post.content |> safe }}</div>
+
+  <div data-pagefind-ignore>
+    <div class="comments">
+      {{# Comments are excluded from search #}}
+    </div>
+  </div>
+</article>
 ```
 
 ## Asset Loading Issues
@@ -508,9 +689,16 @@ vitto({
 
 1. Ensure `renderAssets()` is in template:
 ```vento
+<!DOCTYPE html>
+<html>
 <head>
+  <meta charset="UTF-8">
   {{ renderAssets() |> safe }}
 </head>
+<body>
+  {{ content |> safe }}
+</body>
+</html>
 ```
 
 2. Check CSS file is imported:
@@ -521,9 +709,19 @@ import './style.css'
 
 3. Verify Vite config:
 ```ts
+import { defineConfig } from 'vite'
+import vitto from 'vitto'
+
 export default defineConfig({
-  plugins: [vitto()],
-  // No need to configure CSS, Vite handles it
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site'
+      }
+    })
+  ]
+  // No need to configure CSS, Vite handles it automatically
 })
 ```
 
@@ -533,7 +731,7 @@ export default defineConfig({
 
 **Solution**:
 
-1. Check script is loaded:
+1. Check script is loaded via `renderAssets()`:
 ```vento
 <head>
   {{ renderAssets() |> safe }}
@@ -545,7 +743,13 @@ export default defineConfig({
 ls src/main.ts  # or main.js
 ```
 
-3. Check browser console for errors
+3. Check for JavaScript errors in browser console
+
+4. Ensure module type is correct:
+```html
+<!-- renderAssets() generates this automatically -->
+<script type="module" src="/src/main.js"></script>
+```
 
 ### Images Not Found (404)
 
@@ -553,22 +757,23 @@ ls src/main.ts  # or main.js
 
 **Solution**:
 
-1. Put images in `public/` directory:
+1. Put static images in `public/` directory:
 ```
 public/
 └── images/
     └── photo.jpg
 ```
 
-2. Reference without `public/`:
+2. Reference without `public/` prefix:
 ```vento
 <img src="/images/photo.jpg" alt="Photo">
 ```
 
-3. For processed images, import them:
+3. For processed/optimized images, import them:
 ```ts
+// In your script file
 import logo from './assets/logo.png'
-// Use logo in template
+// logo will be the processed URL
 ```
 
 ## Performance Issues
@@ -582,50 +787,93 @@ import logo from './assets/logo.png'
 1. Cache hook results:
 ```ts
 let cache = null
+let cacheTime = 0
+const CACHE_DURATION = 60000 // 1 minute
 
 export default defineHooks('data', async () => {
-  if (cache) return cache
-  cache = await fetchData()
+  const now = Date.now()
+
+  if (cache && (now - cacheTime) < CACHE_DURATION) {
+    console.log('Using cached data')
+    return cache
+  }
+
+  console.log('Fetching fresh data')
+  cache = await fetchExpensiveData()
+  cacheTime = now
+
   return cache
 })
 ```
 
 2. Use `Promise.all` for parallel operations:
 ```ts
-// Slow - sequential
+// Slow - sequential (10 seconds for 10 files)
+const results = []
 for (const file of files) {
-  await processFile(file)
+  results.push(await processFile(file))
 }
 
-// Fast - parallel
-await Promise.all(files.map(file => processFile(file)))
+// Fast - parallel (1 second for 10 files)
+const results = await Promise.all(
+  files.map(file => processFile(file))
+)
 ```
 
-3. Reduce minification in development:
+3. Disable minification in development:
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   minify: process.env.NODE_ENV === 'production'
+})
+```
+
+4. Reduce Pagefind verbosity:
+```ts
+vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
+  pagefindOptions: {
+    verbose: false
+  }
 })
 ```
 
 ### Slow Page Loads
 
-**Problem**: Pages load slowly
+**Problem**: Pages load slowly in production
 
 **Solution**:
 
-1. Enable compression in hosting
-2. Optimize images
-3. Reduce JavaScript bundle size
-4. Enable caching
+1. Enable minification:
+```ts
+vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
+  minify: true
+})
+```
 
-See [Performance Guide](./09-performance.md) for details.
+2. Optimize images before adding to `public/`
+
+3. Enable compression in your hosting provider
+
+4. Use CDN for static assets
+
+See [Performance Guide](./09-performance.md) for more details.
 
 ## Deployment Problems
 
 ### Build Succeeds Locally but Fails on CI/CD
 
-**Problem**: Production build fails in CI/CD
+**Problem**: Production build fails in CI/CD pipeline
 
 **Solution**:
 
@@ -640,36 +888,69 @@ See [Performance Guide](./09-performance.md) for details.
 2. Use `npm ci` instead of `npm install`:
 ```yaml
 - run: npm ci
+- run: npm run build
 ```
 
 3. Set environment variables:
 ```yaml
 env:
   NODE_ENV: production
+  NODE_OPTIONS: '--max-old-space-size=4096'
+```
+
+4. Check for missing dependencies:
+```bash
+# Ensure all dependencies are in package.json
+npm install <missing-package> --save
 ```
 
 ### 404 on Deployed Site
 
-**Problem**: Pages work locally but 404 on production
+**Problem**: Pages work locally but show 404 on production
 
 **Solution**:
 
 1. Configure base path for subdirectory deployment:
 ```ts
 // vite.config.ts
+import { defineConfig } from 'vite'
+import vitto from 'vitto'
+
 export default defineConfig({
-  base: '/repo-name/', // For GitHub Pages
-  plugins: [vitto()]
+  base: '/repo-name/', // For GitHub Pages or subdirectory
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site'
+      }
+    })
+  ]
 })
 ```
 
-2. Add redirects for SPA behavior:
+2. Configure hosting for clean URLs (if using `outputStrategy: 'directory'`):
+
+**Netlify** (`netlify.toml`):
 ```toml
-# netlify.toml
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+```
+
+**Vercel** (`vercel.json`):
+```json
+{
+  "cleanUrls": true
+}
+```
+
+**Nginx**:
+```nginx
+location / {
+  try_files $uri $uri.html $uri/ =404;
+}
 ```
 
 ### Assets Not Loading on Production
@@ -678,35 +959,86 @@ export default defineConfig({
 
 **Solution**:
 
-1. Check base path configuration
-2. Verify files are in `dist/` after build
-3. Ensure hosting serves from correct directory
+1. Check base path matches deployment:
+```ts
+export default defineConfig({
+  base: '/my-site/', // Must match your hosting path
+  plugins: [vitto({
+    metadata: {
+      siteName: 'My Site',
+      title: 'My Site'
+    }
+  })]
+})
+```
+
+2. Verify files exist in `dist/` after build:
+```bash
+npm run build
+ls dist/assets/
+```
+
+3. Ensure hosting serves from correct directory:
+- GitHub Pages: Set source to `dist/` or `docs/`
+- Netlify: Set publish directory to `dist`
+- Vercel: Set output directory to `dist`
 
 ## Getting Help
 
-If you're still stuck:
+If you're still stuck after trying these solutions:
 
-1. **Check GitHub Issues**: [github.com/riipandi/vitto/issues](https://github.com/riipandi/vitto/issues)
-2. **Search Discussions**: Look for similar problems
-3. **Create an Issue**: Provide:
-   - Vitto version
-   - Node version
-   - Minimal reproduction
-   - Error messages
-   - Steps to reproduce
+### 1. Check Existing Resources
 
-### Minimal Reproduction
+- **Documentation**: Review relevant docs sections
+- **GitHub Issues**: [github.com/riipandi/vitto/issues](https://github.com/riipandi/vitto/issues)
+- **Discussions**: Search for similar problems
 
-Create a minimal example:
+### 2. Create a Minimal Reproduction
 
 ```bash
-# Create new project
-npm create vitto@latest test-project
-cd test-project
+# Create new minimal project
+npm create vitto@latest test-issue
+cd test-issue
 
-# Add your problematic code
-# Try to reproduce the issue
-# Share repository or code
+# Add only the code that causes the issue
+# Try to reproduce the problem
+# Share repository or code snippet
+```
+
+### 3. Open an Issue
+
+When creating an issue, include:
+
+```markdown
+## Environment
+- Vitto version: (run `npm list vitto`)
+- Node version: (run `node --version`)
+- Package manager: npm/pnpm/yarn
+- OS: macOS/Windows/Linux
+
+## Configuration
+```ts
+// Your vite.config.ts
+```
+
+## Steps to Reproduce
+1. ...
+2. ...
+3. ...
+
+## Expected Behavior
+What you expected to happen
+
+## Actual Behavior
+What actually happened
+
+## Error Messages
+```
+Paste error messages here
+```
+
+## Additional Context
+Any other relevant information
 ```
 
 ## Next Steps
@@ -714,3 +1046,4 @@ cd test-project
 - [API Reference](./12-api-reference.md) - Complete API documentation
 - [Contributing](./13-contributing.md) - Contribute to Vitto
 - [Examples](./10-examples.md) - More working examples
+- [Performance Guide](./09-performance.md) - Optimize your site

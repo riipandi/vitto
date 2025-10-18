@@ -8,10 +8,8 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.ico">
 
-{{# Handle title with template #}}
-{{ set pageTitle = getMetadata('title') }}
-{{ set finalTitle = pageTitle ? pageTitle + ' - ' + (metadata.siteName) : (metadata.siteName) }}
-<title>{{ finalTitle |> safe }}</title>
+{{ set pageTitle = metadata.title ? `${metadata.title} - ${metadata.siteName}` : metadata.siteName }}
+<title>{{ pageTitle |> safe }}</title>
 
 {{ if !isDev }}
 <!-- Pagefind Search -->

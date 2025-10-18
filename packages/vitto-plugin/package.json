@@ -1,6 +1,6 @@
 {
     "name": "vitto",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "type": "module",
     "description": "A minimal static site generator built with Vite and the Vento templating engine.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -22,8 +22,8 @@
         ".": "./dist/index.js"
     },
     "scripts": {
-        "build": "tsdown",
         "dev": "tsdown --watch",
+        "build": "tsc && tsdown",
         "prepublishOnly": "NODE_ENV=production tsdown",
         "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
         "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",

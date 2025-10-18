@@ -12,7 +12,7 @@ Complete API documentation for Vitto.
 
 ## Plugin Options
 
-### `vitto(options?: VittoOptions)`
+### `vitto(options: VittoOptions)`
 
 The main Vitto plugin function.
 
@@ -22,7 +22,11 @@ import vitto from 'vitto'
 export default defineConfig({
   plugins: [
     vitto({
-      // options
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site'
+      }
+      // other options
     })
   ]
 })
@@ -34,6 +38,7 @@ Complete configuration options for the Vitto plugin.
 
 ```ts
 interface VittoOptions {
+  metadata: Metadata
   pagesDir?: string
   layoutsDir?: string
   partialsDir?: string
@@ -48,6 +53,61 @@ interface VittoOptions {
 }
 ```
 
+#### `metadata` (Required)
+
+- **Type**: `Metadata`
+- **Required**: Yes
+
+Site metadata to inject into all page templates.
+
+```ts
+interface Metadata {
+  siteName: string                    // Required: Site name
+  title: string                       // Required: Default page title
+  description?: string                // Optional: Site description
+  keywords?: string[] | string        // Optional: SEO keywords
+  author?: string                     // Optional: Site author
+  language?: string                   // Optional: Site language
+  [key: string]: any                  // Optional: Any custom metadata
+}
+```
+
+**Example:**
+
+```ts
+vitto({
+  metadata: {
+    siteName: 'My Awesome Site',
+    title: 'Welcome to My Site',
+    description: 'A website built with Vitto',
+    keywords: ['vitto', 'static-site', 'vite'],
+    author: 'John Doe',
+    language: 'en',
+    // Custom metadata
+    social: {
+      twitter: '@johndoe',
+      github: 'johndoe'
+    },
+    theme: {
+      primaryColor: '#007bff',
+      darkMode: true
+    }
+  }
+})
+```
+
+**Access in Templates:**
+
+```vento
+<title>{{ metadata.title }}</title>
+<meta name="description" content="{{ metadata.description }}">
+<meta name="author" content="{{ metadata.author }}">
+<html lang="{{ metadata.language }}">
+
+{{# Access custom metadata #}}
+<a href="https://twitter.com/{{ metadata.social.twitter }}">Twitter</a>
+```
+
 #### `pagesDir`
 
 - **Type**: `string`
@@ -57,6 +117,10 @@ Directory containing page templates (`.vto` files).
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   pagesDir: 'src/pages'
 })
 ```
@@ -70,6 +134,10 @@ Directory containing layout templates.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   layoutsDir: 'src/layouts'
 })
 ```
@@ -83,6 +151,10 @@ Directory containing partial templates.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   partialsDir: 'src/partials'
 })
 ```
@@ -97,11 +169,19 @@ Enable HTML minification. Set to `true` for defaults or pass custom options.
 ```ts
 // Simple boolean
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   minify: true
 })
 
 // Custom options
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   minify: {
     collapseWhitespaces: 'conservative',
     removeComments: true,
@@ -133,15 +213,41 @@ interface MinifyOptions {
 }
 ```
 
+**Default MinifyOptions:**
+
+```ts
+{
+  collapseBooleanAttributes: true,
+  collapseWhitespaces: 'conservative',
+  minifyCss: { lib: 'lightningcss' },
+  minifyJs: true,
+  minifyJson: true,
+  normalizeAttributes: true,
+  quotes: true,
+  removeComments: false,
+  removeEmptyAttributes: false,
+  removeEmptyMetadataElements: false,
+  removeRedundantAttributes: 'all',
+  selfClosingVoidElements: false,
+  sortAttributes: true,
+  sortSpaceSeparatedAttributeValues: true,
+  tagOmission: true
+}
+```
+
 #### `enableSearchIndex`
 
 - **Type**: `boolean`
 - **Default**: `true`
 
-Enable Pagefind search index generation.
+Enable Pagefind search index generation during build.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   enableSearchIndex: true
 })
 ```
@@ -155,6 +261,10 @@ Configure Pagefind search indexing.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   pagefindOptions: {
     rootSelector: 'main',
     excludeSelectors: ['nav', 'footer'],
@@ -167,13 +277,24 @@ vitto({
 
 ```ts
 interface PagefindServiceConfig {
-  rootSelector?: string
-  excludeSelectors?: string[]
-  forceLanguage?: string
-  verbose?: boolean
-  keepIndexUrl?: boolean
-  writePlayground?: boolean
-  glob?: string
+  rootSelector?: string        // Element to index (default: 'html')
+  excludeSelectors?: string[]  // Selectors to exclude from indexing
+  forceLanguage?: string       // Force specific language
+  verbose?: boolean            // Enable verbose logging
+  keepIndexUrl?: boolean       // Keep index URL structure
+  writePlayground?: boolean    // Generate playground (dev only)
+  glob?: string               // Glob pattern for files to process
+}
+```
+
+**Default PagefindOptions:**
+
+```ts
+{
+  rootSelector: 'html',
+  writePlayground: false,
+  keepIndexUrl: true,
+  verbose: false
 }
 ```
 
@@ -189,6 +310,10 @@ Output file strategy for generated pages.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   outputStrategy: 'directory'
 })
 ```
@@ -202,6 +327,10 @@ Configure dynamic route generation.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   dynamicRoutes: [
     {
       template: 'post',
@@ -217,10 +346,10 @@ vitto({
 
 ```ts
 interface DynamicRouteConfig {
-  template: string
-  dataSource: string
-  getParams: (item: any) => Record<string, any>
-  getPath: (item: any) => string
+  template: string                                // Template name (without .vto)
+  dataSource: string                              // Hook name providing data array
+  getParams: (item: any) => Record<string, any>   // Extract params for hook
+  getPath: (item: any) => string                  // Generate output file path
 }
 ```
 
@@ -239,6 +368,10 @@ const postsHook = defineHooks('posts', async () => {
 })
 
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   hooks: {
     posts: postsHook
   }
@@ -254,12 +387,16 @@ type HookFunction<T = any, P = any> = (params?: P) => T | Promise<T>
 #### `assets`
 
 - **Type**: `{ main: string; css: string[] }`
-- **Default**: Auto-generated
+- **Default**: Auto-generated by Vite
 
 Override Vite-generated assets. Rarely needed.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   assets: {
     main: 'assets/main.js',
     css: ['assets/style.css']
@@ -276,9 +413,16 @@ Pass custom options to Vento template engine.
 
 ```ts
 vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site'
+  },
   ventoOptions: {
     autoescape: true,
-    includes: ['custom/includes']
+    includes: ['custom/includes'],
+    filters: {
+      customFilter: (value) => value.toUpperCase()
+    }
   }
 })
 ```
@@ -324,6 +468,10 @@ export const postsHook = defineHooks('posts', async () => {
 
 // Parameterized hook
 export const postHook = defineHooks('post', async (params) => {
+  if (!params?.id) {
+    throw new Error('ID is required')
+  }
+
   const response = await fetch(`https://api.example.com/posts/${params.id}`)
   return await response.json()
 })
@@ -341,19 +489,22 @@ interface Post {
   id: number
   title: string
   content: string
+  slug: string
+  date: string
 }
 
 interface PostParams {
-  id: number
+  slug: string
 }
 
 export const postHook = defineHooks<Post, PostParams>('post', async (params) => {
-  if (!params?.id) {
-    throw new Error('ID is required')
+  if (!params?.slug) {
+    throw new Error('Slug is required')
   }
 
-  const response = await fetch(`/api/posts/${params.id}`)
-  return await response.json()
+  const response = await fetch(`/api/posts/${params.slug}`)
+  const post: Post = await response.json()
+  return post
 })
 ```
 
@@ -409,7 +560,60 @@ Include a partial template.
 } }}
 ```
 
+### `layout(path)`
+
+Set the layout for a page.
+
+**Parameters:**
+
+- `path` - Path to layout file (relative to `layoutsDir`)
+
+**Usage:**
+
+```vento
+{{ layout "layouts/base.vto" }}
+
+<h1>Page Content</h1>
+```
+
 ## Configuration Types
+
+### Metadata
+
+Site metadata configuration.
+
+```ts
+interface Metadata {
+  siteName: string               // Required: Site name
+  title: string                  // Required: Default page title
+  description?: string           // Optional: Site description
+  keywords?: string[] | string   // Optional: SEO keywords
+  author?: string                // Optional: Site author
+  language?: string              // Optional: Site language (e.g., 'en', 'es')
+  [key: string]: any             // Optional: Custom metadata fields
+}
+```
+
+**Example:**
+
+```ts
+const metadata: Metadata = {
+  siteName: 'Tech Blog',
+  title: 'Tech Blog - Latest Articles',
+  description: 'A blog about web development and technology',
+  keywords: ['web development', 'javascript', 'typescript'],
+  author: 'Jane Smith',
+  language: 'en',
+  // Custom fields
+  social: {
+    twitter: '@techblog',
+    github: 'techblog'
+  },
+  analytics: {
+    googleAnalytics: 'UA-XXXXX-Y'
+  }
+}
+```
 
 ### DynamicRouteConfig
 
@@ -444,13 +648,13 @@ Pagefind search configuration.
 
 ```ts
 interface PagefindServiceConfig {
-  rootSelector?: string        // Element to index (default: 'html')
-  excludeSelectors?: string[]  // Selectors to exclude from indexing
-  forceLanguage?: string       // Force specific language
-  verbose?: boolean            // Enable verbose logging
-  keepIndexUrl?: boolean       // Keep index URL structure
-  writePlayground?: boolean    // Generate playground (dev only)
-  glob?: string               // Glob pattern for files to process
+  rootSelector?: string         // Element to index (default: 'html')
+  excludeSelectors?: string[]   // Selectors to exclude from indexing
+  forceLanguage?: string        // Force specific language
+  verbose?: boolean             // Enable verbose logging
+  keepIndexUrl?: boolean        // Keep index URL structure
+  writePlayground?: boolean     // Generate playground (dev only)
+  glob?: string                 // Glob pattern for files to process
 }
 ```
 
@@ -459,7 +663,8 @@ interface PagefindServiceConfig {
 ```ts
 {
   rootSelector: 'main',
-  excludeSelectors: ['nav', 'footer', '.sidebar'],
+  excludeSelectors: ['nav', 'footer', '.sidebar', '.comments'],
+  forceLanguage: 'en',
   verbose: true,
   keepIndexUrl: true
 }
@@ -517,7 +722,22 @@ interface MinifyOptions {
 
 ### Template Context
 
-Objects available in all templates.
+Objects and data available in all templates.
+
+#### `metadata`
+
+Site metadata object (always available).
+
+```vento
+{{# Access metadata #}}
+<title>{{ metadata.title }}</title>
+<meta name="description" content="{{ metadata.description }}">
+<meta name="author" content="{{ metadata.author }}">
+<html lang="{{ metadata.language }}">
+
+{{# Access custom metadata #}}
+<a href="https://twitter.com/{{ metadata.social.twitter }}">Follow us</a>
+```
 
 #### `viteAssets`
 
@@ -566,6 +786,7 @@ Renders HTML without escaping.
 
 ```vento
 {{ htmlContent |> safe }}
+{{ renderAssets() |> safe }}
 ```
 
 ### `uppercase`
@@ -597,7 +818,9 @@ Removes whitespace.
 Converts to JSON string.
 
 ```vento
-{{ data |> json }}
+<script>
+  const data = {{ data |> json |> safe }};
+</script>
 ```
 
 ### `replace`
@@ -606,6 +829,7 @@ Replaces text.
 
 ```vento
 {{ text |> replace("old", "new") }}
+{{ slug |> replace(" ", "-") }}
 ```
 
 ## Environment Variables
@@ -618,6 +842,10 @@ Access environment variables in templates and config.
 {{ if env.NODE_ENV === 'production' }}
   <script src="analytics.js"></script>
 {{ /if }}
+
+{{ if env.VITE_FEATURE_FLAG === 'true' }}
+  <div class="new-feature">...</div>
+{{ /if }}
 ```
 
 ### In Configuration
@@ -628,8 +856,15 @@ import { defineConfig } from 'vite'
 export default defineConfig(({ mode }) => ({
   plugins: [
     vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site'
+      },
       minify: mode === 'production',
-      enableSearchIndex: mode === 'production'
+      enableSearchIndex: mode === 'production',
+      pagefindOptions: {
+        verbose: mode === 'development'
+      }
     })
   ]
 }))
@@ -641,7 +876,8 @@ export default defineConfig(({ mode }) => ({
 export default defineHooks('config', () => {
   return {
     apiUrl: process.env.VITE_API_URL || 'http://localhost:3000',
-    environment: process.env.NODE_ENV
+    environment: process.env.NODE_ENV,
+    debug: process.env.NODE_ENV === 'development'
   }
 })
 ```
@@ -653,6 +889,7 @@ Types exported from the Vitto package.
 ```ts
 import type {
   VittoOptions,
+  Metadata,
   DynamicRouteConfig,
   PagefindServiceConfig,
   MinifyOptions,
@@ -665,7 +902,21 @@ import type {
 ```ts
 import { defineConfig } from 'vite'
 import vitto, { defineHooks } from 'vitto'
-import type { VittoOptions, DynamicRouteConfig } from 'vitto'
+import type { VittoOptions, DynamicRouteConfig, Metadata } from 'vitto'
+
+// Type-safe metadata
+const metadata: Metadata = {
+  siteName: 'Tech Blog',
+  title: 'Tech Blog - Latest Articles',
+  description: 'A blog about web development',
+  keywords: ['blog', 'web development', 'javascript'],
+  author: 'Jane Doe',
+  language: 'en',
+  social: {
+    twitter: '@techblog',
+    github: 'techblog'
+  }
+}
 
 // Type-safe hook
 interface Post {
@@ -673,11 +924,20 @@ interface Post {
   slug: string
   title: string
   content: string
+  date: string
+  author: string
 }
 
 const postsHook = defineHooks<Post[]>('posts', async () => {
   const posts: Post[] = await fetchPosts()
   return posts
+})
+
+const postHook = defineHooks<Post | null, { slug: string }>('post', async (params) => {
+  if (!params?.slug) return null
+
+  const post: Post | undefined = await fetchPost(params.slug)
+  return post || null
 })
 
 // Type-safe dynamic routes
@@ -692,14 +952,22 @@ const dynamicRoutes: DynamicRouteConfig[] = [
 
 // Type-safe plugin options
 const vittoOptions: VittoOptions = {
+  metadata,
   pagesDir: 'src/pages',
   layoutsDir: 'src/layouts',
-  minify: true,
+  partialsDir: 'src/partials',
+  minify: process.env.NODE_ENV === 'production',
   enableSearchIndex: true,
+  outputStrategy: 'directory',
   hooks: {
-    posts: postsHook
+    posts: postsHook,
+    post: postHook
   },
-  dynamicRoutes
+  dynamicRoutes,
+  pagefindOptions: {
+    rootSelector: 'main',
+    verbose: false
+  }
 }
 
 export default defineConfig({
@@ -719,6 +987,8 @@ npm run dev
 
 Starts Vite development server with hot module replacement.
 
+**Note**: Search functionality is not available in development mode. Build the site to test search.
+
 ### Build
 
 ```bash
@@ -727,9 +997,10 @@ npm run build
 
 Builds the site for production:
 1. Compiles templates
-2. Processes assets
-3. Minifies HTML (if enabled)
-4. Generates search index (if enabled)
+2. Processes assets with Vite
+3. Generates dynamic routes
+4. Minifies HTML (if enabled)
+5. Generates search index (if enabled)
 
 ### Preview
 
@@ -737,10 +1008,35 @@ Builds the site for production:
 npm run preview
 ```
 
-Previews production build locally.
+Previews production build locally. This is where you can test search functionality.
+
+## Default Configuration
+
+The complete default configuration:
+
+```ts
+const DEFAULT_OPTIONS: VittoOptions = {
+  // metadata is required - no default
+  pagesDir: 'src/pages',
+  layoutsDir: 'src/layouts',
+  partialsDir: 'src/partials',
+  minify: false,
+  assets: undefined, // Auto-generated by Vite
+  dynamicRoutes: [],
+  enableSearchIndex: true,
+  pagefindOptions: {
+    rootSelector: 'html',
+    writePlayground: false,
+    keepIndexUrl: true,
+    verbose: false
+  },
+  outputStrategy: 'html'
+}
+```
 
 ## Next Steps
 
 - [Examples](./10-examples.md) - Real-world usage examples
-- [Troubleshooting](./11-troubleshooting.md) - Common issues
+- [Troubleshooting](./11-troubleshooting.md) - Common issues and solutions
 - [Contributing](./13-contributing.md) - Contribute to Vitto
+- [Configuration Guide](./03-configuration.md) - Detailed configuration guide

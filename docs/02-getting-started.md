@@ -94,6 +94,10 @@ export default defineConfig({
     vitto({
       minify: process.env.NODE_ENV === 'production',
       enableSearchIndex: true,
+      metadata: {
+        siteName: 'Vitto',
+        title: 'Vitto - Static Site Generator Powered by Vite & Vento',
+      }
     })
   ],
 })
@@ -122,8 +126,9 @@ my-website/
 Create `src/pages/index.vto`:
 
 ```vento
-{{ set title = "Homepage" }}
 {{ layout "layouts/site.vto" }}
+
+{{ setMetadata('title', 'Homepage') }}
 
 <main>
   <h1>{{ title }}</h1>
@@ -141,7 +146,8 @@ Create `src/layouts/base.vto`:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title ? title : (metadata.siteName) |> safe }}</title>
+  {{ set pageTitle = metadata.title ? `${metadata.title} - ${metadata.siteName}` : metadata.siteName }}
+  <title>{{ pageTitle |> safe }}</title>
   {{ renderAssets() |> safe }}
 </head>
 <body>

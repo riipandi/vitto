@@ -11,13 +11,46 @@ import vitto from 'vitto'
 export default defineConfig({
   plugins: [
     vitto({
-      // Your options here
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Awesome Website'
+      }
+      // Your other options here
     })
   ],
 })
 ```
 
 ## Configuration Options
+
+### `metadata` (Required)
+
+- **Type**: `Metadata`
+- **Required**: Yes
+
+Site metadata to inject into all page templates. This is a required option.
+
+```ts
+vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Awesome Website',
+    description: 'A website built with Vitto',
+    keywords: ['vitto', 'vite', 'static-site'],
+    // You can add custom metadata fields
+    author: 'John Doe',
+    language: 'en'
+  }
+})
+```
+
+#### Metadata Fields
+
+- `siteName` (required): The name of your site
+- `title` (required): Default page title
+- `description` (optional): Site description
+- `keywords` (optional): Array of keywords or comma-separated string
+- `[key: string]` (optional): Any additional custom metadata fields
 
 ### `pagesDir`
 
@@ -28,6 +61,7 @@ Directory containing your page templates (`.vto` files).
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   pagesDir: 'src/pages'
 })
 ```
@@ -41,6 +75,7 @@ Directory containing your layout templates.
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   layoutsDir: 'src/layouts'
 })
 ```
@@ -54,6 +89,7 @@ Directory containing reusable partial templates.
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   partialsDir: 'src/partials'
 })
 ```
@@ -68,11 +104,13 @@ Enable HTML minification. Set to `true` for default minification or pass custom 
 ```ts
 // Simple minification
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   minify: true
 })
 
 // Custom minification options
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   minify: {
     collapseWhitespaces: 'conservative',
     removeComments: true,
@@ -115,6 +153,7 @@ Enable Pagefind search index generation during build.
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   enableSearchIndex: true
 })
 ```
@@ -128,6 +167,7 @@ Configure Pagefind search indexing behavior.
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   pagefindOptions: {
     rootSelector: 'html',
     writePlayground: false,
@@ -165,6 +205,7 @@ Determines how HTML files are generated and their URL structure.
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   outputStrategy: 'directory'
 })
 ```
@@ -178,6 +219,7 @@ Configure dynamic route generation. See [Dynamic Routes](./05-dynamic-routes.md)
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   dynamicRoutes: [
     {
       template: 'post',
@@ -208,6 +250,7 @@ const postsHook = defineHooks('posts', async () => {
 })
 
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   hooks: {
     posts: postsHook
   }
@@ -223,6 +266,7 @@ Override Vite-generated assets for template injection. Rarely needed.
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   assets: {
     main: 'assets/main.js',
     css: ['assets/style.css']
@@ -239,6 +283,7 @@ Pass custom options to the Vento template engine. See [Vento documentation](http
 
 ```ts
 vitto({
+  metadata: { siteName: 'My Site', title: 'My Site' },
   ventoOptions: {
     autoescape: true,
     includes: ['custom/includes']
@@ -260,6 +305,14 @@ const postsHook = defineHooks('posts', async () => {
 export default defineConfig({
   plugins: [
     vitto({
+      metadata: {
+        siteName: 'My Awesome Blog',
+        title: 'Welcome to My Blog',
+        description: 'A blog about web development',
+        keywords: ['blog', 'web development', 'vitto'],
+        author: 'John Doe',
+        language: 'en'
+      },
       pagesDir: 'src/pages',
       layoutsDir: 'src/layouts',
       partialsDir: 'src/partials',
@@ -286,6 +339,25 @@ export default defineConfig({
 })
 ```
 
+## Accessing Metadata in Templates
+
+The metadata you configure is automatically available in all templates:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ metadata.title }}</title>
+  <meta name="description" content="{{ metadata.description }}">
+  <meta name="keywords" content="{{ metadata.keywords }}">
+  <meta name="author" content="{{ metadata.author }}">
+</head>
+<body>
+  <h1>Welcome to {{ metadata.siteName }}</h1>
+</body>
+</html>
+```
+
 ## Environment-Based Configuration
 
 You can adjust configuration based on the build environment:
@@ -297,6 +369,10 @@ import vitto from 'vitto'
 export default defineConfig(({ mode }) => ({
   plugins: [
     vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: mode === 'production' ? 'My Site' : 'My Site (Dev)',
+      },
       minify: mode === 'production',
       enableSearchIndex: mode === 'production',
       pagefindOptions: {
@@ -312,9 +388,17 @@ export default defineConfig(({ mode }) => ({
 Vitto provides full TypeScript support. Import types for better IDE experience:
 
 ```ts
-import type { VittoOptions } from 'vitto'
+import type { VittoOptions, Metadata } from 'vitto'
+
+const metadata: Metadata = {
+  siteName: 'My Site',
+  title: 'My Awesome Website',
+  description: 'Built with Vitto',
+  keywords: ['vitto', 'vite']
+}
 
 const vittoConfig: VittoOptions = {
+  metadata,
   pagesDir: 'src/pages',
   minify: true,
   // TypeScript will provide autocomplete and type checking

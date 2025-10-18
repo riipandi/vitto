@@ -3,6 +3,22 @@ import type { PagefindServiceConfig } from 'pagefind'
 import type { Options as VentoOptions } from 'ventojs'
 
 /**
+ * Options for rendering a Vento template to HTML.
+ */
+export interface RenderOptions {
+  /** Path to the .vto template file */
+  filePath: string
+  /** Data to be injected into the template context */
+  data?: Record<string, unknown>
+  /** Whether running in development mode */
+  isDev?: boolean
+  /** Vite-generated assets (JS and CSS files) */
+  assets?: { main: string; css: string[] }
+  /** Whether to minify the output HTML */
+  minify?: boolean | MinifyOptions
+}
+
+/**
  * Configuration for dynamic route generation.
  *
  * Dynamic routes allow you to generate multiple static pages from a single template
@@ -65,33 +81,18 @@ export interface DynamicRouteConfig {
 export type OutputStrategy = 'html' | 'directory'
 
 /**
- *  Title with template interface.
- */
-export interface TitleWithTemplate {
-  /**
-   * Title template string, e.g., '%s | My Site'
-   * %s will be replaced with the page title.
-   *
-   * @example '%s | My Site'
-   */
-  template: string
-
-  /**
-   * Default title if none is provided.
-   *
-   * @example 'My Site'
-   */
-  default: string
-}
-
-/**
  * Metadata interface for page templates.
  */
 export interface Metadata {
   /**
+   * Site name.
+   */
+  siteName: string
+
+  /**
    * Site title.
    */
-  title: string | TitleWithTemplate
+  title: string
 
   /**
    * Site description.
@@ -324,6 +325,7 @@ export const DEFAULT_OPTS: VittoOptions = {
   pagefindOptions: PAGEFIND_OPTIONS,
   outputStrategy: 'html',
   metadata: {
+    siteName: 'Vitto',
     title: 'Vitto Site',
   },
 }

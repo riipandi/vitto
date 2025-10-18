@@ -4,7 +4,8 @@ This guide covers best practices and techniques to optimize your Vitto site for 
 
 ## Overview
 
-A fast website improves user experience, SEO rankings, and conversion rates. Vitto is built on Vite, which provides excellent performance out of the box, but there are additional optimizations you can apply.
+A fast website improves user experience, SEO rankings, and conversion rates. Vitto is built on Vite,
+which provides excellent performance out of the box, but there are additional optimizations you can apply.
 
 ## Build Optimization
 
@@ -188,7 +189,7 @@ Only include essential scripts:
 
 ```vento
 {{# Load analytics only in production #}}
-{{ if config.environment === 'production' }}
+{{ if !isDev }}
   <script defer src="https://analytics.example.com/script.js"></script>
 {{ /if }}
 ```
@@ -541,28 +542,6 @@ export default defineConfig({
     }
   }
 })
-```
-
-## Benchmarking
-
-### Before Optimization
-
-```
-Lighthouse Score: 85
-LCP: 3.2s
-FID: 120ms
-CLS: 0.15
-Total Size: 2.5MB
-```
-
-### After Optimization
-
-```
-Lighthouse Score: 98
-LCP: 1.8s
-FID: 45ms
-CLS: 0.05
-Total Size: 850KB
 ```
 
 ## Next Steps

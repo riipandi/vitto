@@ -132,6 +132,10 @@ export default defineConfig({
     vitto({
       minify: process.env.NODE_ENV === 'production',
       enableSearchIndex: true,
+      metadata: {
+        siteName: 'Vitto',
+        title: 'Vitto - Static Site Generator Powered by Vite & Vento',
+      }
     })
   ],
 })

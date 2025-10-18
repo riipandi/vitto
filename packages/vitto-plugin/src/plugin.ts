@@ -1,7 +1,6 @@
 import fs from 'node:fs'
-import { glob } from 'node:fs/promises'
 import path from 'node:path'
-import { type Options as MinifyOptions, minify as swcMinify } from '@swc/html'
+import { minify as swcMinify } from '@swc/html'
 import { chroma } from 'itty-chroma'
 import { duration } from 'itty-time'
 import * as pagefind from 'pagefind'
@@ -10,59 +9,15 @@ import { parseQuery } from 'ufo'
 import vento, { type Options as VentoOptions } from 'ventojs'
 import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js'
 import type { Plugin, ResolvedConfig } from 'vite'
+import { convertUrlPath, findVtoFiles, getViteAssetsFromBundle, normalizePath } from './helper'
 import { createDynamicRoutePatterns, getPageData } from './hooks'
-import { DEFAULT_OPTS, MINIFY_OPTIONS, PAGEFIND_OPTIONS, type VittoOptions } from './options'
+import { createMetadataCollector } from './metadata'
+import type { OutputStrategy, RenderOptions, VittoOptions } from './options'
+import { DEFAULT_OPTS, MINIFY_OPTIONS, PAGEFIND_OPTIONS } from './options'
 
 // Global variables to store Vite configuration
 let viteRoot = process.cwd()
 let viteConfig: ResolvedConfig
-
-/**
- * Options for rendering a Vento template to HTML.
- */
-interface RenderOptions {
-  /** Path to the .vto template file */
-  filePath: string
-  /** Data to be injected into the template context */
-  data?: Record<string, unknown>
-  /** Whether running in development mode */
-  isDev?: boolean
-  /** Vite-generated assets (JS and CSS files) */
-  assets?: { main: string; css: string[] }
-  /** Whether to minify the output HTML */
-  minify?: boolean | MinifyOptions
-}
-
-/**
- * Metadata collector for capturing metadata from templates
- */
-interface MetadataCollector {
-  metadata: Record<string, any>
-  setMetadata: (key: string, value: any) => void
-  getMetadata: (key?: string) => any
-}
-
-/**
- * Create a metadata collector instance
- */
-function createMetadataCollector(): MetadataCollector {
-  const metadata: Record<string, any> = {}
-
-  return {
-    metadata,
-    setMetadata(key: string, value: any) {
-      this.metadata[key] = value
-    },
-    getMetadata(key?: string) {
-      // If key is provided, return specific value (or undefined if not found)
-      if (key !== undefined && key !== null && key !== '') {
-        return this.metadata[key]
-      }
-      // If no key, return all metadata
-      return { ...this.metadata }
-    },
-  }
-}
 
 /**
  * Render a Vento template file to an HTML string.
@@ -193,83 +148,6 @@ async function renderVentoToHtml(
 }
 
 /**
- * Extract Vite-generated assets (JS and CSS files) from the build bundle.
- *
- * This function scans the Vite bundle to find:
- * - Main entry point JavaScript file (marked with isEntry: true)
- * - All CSS files generated during the build
- *
- * These assets are later injected into HTML templates via the viteAssets context variable.
- *
- * @param bundle - The Vite build bundle object containing all generated files
- * @returns Object with main JS file and array of CSS files
- *
- * @example
- * const assets = getViteAssetsFromBundle(bundle)
- * // Returns: { main: 'assets/main-abc123.js', css: ['assets/style-def456.css'] }
- */
-function getViteAssetsFromBundle(bundle: Record<string, any>): { main: string; css: string[] } {
-  let main = ''
-  const css: string[] = []
-
-  // Iterate through all files in the bundle
-  for (const [fileName, chunk] of Object.entries(bundle)) {
-    // Skip null or non-object entries (safety check)
-    if (!chunk || typeof chunk !== 'object') {
-      continue
-    }
-
-    // Find the main entry point JavaScript file
-    if ('isEntry' in chunk && chunk.isEntry === true && fileName.endsWith('.js')) {
-      main = fileName
-    }
-
-    // Collect all CSS files
-    if (fileName.endsWith('.css')) {
-      css.push(fileName)
-    }
-  }
-
-  return { main, css }
-}
-
-/**
- * Normalize path for comparison by removing trailing slashes.
- *
- * @param path - Path to normalize
- * @returns Normalized path without trailing slash (except root)
- *
- * @example
- * normalizePath('/about/') // Returns: '/about'
- * normalizePath('/') // Returns: '/'
- */
-function normalizePath(path: string): string {
-  if (path === '/' || !path) return '/'
-  return path.endsWith('/') ? path.slice(0, -1) : path
-}
-
-/**
- * Find all .vto template files in the pages directory.
- *
- * Recursively scans the pages directory for all files with .vto extension.
- * These templates will be rendered to HTML during the build process.
- *
- * @param pagesDir - Absolute path to the pages directory
- * @returns Array of absolute paths to all .vto template files
- *
- * @example
- * const files = await findVtoFiles('/project/src/pages')
- * // Returns: ['/project/src/pages/index.vto', '/project/src/pages/about.vto', ...]
- */
-async function findVtoFiles(pagesDir: string): Promise<string[]> {
-  const files: string[] = []
-  for await (const file of glob('**/*.vto', { cwd: pagesDir })) {
-    files.push(path.resolve(pagesDir, file))
-  }
-  return files
-}
-
-/**
  * Convert output path based on output strategy.
  *
  * @param outputPath - Original output path (e.g., 'about.html', 'blog/1.html')
@@ -285,7 +163,7 @@ async function findVtoFiles(pagesDir: string): Promise<string[]> {
  * convertOutputPath('about.html', 'directory') // Returns: 'about/index.html'
  * convertOutputPath('blog/1.html', 'directory') // Returns: 'blog/1/index.html'
  */
-function convertOutputPath(outputPath: string, strategy?: 'html' | 'directory'): string {
+function convertOutputPath(outputPath: string, strategy?: OutputStrategy): string {
   // If strategy is 'html' or undefined, return original path
   if (strategy !== 'directory') {
     return outputPath
@@ -299,31 +177,6 @@ function convertOutputPath(outputPath: string, strategy?: 'html' | 'directory'):
   // Convert page.html to page/index.html
   // Convert dir/page.html to dir/page/page.html
   return outputPath.replace(/\.html$/, '/index.html')
-}
-
-/**
- * Convert URL path based on output strategy.
- *
- * @param urlPath - Original URL path (e.g., '/about', '/blog/1')
- * @param strategy - Output strategy ('html' or 'directory')
- * @returns URL path that matches the output strategy
- *
- * @example
- * convertUrlPath('/about', 'html') // Returns: '/about'
- * convertUrlPath('/about', 'directory') // Returns: '/about/'
- */
-function convertUrlPath(urlPath: string, strategy?: 'html' | 'directory'): string {
-  // For html strategy, return as is
-  if (strategy !== 'directory') {
-    return urlPath
-  }
-
-  // For directory strategy, ensure trailing slash (except for root)
-  if (urlPath === '' || urlPath === '/') {
-    return '/'
-  }
-
-  return urlPath.endsWith('/') ? urlPath : `${urlPath}/`
 }
 
 // Vitto Vite plugin for rendering Vento templates to static HTML.

@@ -60,6 +60,10 @@ import siteHook from './hooks/site'
 export default defineConfig({
   plugins: [
     vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site'
+      },
       hooks: {
         site: siteHook
       }
@@ -124,6 +128,10 @@ Use with dynamic routes:
 ```ts
 // vite.config.ts
 vitto({
+  metadata: {
+    siteName: 'My Blog',
+    title: 'My Blog'
+  },
   dynamicRoutes: [
     {
       template: 'post',
@@ -390,14 +398,24 @@ export const categoriesHook = defineHooks('categories', async () => {
 Then register all at once:
 
 ```ts
+import { defineConfig } from 'vite'
+import vitto from 'vitto'
 import { postsHook, postHook, categoriesHook } from './hooks/blog'
 
-vitto({
-  hooks: {
-    posts: postsHook,
-    post: postHook,
-    categories: categoriesHook
-  }
+export default defineConfig({
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Blog',
+        title: 'My Blog'
+      },
+      hooks: {
+        posts: postsHook,
+        post: postHook,
+        categories: categoriesHook
+      }
+    })
+  ]
 })
 ```
 
@@ -521,6 +539,17 @@ export const everythingHook = defineHooks('everything', async () => {
 })
 ```
 
+### 6. Export Both Named and Default
+
+```ts
+// Good practice for better imports
+export const postsHook = defineHooks('posts', async () => {
+  return await fetchPosts()
+})
+
+export default postsHook
+```
+
 ## Debugging Hooks
 
 ### Log Hook Data
@@ -546,6 +575,103 @@ export default defineHooks('posts', async () => {
   })
 
   return posts
+})
+```
+
+### Development vs Production
+
+```ts
+export default defineHooks('data', async () => {
+  const data = await fetchData()
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Hook data:', JSON.stringify(data, null, 2))
+  }
+
+  return data
+})
+```
+
+## Complete Example
+
+Here's a complete example showing hooks in action:
+
+`hooks/blog.ts`:
+
+```ts
+import { defineHooks } from 'vitto'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import matter from 'gray-matter'
+
+export const postsHook = defineHooks('posts', async () => {
+  const postsDir = path.join(process.cwd(), 'content/posts')
+  const files = await fs.readdir(postsDir)
+
+  const posts = await Promise.all(
+    files
+      .filter(file => file.endsWith('.md'))
+      .map(async (file) => {
+        const content = await fs.readFile(path.join(postsDir, file), 'utf-8')
+        const { data } = matter(content)
+        return {
+          slug: file.replace('.md', ''),
+          ...data
+        }
+      })
+  )
+
+  return posts.sort((a, b) =>
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
+})
+
+export const postHook = defineHooks('post', async (params) => {
+  if (!params?.slug) return null
+
+  const filePath = path.join(process.cwd(), 'content/posts', `${params.slug}.md`)
+  const content = await fs.readFile(filePath, 'utf-8')
+  const { data, content: markdown } = matter(content)
+
+  return {
+    slug: params.slug,
+    ...data,
+    content: markdown
+  }
+})
+
+export default postsHook
+```
+
+`vite.config.ts`:
+
+```ts
+import { defineConfig } from 'vite'
+import vitto from 'vitto'
+import { postsHook, postHook } from './hooks/blog'
+
+export default defineConfig({
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Blog',
+        title: 'My Blog',
+        description: 'A blog about web development'
+      },
+      hooks: {
+        posts: postsHook,
+        post: postHook
+      },
+      dynamicRoutes: [
+        {
+          template: 'post',
+          dataSource: 'posts',
+          getParams: (post) => ({ slug: post.slug }),
+          getPath: (post) => `blog/${post.slug}.html`
+        }
+      ]
+    })
+  ]
 })
 ```
 
