@@ -5,6 +5,9 @@
 # Vitto
 
 <p align="left">
+    <a href="https://vite.dev">
+        <img src="https://img.shields.io/badge/Vite-v7.1-bd34fe.svg?logo=Vite&logoColor=yellow" alt="TypeScript v7.1">
+    </a>
     <a href="https://www.typescriptlang.org">
         <img src="https://img.shields.io/badge/TypeScript-v5.9-blue.svg?logo=TypeScript&logoColor=blue" alt="TypeScript v5.9">
     </a>
