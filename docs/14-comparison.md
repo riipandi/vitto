@@ -235,17 +235,16 @@ Astro is a modern static site builder that supports multiple UI frameworks and s
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import vitto from 'vitto'
 
 export default defineConfig({
-  plugins: [vitto({
-    metadata: { siteName: 'My App', title: 'My App' }
-  })],
-  css: {
-    postcss: {
-      plugins: [require('tailwindcss'), require('autoprefixer')]
-    }
-  }
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My App', title: 'My App' }
+    }),
+    tailwindcss(),
+  ],
 })
 ```
 
@@ -352,18 +351,16 @@ module.exports = {
 ```ts
 // vite.config.ts - Everything in one place
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import vitto from 'vitto'
 
 export default defineConfig({
-  plugins: [vitto({
-    metadata: { siteName: 'My Site', title: 'My Site' }
-  })],
-  // Use any Vite plugin directly
-  css: {
-    postcss: {
-      plugins: [require('tailwindcss')]
-    }
-  }
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My Site', title: 'My Site' }
+    }),
+    tailwindcss(),
+  ],
 })
 ```
 
