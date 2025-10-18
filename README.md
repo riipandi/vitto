@@ -40,8 +40,9 @@ Vitto combines the speed of Vite's development experience with the simplicity of
 a modern static site generator. Perfect for documentation sites, blogs, portfolios, and any project that
 needs fast builds and flexible templating without the complexity of larger frameworks.
 
-**Compatibility Note:**
-Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+, 22.12+.
+**Compatibility Note:** Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+, 22.12+.
+
+**Live Demo:** Check out Vitto in action at [vitto.pages.dev](https://vitto.pages.dev)
 
 ## Features
 
