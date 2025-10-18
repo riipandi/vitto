@@ -53,6 +53,18 @@ Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+, 22.12+.
 - 🪝 **Hooks System** - Inject data into templates with ease
 - 📦 **Zero Config** - Works out of the box with sensible defaults
 - 🏗️ **Static Output** - Generate fully static sites for any hosting
+- 🔌 **Easy Integration** - Seamlessly integrate HTMX, Alpine.js, and other libraries
+
+## Why Vitto?
+
+Vitto stands out by leveraging Vite's powerful ecosystem, allowing you to:
+
+- **Use Modern Tools**: Direct access to Vite plugins (Tailwind CSS, UnoCSS, PostCSS, etc.)
+- **Integrate Easily**: Add HTMX, Alpine.js, or any library via bundler or CDN
+- **Build Fast**: Lightning-fast builds with Vite's optimized pipeline
+- **Stay Simple**: Template-based approach without framework complexity
+
+See how Vitto compares to other static site generators in our [comparison guide](./docs/14-comparison.md).
 
 ## Quick Start
 
@@ -141,7 +153,6 @@ export default defineConfig({
 })
 ```
 
-
 ## Documentation
 
 For comprehensive documentation, visit our [docs folder](./docs) or check out these guides:
@@ -166,6 +177,7 @@ For comprehensive documentation, visit our [docs folder](./docs) or check out th
 - [Troubleshooting](./docs/11-troubleshooting.md) - Common issues and solutions
 - [API Reference](./docs/12-api-reference.md) - Complete API documentation
 - [Contributing](./docs/13-contributing.md) - Contribute to Vitto
+- [Comparison](./docs/14-comparison.md) - Compare with other SSGs
 
 ## Community
 
