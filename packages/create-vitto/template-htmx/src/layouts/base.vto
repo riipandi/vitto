@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="{{ lang || 'en' }}">
+<head>
+  {{ include "partials/head.vto" }}
+  {{ renderAssets() |> safe }}
+</head>
+<body>
+  {{ content |> safe }}
+</body>
+</html>

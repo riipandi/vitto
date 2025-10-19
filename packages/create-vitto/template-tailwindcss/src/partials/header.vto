@@ -1,0 +1,10 @@
+<header>
+  <div class="container">
+    <a href="/" class="logo">{{ metadata.siteName }}</a>
+    <nav>
+      <a href="/" class="{{ currentPath === '/' ? 'active' : '' }}">Home</a>
+      <a href="/about" class="{{ currentPath === '/about' ? 'active' : '' }}">About</a>
+      <a href="/not-found">Not Found</a>
+    </nav>
+  </div>
+</header>

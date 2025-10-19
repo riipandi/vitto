@@ -1,5 +1,5 @@
 {
-  "name": "vitto-basic-starter",
+  "name": "vitto-htmx-starter",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "ufo": "^1.6.1"
+    "htmx.org": "^2.0.7"
   },
   "devDependencies": {
     "@types/node": "^24.8.1",

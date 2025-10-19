@@ -1,0 +1,17 @@
+{{ layout "layouts/base.vto" }}
+
+{{ setMetadata('title', 'Page Not Found') }}
+
+<div class="error-page">
+  <div class="error-container">
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">Page Not Found</h2>
+    <p class="error-description">
+      Sorry, we couldn't find the page you're looking for.
+    </p>
+    <div class="error-actions">
+      <a href="/" class="btn btn-primary">Go Home</a>
+      <button onclick="window.history.back()" class="btn btn-secondary">Go Back</button>
+    </div>
+  </div>
+</div>

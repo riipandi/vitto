@@ -1,0 +1,33 @@
+{{ layout "layouts/site.vto" }}
+
+{{ setMetadata('title', 'Home') }}
+
+<div class="hero-center">
+  <div class="hero-logos">
+    <img src="/vite.svg" alt="Vite logo">
+    <img src="/favicon.svg" alt="Vento logo">
+  </div>
+  <div class="hero-content">
+    <h1>Welcome to Vitto</h1>
+    <p>A minimal static site generator built with Vite and Vento.</p>
+
+    <div class="demo-section">
+      <h2>HTMX Demo: Load Posts</h2>
+      <button
+        class="btn btn-primary"
+        hx-get="/posts.json"
+        hx-target="#posts-container"
+        hx-swap="innerHTML"
+        hx-indicator="#loading"
+      >
+        Load Posts
+      </button>
+
+      <div id="loading" class="htmx-indicator">
+        <div class="spinner">Loading...</div>
+      </div>
+
+      <div id="posts-container" class="posts-container"></div>
+    </div>
+  </div>
+</div>

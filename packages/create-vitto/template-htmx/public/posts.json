@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "userId": 1,
+        "title": "Getting Started with HTMX",
+        "body": "HTMX allows you to access AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext."
+    },
+    {
+        "id": 2,
+        "userId": 1,
+        "title": "Why Use Static Site Generators",
+        "body": "Static site generators offer excellent performance, security, and scalability. They generate HTML files at build time, making your site incredibly fast and easy to deploy anywhere."
+    },
+    {
+        "id": 3,
+        "userId": 2,
+        "title": "The Power of Vite",
+        "body": "Vite provides lightning-fast cold server start and instant hot module replacement. It's the perfect tool for modern web development with its optimized build process."
+    },
+    {
+        "id": 4,
+        "userId": 2,
+        "title": "Template Engines Made Simple",
+        "body": "Vento is a minimal and powerful template engine that makes creating static sites a breeze. It supports layouts, partials, and custom filters out of the box."
+    },
+    {
+        "id": 5,
+        "userId": 3,
+        "title": "Building Modern Websites",
+        "body": "Combining HTMX with static site generators gives you the best of both worlds: the performance of static sites with the interactivity of modern web applications."
+    }
+]

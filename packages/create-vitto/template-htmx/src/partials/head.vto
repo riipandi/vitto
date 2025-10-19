@@ -1,0 +1,34 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="{{ getMetadata('description') }}">
+<meta name="author" content="{{ getMetadata('author') }}">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.ico">
+
+{{ set pageTitle = metadata.title ? `${metadata.title} - ${metadata.siteName}` : metadata.siteName }}
+<title>{{ pageTitle |> safe }}</title>
+
+{{ if !isDev }}
+<!-- Pagefind Search -->
+<link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="/_pagefind/pagefind-ui.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const searchElement = document.querySelector("#search");
+    if (searchElement) {
+      new PagefindUI({
+        element: "#search",
+        showSubResults: true,
+        showImages: false,
+        excerptLength: 15,
+        processResult: function(result) {
+          return result;
+        }
+      });
+    }
+  });
+</script>
+{{ /if }}

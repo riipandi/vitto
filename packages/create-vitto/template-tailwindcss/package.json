@@ -1,5 +1,5 @@
 {
-  "name": "vitto-basic-starter",
+  "name": "vitto-tailwindcss-starter",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,9 @@
     "ufo": "^1.6.1"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
     "@types/node": "^24.8.1",
+    "tailwindcss": "^4.1.14",
     "typescript": "^5.9.3",
     "vite": "^7.1.10",
     "vitto": "^0.0.23"

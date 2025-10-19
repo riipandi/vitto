@@ -16,19 +16,14 @@ const frameworkVariants: TemplateVariant[] = [
     color: (text: string) => styleText('cyan', text),
   },
   {
-    name: 'htmx',
-    display: 'HTMX',
-    color: (text: string) => styleText('blue', text),
-  },
-  {
-    name: 'lit',
-    display: 'Lit',
+    name: 'alpinejs',
+    display: 'Alpine.js',
     color: (text: string) => styleText('magenta', text),
   },
   {
-    name: 'open-props',
-    display: 'Open Props',
-    color: (text: string) => styleText('green', text),
+    name: 'htmx',
+    display: 'HTMX',
+    color: (text: string) => styleText('blue', text),
   },
   {
     name: 'tailwindcss',
