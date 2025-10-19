@@ -36,7 +36,7 @@ on:
 
 env:
   NODE_VERSION: 24
-  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 # Cancel in progress workflows on pull_requests.
 concurrency:
@@ -56,40 +56,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Run actions/setup-sdk@local
-      #   uses: ./.github/setup-sdk
-      #   with:
-      #     nodeVersion: ${{ env.NODE_VERSION }}
-
-      - uses: pnpm/action-setup@v4
+      - name: Run actions/setup-sdk@local
+        uses: ./.github/setup-sdk
         with:
-          run_install: |
-            - args: [--global, npm@latest]
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v4
-        id: pnpm-cache
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: ${{ runner.os }}-pnpm-store-
-
-      - name: Check SDK versions
-        shell: bash
-        run: |
-          echo "Node.js version: $(node -v)"
-          echo "npm version: $(npm -v)"
-          echo "pnpm version: $(pnpm -v)"
+          nodeVersion: ${{ env.NODE_VERSION }}
 
       - name: Check workflow environment
         run: |
