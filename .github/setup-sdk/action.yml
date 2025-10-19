@@ -39,12 +39,9 @@ runs:
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: ${{ runner.os }}-pnpm-store-
 
-    - name: Check npm authentication
+    - name: Check SDK versions
       shell: bash
       run: |
-        echo "---- ~/.npmrc ----"
-        sed -n '1,200p' ~/.npmrc || true
-        echo "npm whoami:"
-        npm whoami || true
-        echo "pnpm whoami:"
-        pnpm whoami || true
+        echo "Node.js version: $(node -v)"
+        echo "npm version: $(npm -v)"
+        echo "pnpm version: $(pnpm -v)"
