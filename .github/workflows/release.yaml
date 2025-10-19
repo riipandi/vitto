@@ -39,6 +39,7 @@ concurrency:
 permissions:
   contents: write # Required to fetch the repository content
   id-token: write # Required for OIDC authentication to publish packages
+  packages: write # Required to publish packages to GitHub Packages
 
 jobs:
   publish-npmjs:
@@ -102,6 +103,11 @@ jobs:
       # - name: Setup npm authentication
       #   run: |
       #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Debug npm authentication
+        run: |
+          sed -n '1,200p' ~/.npmrc || true
+          npm whoami || pnpm whoami || true
 
       - name: Publish vitto to npm
         run: |
