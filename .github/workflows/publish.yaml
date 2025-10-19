@@ -61,32 +61,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run actions/setup-sdk@local
-        uses: ./.github/setup-sdk
+      - name: Setup Node.js runtime
+        uses: actions/setup-node@v6
         with:
-          nodeVersion: ${{ env.NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          # disable cache, to avoid cache poisoning (https://docs.zizmor.sh/audits/#cache-poisoning)
+          package-manager-cache: false
 
-      - name: Disallow installation scripts
-        run: yq '.onlyBuiltDependencies = []' -i pnpm-workspace.yaml
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpmVersion }}
+          run_install: |
+            - args: [--global, npm@latest]
 
-      - name: Setup npm authentication
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
-      - name: Check workflow environment
+      - name: Check SDK versions
+        shell: bash
         run: |
-          echo "Environment: $ENVIRONMENT"
-          echo "Ref Name: $REF_NAME"
-          echo "Running npm whoami:"
-          npm whoami || true
-          echo "Running pnpm whoami:"
-          pnpm whoami || true
-        env:
-          ENVIRONMENT: ${{ inputs.environment }}
-          REF_NAME: ${{ github.ref_name }}
-
-      - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
-        name: Install dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
+          echo "Node.js version: $(node -v)"
+          echo "npm version: $(npm -v)"
+          echo "pnpm version: $(pnpm -v)"
 
       - name: Extract version from tag
         id: version
@@ -100,19 +95,26 @@ jobs:
         run: |
           TAG_VERSION="${{ steps.version.outputs.version }}"
 
-          # Check vitto package
-          VITTO_VERSION=$(npm view vitto version 2>/dev/null || echo "0.0.0")
-          echo "vitto_version=$VITTO_VERSION" >> $GITHUB_OUTPUT
-          echo "Current vitto version on npm: $VITTO_VERSION"
+          # Function to compare versions
+          check_package() {
+            local package=$1
+            local current_version=$(npm view "$package" version 2>/dev/null || echo "0.0.0")
+            echo "${package}_version=$current_version" >> $GITHUB_OUTPUT
+            echo "Current $package version on npm: $current_version"
 
-          # Check create-vitto package
-          CREATE_VITTO_VERSION=$(npm view create-vitto version 2>/dev/null || echo "0.0.0")
-          echo "create_vitto_version=$CREATE_VITTO_VERSION" >> $GITHUB_OUTPUT
-          echo "Current create-vitto version on npm: $CREATE_VITTO_VERSION"
+            if [ "$TAG_VERSION" = "$current_version" ]; then
+              echo "❌ Version $TAG_VERSION already exists for $package"
+              return 1
+            fi
+            return 0
+          }
 
-          # Compare versions
-          if [ "$TAG_VERSION" = "$VITTO_VERSION" ] || [ "$TAG_VERSION" = "$CREATE_VITTO_VERSION" ]; then
-            echo "❌ Version $TAG_VERSION already exists on npm"
+          # Check both packages
+          can_publish=true
+          check_package "vitto" || can_publish=false
+          check_package "create-vitto" || can_publish=false
+
+          if [ "$can_publish" = false ]; then
             exit 1
           fi
 
@@ -120,35 +122,47 @@ jobs:
           echo "✓ Version $TAG_VERSION is new and can be published"
 
       - name: Sync version across packages
-        run: |
-          chmod +x ./sync-version.sh
-          VERSION="${{ steps.version.outputs.version }}"
-          echo "Extracted version: $VERSION"
-          echo "Running sync-version.sh with version: $VERSION"
-          ./sync-version.sh "$VERSION"
+        run: ./sync-version.sh "${{ steps.version.outputs.version }}"
 
-      - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
-        name: Build the packages
+      - name: Disallow installation scripts
+        run: yq '.onlyBuiltDependencies = []' -i pnpm-workspace.yaml
+
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts --frozen-lockfile
+
+      - name: Build packages
         run: pnpm run build
         env:
           NODE_ENV: production
 
-      - name: Publish vitto to npm
+      # This step not required when using OIDC authentication (Trusted Publisher)
+      - name: Setup npm authentication
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Publish packages to npm
         if: steps.check_versions.outputs.can_publish == 'true'
         run: |
+          # Publish vitto
           pnpm turbo publish:npm --filter=vitto
-          echo "✓ Successfully published vitto version ${{ steps.version.outputs.version }} to npm"
+          echo "✓ Published vitto@${{ steps.version.outputs.version }}"
+
+          # Publish create-vitto
+          pnpm turbo publish:npm --filter=create-vitto
+          echo "✓ Published create-vitto@${{ steps.version.outputs.version }}"
         env:
-          REF_NAME: ${{ github.ref_name }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish create-vitto to npm
+      - name: Determine if release is stable
+        id: release_type
         run: |
-          pnpm turbo publish:npm --filter=create-vitto
-          echo "✓ Successfully published create-vitto version ${{ steps.version.outputs.version }} to npm"
-        env:
-          REF_NAME: ${{ github.ref_name }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION="${{ steps.version.outputs.version }}"
+          if [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "is_stable=true" >> $GITHUB_OUTPUT
+            echo "This is a stable release: $VERSION"
+          else
+            echo "is_stable=false" >> $GITHUB_OUTPUT
+            echo "This is a pre-release: $VERSION"
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -156,13 +170,13 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: v${{ steps.version.outputs.version }}
+          generate_release_notes: true  # Automatically generate release notes from PRs and commits
+          make_latest: ${{ steps.release_type.outputs.is_stable == 'true' }}
           body: |
-            ## What's Changed
-
             **Published to npm:**
             - [vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/vitto/v/${{ steps.version.outputs.version }})
             - [create-vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/create-vitto/v/${{ steps.version.outputs.version }})
-          draft: false
           prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
