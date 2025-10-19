@@ -63,6 +63,8 @@ deno init --npm vitto my-website --template tailwindcss
 
 - `basic` - Minimal Vitto setup
 - `tailwindcss` - Vitto with Tailwind CSS pre-configured
+- `alpinejs` - Vitto with Alpine.js integration
+- `htmx` - Vitto with htmx integration
 
 ## Manual Installation
 

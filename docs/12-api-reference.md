@@ -623,8 +623,8 @@ Configuration for dynamic route generation.
 interface DynamicRouteConfig {
   template: string                                // Template name (without .vto)
   dataSource: string                              // Hook name providing data array
-  getParams: (item: any) => Record<string, any>  // Extract params for hook
-  getPath: (item: any) => string                 // Generate output file path
+  getParams: (item: any) => Record<string, any>   // Extract params for hook
+  getPath: (item: any) => string                  // Generate output file path
 }
 ```
 
