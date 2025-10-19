@@ -50,6 +50,10 @@ jobs:
         with:
           nodeVersion: ${{ env.NODE_VERSION }}
 
+      - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
+        name: Install dependencies
+        run: pnpm install --ignore-scripts --frozen-lockfile
+
       - name: Extract version from tag
         id: version
         run: |
@@ -87,10 +91,6 @@ jobs:
           echo "Extracted version: $VERSION"
           echo "Running sync-version.sh with version: $VERSION"
           ./sync-version.sh "$VERSION"
-
-      - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
-        name: Install dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
 
       - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
         name: Build the packages
