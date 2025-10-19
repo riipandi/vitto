@@ -81,7 +81,7 @@ vitto({
     title: 'Welcome to My Site',
     description: 'A website built with Vitto',
     keywords: ['vitto', 'static-site', 'vite'],
-    author: 'John Doe',
+    author: 'Your Name',
     language: 'en',
     // Custom metadata
     social: {

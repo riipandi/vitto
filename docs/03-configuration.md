@@ -38,7 +38,7 @@ vitto({
     description: 'A website built with Vitto',
     keywords: ['vitto', 'vite', 'static-site'],
     // You can add custom metadata fields
-    author: 'John Doe',
+    author: 'Your Name',
     language: 'en'
   }
 })
@@ -310,7 +310,7 @@ export default defineConfig({
         title: 'Welcome to My Blog',
         description: 'A blog about web development',
         keywords: ['blog', 'web development', 'vitto'],
-        author: 'John Doe',
+        author: 'Your Name',
         language: 'en'
       },
       pagesDir: 'src/pages',

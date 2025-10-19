@@ -316,7 +316,7 @@ export default defineConfig({
         siteName: 'My Blog',
         title: 'My Blog',
         description: 'A blog about web development',
-        author: 'John Doe'
+        author: 'Your Name'
       },
       hooks: {
         posts: postsHook,

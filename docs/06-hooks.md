@@ -37,7 +37,7 @@ export default defineHooks('site', () => {
   return {
     name: 'My Awesome Site',
     description: 'A site built with Vitto',
-    author: 'John Doe',
+    author: 'Your Name',
     social: {
       twitter: '@johndoe',
       github: 'johndoe'

@@ -51,7 +51,7 @@ blog/
 title: Getting Started with Vitto
 excerpt: Learn how to build static sites with Vitto
 date: 2024-01-15
-author: John Doe
+author: Your Name
 tags:
   - vitto
   - static-site
@@ -280,7 +280,7 @@ export default defineConfig({
         siteName: 'My Blog',
         title: 'My Awesome Blog',
         description: 'A blog about web development',
-        author: 'John Doe',
+        author: 'Your Name',
         keywords: ['blog', 'web development', 'vitto']
       },
       hooks: {
@@ -579,10 +579,10 @@ export default defineConfig({
   plugins: [
     vitto({
       metadata: {
-        siteName: 'John Doe Portfolio',
-        title: 'John Doe - Web Developer',
+        siteName: 'Your Name Portfolio',
+        title: 'Your Name - Web Developer',
         description: 'Full-stack web developer specializing in React and Node.js',
-        author: 'John Doe',
+        author: 'Your Name',
         keywords: ['portfolio', 'web developer', 'react', 'nodejs']
       },
       hooks: {

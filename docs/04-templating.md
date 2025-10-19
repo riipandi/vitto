@@ -373,7 +373,7 @@ vitto({
     siteName: 'My Blog',
     title: 'My Blog',
     description: 'A blog about web development',
-    author: 'John Doe',
+    author: 'Your Name',
     social: {
       twitter: '@johndoe',
       github: 'johndoe'
