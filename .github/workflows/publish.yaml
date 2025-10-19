@@ -53,10 +53,53 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Run actions/setup-sdk@local
-        uses: ./.github/setup-sdk
         with:
-          nodeVersion: ${{ env.NODE_VERSION }}
+          fetch-depth: 0
+
+      # - name: Run actions/setup-sdk@local
+      #   uses: ./.github/setup-sdk
+      #   with:
+      #     nodeVersion: ${{ env.NODE_VERSION }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: |
+            - args: [--global, npm@latest]
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        id: pnpm-cache
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Check SDK versions
+        shell: bash
+        run: |
+          echo "Node.js version: $(node -v)"
+          echo "npm version: $(npm -v)"
+          echo "pnpm version: $(pnpm -v)"
+
+      - name: Check workflow environment
+        run: |
+          echo "Environment: $ENVIRONMENT"
+          echo "Running npm whoami:"
+          npm whoami || true
+          echo "Running pnpm whoami:"
+          pnpm whoami || true
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
 
       - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
         name: Install dependencies
@@ -90,6 +133,7 @@ jobs:
             exit 1
           fi
 
+          echo "can_publish=true" >> $GITHUB_OUTPUT
           echo "✓ Version $TAG_VERSION is new and can be published"
 
       - name: Sync version across packages
@@ -106,17 +150,8 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Check workflow environment
-        run: |
-          echo "Environment: $ENVIRONMENT"
-          echo "Running npm whoami:"
-          npm whoami || true
-          echo "Running pnpm whoami:"
-          pnpm whoami || true
-        env:
-          ENVIRONMENT: ${{ inputs.environment }}
-
       - name: Publish vitto to npm
+        if: steps.check_versions.outputs.can_publish == 'true'
         run: |
           pnpm turbo publish:npm --filter=vitto
           echo "✓ Successfully published vitto version ${{ steps.version.outputs.version }} to npm"
