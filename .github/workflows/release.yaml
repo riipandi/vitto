@@ -29,7 +29,7 @@ on:
 
 env:
   NODE_VERSION: 24
-  # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 # Cancel in progress workflows on pull_requests.
 concurrency:
@@ -99,19 +99,20 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Publish vitto-plugin to npm
+      - name: Setup npm authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "provenance=false" >> ~/.npmrc
+
+      - name: Publish vitto to npm
         run: |
           pnpm turbo publish:npm --filter=vitto
-          echo "✓ Successfully published vitto-plugin version ${{ steps.version.outputs.version }} to npm"
-        env:
-          NPM_CONFIG_PROVENANCE: false
+          echo "✓ Successfully published vitto version ${{ steps.version.outputs.version }} to npm"
 
       - name: Publish create-vitto to npm
         run: |
           pnpm turbo publish:npm --filter=create-vitto
           echo "✓ Successfully published create-vitto version ${{ steps.version.outputs.version }} to npm"
-        env:
-          NPM_CONFIG_PROVENANCE: false
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
