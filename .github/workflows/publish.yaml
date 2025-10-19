@@ -24,8 +24,8 @@
 name: Publish
 
 on:
-  # push:
-  #   tags: ['v*.*.*']
+  push:
+    tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
       environment:
