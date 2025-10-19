@@ -100,11 +100,12 @@ jobs:
         env:
           NODE_ENV: production
 
-      # - name: Setup npm authentication
-      #   run: |
-      #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+      - name: Setup npm authentication
+        run: |
+          # echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "provenance=true" >> ~/.npmrc
 
-      - name: Debug npm authentication
+      - name: Check npm authentication
         run: |
           sed -n '1,200p' ~/.npmrc || true
           npm whoami || pnpm whoami || true
