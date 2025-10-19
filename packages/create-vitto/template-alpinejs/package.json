@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "pnpm dlx serve dist -l 3000 -nCL",
+    "start": "serve dist -l 3000 -nCL",
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
@@ -16,8 +16,9 @@
   "devDependencies": {
     "@types/alpinejs": "^3.13.11",
     "@types/node": "^24.8.1",
+    "serve": "^14.2.5",
     "typescript": "^5.9.3",
     "vite": "^7.1.10",
-    "vitto": "^0.0.24"
+    "vitto": "^0.1.2"
   }
 }
