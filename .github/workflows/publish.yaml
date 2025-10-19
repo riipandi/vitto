@@ -109,13 +109,11 @@ jobs:
       - name: Check workflow environment
         run: |
           echo "Environment: $ENVIRONMENT"
-          echo "Tags: $TAGS"
           echo "Running npm whoami:"
           npm whoami || true
           echo "Running pnpm whoami:"
           pnpm whoami || true
         env:
-          TAGS: ${{ inputs.tags }}
           ENVIRONMENT: ${{ inputs.environment }}
 
       - name: Publish vitto to npm
