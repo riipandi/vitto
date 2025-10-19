@@ -3,6 +3,7 @@ import pkg from '../package.json' with { type: 'json' }
 import generateProject from './generate'
 import _console from './logger'
 import { frameworkVariants } from './variant'
+import { runWizard } from './wizard'
 
 const main = defineCommand({
   meta: {
@@ -27,7 +28,7 @@ const main = defineCommand({
       description: 'Overwrite existing directory',
       default: false,
     },
-    immediate: {
+    start: {
       type: 'boolean',
       description: 'Install dependencies and start dev server immediately',
       alias: 'i',
@@ -64,9 +65,20 @@ const main = defineCommand({
       return
     }
 
-    if (args.help || !args.name) {
+    if (args.help) {
       showUsage(cmd)
       return
+    }
+
+    // Run wizard if no name argument is provided
+    if (!args.name) {
+      const wizardResult = await runWizard()
+      return await generateProject({
+        name: wizardResult.name,
+        preset: wizardResult.preset,
+        overwrite: wizardResult.overwrite,
+        start: wizardResult.start,
+      })
     }
 
     if (args.preset && !frameworkVariants.find((v) => v.name === args.preset)) {
@@ -80,7 +92,7 @@ const main = defineCommand({
       name: args.name,
       preset: args.preset,
       overwrite: args.overwrite,
-      immediate: args.immediate,
+      start: args.start,
     })
   },
 })

@@ -11,7 +11,7 @@ interface ProjectOptions {
   name: string
   preset?: TemplateVariant['name']
   overwrite?: boolean
-  immediate?: boolean
+  start?: boolean
 }
 
 const renameFiles: Record<string, string | undefined> = {
@@ -244,7 +244,7 @@ export default async function generateProject(opts: ProjectOptions) {
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent)
   const pkgManager = pkgInfo ? pkgInfo.name : 'npm'
 
-  if (opts.immediate) {
+  if (opts.start) {
     install(root, pkgManager)
     start(root, pkgManager)
   } else {
