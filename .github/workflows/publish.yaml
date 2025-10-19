@@ -24,18 +24,13 @@
 name: Publish
 
 on:
-  branch_protection_rule:
-    types: [created]
   push:
     tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
-      tags:
-        description: 'Test scenario tags'
-        required: false
-        type: boolean
       environment:
         description: 'Environment to run workflow against'
+        default: 'publish-npm'
         type: environment
         required: true
 
