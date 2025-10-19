@@ -122,7 +122,7 @@ jobs:
           body: |
             ## What's Changed
 
-            Published to npm:
+            **Published to npm:**
             - [vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/vitto/v/${{ steps.version.outputs.version }})
             - [create-vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/create-vitto/v/${{ steps.version.outputs.version }})
           draft: false
