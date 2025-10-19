@@ -19,6 +19,6 @@
     "tailwindcss": "^4.1.14",
     "typescript": "^5.9.3",
     "vite": "^7.1.10",
-    "vitto": "^0.0.23"
+    "vitto": "^0.0.24"
   }
 }

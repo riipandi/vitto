@@ -14,7 +14,19 @@
     }
 }
 
-/* Debug element */
+/* Custom animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Debug utility */
 @utility debug {
     border-width: 1px;
     border-style: dashed;
