@@ -39,17 +39,11 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
-  server: { port: 3000, strictPort: false, cors: { origin: '*' } },
-  preview: { port: 3000, strictPort: false },
-  clearScreen: false,
   build: {
-    manifest: true,
-    emptyOutDir: true,
     minify: isProduction,
     chunkSizeWarningLimit: 1024 * 4,
     reportCompressedSize: false,
-    rollupOptions: {
-      input: resolve('src/main.ts'),
-    },
+    emptyOutDir: true,
+    manifest: true,
   },
 })

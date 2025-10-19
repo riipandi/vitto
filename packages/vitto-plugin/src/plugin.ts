@@ -186,11 +186,40 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
     /**
      * Modify Vite configuration before it's resolved.
-     * Removes default rollup input to prevent conflicts with our custom HTML generation.
+     * Sets default server and build configurations that can be overridden by user.
      */
     config(config) {
-      if (config.build?.rollupOptions?.input) {
-        delete config.build.rollupOptions.input
+      // Set default server configuration (can be overridden by user)
+      const server = {
+        port: 3000,
+        strictPort: false,
+        ...config.server, // User config takes precedence
+      }
+
+      // Set default preview configuration (can be overridden by user)
+      const preview = {
+        port: 3000,
+        strictPort: false,
+        ...config.preview, // User config takes precedence
+      }
+
+      // Set default build configuration with main.ts as entry point
+      const build = {
+        ...config.build,
+        rollupOptions: {
+          ...config.build?.rollupOptions,
+          // Use src/main.ts as entry point instead of index.html
+          input:
+            config.build?.rollupOptions?.input ||
+            path.resolve(viteRoot || process.cwd(), 'src/main.ts'),
+        },
+      }
+
+      return {
+        server,
+        preview,
+        clearScreen: false,
+        build,
       }
     },
 
@@ -240,6 +269,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       // Get list of templates that are used for dynamic routes
       const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
 
+      // Track emitted files to prevent duplicates
+      const emittedFiles = new Set<string>()
+
       // Render regular pages (excluding dynamic route templates)
       for (const filePath of files) {
         const fileName = path.basename(filePath)
@@ -262,6 +294,12 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         // Apply output strategy
         outName = convertOutputPath(outName, outputStrategy)
 
+        // Skip if already emitted
+        if (emittedFiles.has(outName)) {
+          chroma.log(`⚠ Skipping duplicate: ${outName}`)
+          continue
+        }
+
         // Calculate URL path for currentPath injection
         const urlPath = convertUrlPath(
           `/${outName.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
@@ -283,20 +321,23 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         )
 
         // Emit HTML file to Vite bundle
-        // This makes the file appear in build output and statistics
         this.emitFile({
           type: 'asset',
           fileName: outName,
           source: html,
         })
 
+        // Track emitted file
+        emittedFiles.add(outName)
+
         // For 404 page with pretty URLs, also generate 404.html for compatibility
-        if (is404Page && outputStrategy === 'directory') {
+        if (is404Page && outputStrategy === 'directory' && !emittedFiles.has('404.html')) {
           this.emitFile({
             type: 'asset',
             fileName: '404.html',
             source: html,
           })
+          emittedFiles.add('404.html')
         }
       }
 
@@ -349,6 +390,12 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
             // Apply output strategy
             outPath = convertOutputPath(outPath, outputStrategy)
 
+            // Skip if already emitted
+            if (emittedFiles.has(outPath)) {
+              chroma.log(`⚠ Skipping duplicate: ${outPath}`)
+              continue
+            }
+
             // Calculate URL path
             const urlPath = convertUrlPath(
               `/${outPath.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
@@ -375,6 +422,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               fileName: outPath,
               source: html,
             })
+
+            // Track emitted file
+            emittedFiles.add(outPath)
 
             // Update progress
             processedCount++
@@ -536,7 +586,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                 {
                   filePath: templatePath,
                   data,
-                  isDev: true,
+
                   assets: opts.assets ?? undefined,
                   minify: opts.minify ?? false,
                 },

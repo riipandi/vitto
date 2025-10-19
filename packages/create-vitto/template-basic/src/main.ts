@@ -1,1 +1,1 @@
-export default {}
+import "./styles/global.css";
