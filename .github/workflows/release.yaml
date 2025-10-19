@@ -1,4 +1,31 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+#
+# Publish workflow - Automatically publish packages to npm when a version tag is pushed
+#
+# Usage:
+#   1. Ensure all changes are committed
+#   2. Create and push a version tag:
+#      git tag v1.2.3 && git push origin v1.2.3
+#
+#   For pre-release versions:
+#      git tag v1.2.3-beta.1 && git push origin v1.2.3-beta.1
+#
+#   To remove an existing tag (if needed):
+#      # Remove local tag
+#      git tag -d v1.2.3
+#
+#      # Remove remote tag
+#      git push origin --delete v1.2.3
+#
+#      # Or remove both in one go
+#      git tag -d v1.2.3 && git push origin --delete v1.2.3
+#
+# This workflow will:
+#   - Extract version from the tag
+#   - Check if version already exists on npm
+#   - Sync version across all packages
+#   - Build and publish to npm
+#   - Create a GitHub release
 
 name: Publish
 
