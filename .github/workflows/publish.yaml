@@ -43,7 +43,7 @@ permissions:
   packages: write # Required to publish packages to GitHub Packages
 
 jobs:
-  publish-npmjs:
+  publish-npm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -102,11 +102,9 @@ jobs:
 
       - name: Check npm authentication
         run: |
-          echo "---- ~/.npmrc ----"
-          sed -n '1,200p' ~/.npmrc || true
-          echo "npm whoami:"
+          echo "Running npm whoami:"
           npm whoami || true
-          echo "pnpm whoami:"
+          echo "Running pnpm whoami:"
           pnpm whoami || true
 
       - name: Publish vitto to npm
