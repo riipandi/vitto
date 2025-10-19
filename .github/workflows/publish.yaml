@@ -121,14 +121,14 @@ jobs:
           echo "can_publish=true" >> $GITHUB_OUTPUT
           echo "✓ Version $TAG_VERSION is new and can be published"
 
-      - name: Sync version across packages
-        run: ./sync-version.sh "${{ steps.version.outputs.version }}"
-
       - name: Disallow installation scripts
         run: yq '.onlyBuiltDependencies = []' -i pnpm-workspace.yaml
 
       - name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
+
+      - name: Sync version across packages
+        run: ./sync-version.sh "${{ steps.version.outputs.version }}"
 
       - name: Build packages
         run: pnpm run build
