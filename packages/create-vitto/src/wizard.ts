@@ -33,7 +33,6 @@ export async function runWizard(): Promise<WizardResult> {
       borderColor: 'cyan',
     },
   })
-  _console.log('')
 
   // Prompt for project name
   const projectName = await _console.prompt('Project name:', {

@@ -199,7 +199,7 @@ export default async function generateProject(opts: ProjectOptions) {
   fs.mkdirSync(root, { recursive: true })
 
   const relativePath = path.relative(cwd, root) || '.'
-  _console.log(`Scaffolding project in ${styleText('cyan', relativePath)}...`)
+  _console.log(`\nScaffolding project in ${styleText('cyan', relativePath)}...`)
 
   const templateDir = path.resolve(
     fileURLToPath(import.meta.url),
