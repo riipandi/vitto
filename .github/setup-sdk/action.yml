@@ -18,6 +18,8 @@ runs:
     - uses: pnpm/action-setup@v4
       with:
         version: ${{ inputs.pnpmVersion }}
+        run_install: |
+          - args: [--global, npm@latest]
 
     - uses: actions/setup-node@v6
       with:
