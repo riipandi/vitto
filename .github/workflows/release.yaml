@@ -30,6 +30,41 @@ jobs:
         with:
           nodeVersion: ${{ env.NODE_VERSION }}
 
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
+          echo "Version from tag: $TAG_VERSION"
+
+      - name: Check npm package versions
+        id: check_versions
+        run: |
+          TAG_VERSION="${{ steps.version.outputs.version }}"
+
+          # Check vitto package
+          VITTO_VERSION=$(npm view vitto version 2>/dev/null || echo "0.0.0")
+          echo "vitto_version=$VITTO_VERSION" >> $GITHUB_OUTPUT
+          echo "Current vitto version on npm: $VITTO_VERSION"
+
+          # Check create-vitto package
+          CREATE_VITTO_VERSION=$(npm view create-vitto version 2>/dev/null || echo "0.0.0")
+          echo "create_vitto_version=$CREATE_VITTO_VERSION" >> $GITHUB_OUTPUT
+          echo "Current create-vitto version on npm: $CREATE_VITTO_VERSION"
+
+          # Compare versions
+          if [ "$TAG_VERSION" = "$VITTO_VERSION" ] || [ "$TAG_VERSION" = "$CREATE_VITTO_VERSION" ]; then
+            echo "❌ Version $TAG_VERSION already exists on npm"
+            exit 1
+          fi
+
+          echo "✓ Version $TAG_VERSION is new and can be published"
+
+      - name: Sync version across packages
+        run: |
+          chmod +x ./sync-version.sh
+          ./sync-version.sh ${{ steps.version.outputs.version }}
+
       - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
         name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
@@ -39,3 +74,32 @@ jobs:
         run: pnpm run build
         env:
           NODE_ENV: production
+
+      - name: Publish to npm
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "provenance=false" >> ~/.npmrc
+          pnpm run publish:npm
+          echo "✓ Successfully published version ${{ steps.version.outputs.version }} to npm"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## What's Changed
+
+            Published to npm:
+            - [vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/vitto/v/${{ steps.version.outputs.version }})
+            - [create-vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/create-vitto/v/${{ steps.version.outputs.version }})
+
+            **Previous versions:**
+            - vitto: ${{ steps.check_versions.outputs.vitto_version }}
+            - create-vitto: ${{ steps.check_versions.outputs.create_vitto_version }}
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
