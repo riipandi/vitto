@@ -29,7 +29,7 @@ jobs:
       - name: Run actions/setup-sdk@local
         uses: ./.github/setup-sdk
         with:
-          NODE_VERSION: ${{ env.NODE_VERSION }}
+          nodeVersion: ${{ env.NODE_VERSION }}
 
       - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
         name: Install dependencies
