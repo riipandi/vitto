@@ -102,6 +102,8 @@ jobs:
         run: |
           pnpm run publish:npm
           echo "✓ Successfully published version ${{ steps.version.outputs.version }} to npm"
+        env:
+          NPM_CONFIG_PROVENANCE: false
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
