@@ -4,21 +4,14 @@
 #
 # Usage:
 #   1. Ensure all changes are committed
-#   2. Create and push a version tag:
-#      git tag v1.2.3 && git push origin v1.2.3
+#   2. Set version and create tag:
+#      VERSION="1.2.3" && git tag "v${VERSION}" && git push origin "v${VERSION}"
 #
 #   For pre-release versions:
-#      git tag v1.2.3-beta.1 && git push origin v1.2.3-beta.1
+#      VERSION="1.2.3-beta.1" && git tag "v${VERSION}" && git push origin "v${VERSION}"
 #
-#   To remove an existing tag (if needed):
-#      # Remove local tag
-#      git tag -d v1.2.3
-#
-#      # Remove remote tag
-#      git push origin --delete v1.2.3
-#
-#      # Or remove both in one go
-#      git tag -d v1.2.3 && git push origin --delete v1.2.3
+#   To remove an existing tag:
+#      VERSION="1.2.3" && git tag -d "v${VERSION}" && git push origin --delete "v${VERSION}"
 #
 # This workflow will:
 #   - Extract version from the tag
@@ -90,7 +83,10 @@ jobs:
       - name: Sync version across packages
         run: |
           chmod +x ./sync-version.sh
-          ./sync-version.sh ${{ steps.version.outputs.version }}
+          VERSION="${{ steps.version.outputs.version }}"
+          echo "Extracted version: $VERSION"
+          echo "Running sync-version.sh with version: $VERSION"
+          ./sync-version.sh "$VERSION"
 
       - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
         name: Install dependencies
