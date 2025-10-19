@@ -18,7 +18,7 @@
         <img src="https://img.shields.io/github/license/riipandi/vitto?color=green" alt="License">
     </a>
     <a href="https://github.com/riipandi/vitto/actions/workflows/publish.yaml">
-        <img src="https://github.com/riipandi/vitto/actions/workflows/publish.yaml/badge.svg" alt="CI Release">
+        <img src="https://github.com/riipandi/vitto/actions/workflows/publish.yaml/badge.svg?event=workflow_dispatch" alt="CI Publish">
     </a>
     <a href="https://github.com/riipandi/vitto/graphs/contributors">
         <img src="https://img.shields.io/badge/Contributions-welcome-gray.svg?labelColor=blue" alt="Contributions welcome">
