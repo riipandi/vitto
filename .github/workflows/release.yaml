@@ -102,8 +102,12 @@ jobs:
 
       - name: Check npm authentication
         run: |
+          echo "---- ~/.npmrc ----"
           sed -n '1,200p' ~/.npmrc || true
-          npm whoami || pnpm whoami || true
+          echo "npm whoami:"
+          npm whoami || true
+          echo "pnpm whoami:"
+          pnpm whoami || true
 
       - name: Publish vitto to npm
         run: |
