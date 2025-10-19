@@ -29,9 +29,6 @@ importers:
       cross-spawn:
         specifier: ^7.0.6
         version: 7.0.6
-      picospinner:
-        specifier: ^3.0.0
-        version: 3.0.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.2.6

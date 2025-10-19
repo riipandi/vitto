@@ -4,7 +4,6 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { styleText } from 'node:util'
 import spawn from 'cross-spawn'
-import { Spinner } from 'picospinner'
 import _console from './logger'
 import { frameworkVariants, type TemplateVariant } from './variant'
 
@@ -46,15 +45,13 @@ function install(root: string, agent: string) {
     return
   }
 
-  const spinner = new Spinner(`Installing dependencies with ${agent}`)
-  spinner.start()
+  _console.log(`Installing dependencies with ${agent}...`)
 
   run(getInstallCommand(agent), {
     stdio: 'inherit',
     cwd: root,
   })
 
-  spinner.stop()
   _console.log('Dependencies installed!')
 }
 
@@ -202,8 +199,7 @@ export default async function generateProject(opts: ProjectOptions) {
   fs.mkdirSync(root, { recursive: true })
 
   const relativePath = path.relative(cwd, root) || '.'
-  const spinner = new Spinner(`Scaffolding project in ${styleText('cyan', relativePath)}`)
-  spinner.start()
+  _console.log(`Scaffolding project in ${styleText('cyan', relativePath)}...`)
 
   const templateDir = path.resolve(
     fileURLToPath(import.meta.url),
@@ -212,7 +208,6 @@ export default async function generateProject(opts: ProjectOptions) {
   )
 
   if (!fs.existsSync(templateDir)) {
-    spinner.stop()
     _console.error(`Template ${variant.name} not found!`)
     process.exit(1)
   }
@@ -244,8 +239,7 @@ export default async function generateProject(opts: ProjectOptions) {
   pkg.name = packageName
   write('package.json', `${JSON.stringify(pkg, null, 2)}\n`)
 
-  spinner.stop()
-  _console.log('Project scaffolded successfully!')
+  _console.log('Project scaffolded successfully!\n')
 
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent)
   const pkgManager = pkgInfo ? pkgInfo.name : 'npm'
@@ -256,9 +250,7 @@ export default async function generateProject(opts: ProjectOptions) {
   } else {
     const cdProjectName = path.relative(cwd, root)
 
-    _console.log('')
-    _console.log('Done! Now run:')
-    _console.log('')
+    _console.log('Done! Now run:\n')
 
     if (cdProjectName) {
       _console.log(
