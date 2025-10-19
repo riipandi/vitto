@@ -1,6 +1,6 @@
 {
     "name": "create-vitto",
-    "version": "0.0.24",
+    "version": "0.0.0",
     "type": "module",
     "description": "Command-line utility to scaffold Vite apps using Vitto.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -62,6 +62,7 @@
     ],
     "publishConfig": {
         "access": "public",
+        "provenance": false,
         "executableFiles": [
             "./bin/create-vitto.js"
         ]

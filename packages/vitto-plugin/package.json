@@ -1,6 +1,6 @@
 {
     "name": "vitto",
-    "version": "0.0.24",
+    "version": "0.0.0",
     "type": "module",
     "description": "A minimal static site generator built with Vite and the Vento templating engine.",
     "author": "Aris Ripandi <aris@duck.com>",
@@ -61,7 +61,8 @@
         "README.md"
     ],
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "provenance": false
     },
     "keywords": [
         "vite",
