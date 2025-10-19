@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: 22
+  NODE_VERSION: 24
 
 # Cancel in progress workflows on pull_requests.
 concurrency:
@@ -18,14 +18,10 @@ jobs:
   publish-npmjs:
     permissions:
       contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [ubuntu-latest]
-    runs-on: ${{ matrix.platform }}
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
       - name: Run actions/setup-sdk@local
         uses: ./.github/setup-sdk
         with:

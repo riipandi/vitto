@@ -1,8 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 
-# @reference: https://stackoverflow.com/questions/59813998/github-actions-splitting-workflow-file
-# @reference: https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
-
 name: setup-sdk
 description: Prepare development environment
 
@@ -18,20 +15,21 @@ inputs:
 runs:
   using: composite
   steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpmVersion }}
+
     - uses: actions/setup-node@v6
       with:
         node-version: ${{ inputs.nodeVersion }}
         cache: 'pnpm'
-
-    - uses: pnpm/action-setup@v4
-      with:
-        version: ${{ inputs.pnpmVersion }}
 
     - name: Get pnpm store directory
       shell: bash
       run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
     - uses: actions/cache@v4
+      id: pnpm-cache
       name: Setup pnpm cache
       with:
         path: ${{ env.STORE_PATH }}
