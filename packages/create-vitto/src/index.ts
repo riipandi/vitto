@@ -31,7 +31,7 @@ const main = defineCommand({
     start: {
       type: 'boolean',
       description: 'Install dependencies and start dev server immediately',
-      alias: 'i',
+      alias: 's',
       default: false,
     },
     templates: {
