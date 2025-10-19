@@ -57,7 +57,7 @@ const main = defineCommand({
     }
 
     if (args.templates) {
-      _console.log('Available templates:\n')
+      _console.log('\nAvailable templates:\n')
       frameworkVariants.forEach((variant) => {
         _console.log(`  ${variant.color(variant.name.padEnd(15))} - ${variant.display}`)
       })
