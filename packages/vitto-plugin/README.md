@@ -11,6 +11,8 @@ Vitto combines the speed of Vite's development experience with the simplicity of
 a modern static site generator. Perfect for documentation sites, blogs, portfolios, and any project that
 needs fast builds and flexible templating without the complexity of larger frameworks.
 
+Get started quickly using [create-vitto](https://www.npmjs.com/package/create-vitto) to scaffold your project.
+
 Visit the [project page](https://github.com/riipandi/vitto) for more detailed information.
 
 ## Installation
