@@ -99,10 +99,17 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Publish to npm
+      - name: Publish vitto-plugin to npm
         run: |
-          pnpm run publish:npm
-          echo "✓ Successfully published version ${{ steps.version.outputs.version }} to npm"
+          pnpm turbo publish:npm --filter=vitto
+          echo "✓ Successfully published vitto-plugin version ${{ steps.version.outputs.version }} to npm"
+        env:
+          NPM_CONFIG_PROVENANCE: false
+
+      - name: Publish create-vitto to npm
+        run: |
+          pnpm turbo publish:npm --filter=create-vitto
+          echo "✓ Successfully published create-vitto version ${{ steps.version.outputs.version }} to npm"
         env:
           NPM_CONFIG_PROVENANCE: false
 
