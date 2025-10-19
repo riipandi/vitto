@@ -27,6 +27,16 @@ find "$ROOT_DIR/packages" -type f -name package.json | grep -v '/template-' | wh
     mv "$pkg.tmp" "$pkg"
 done
 
+# Update vitto devDependencies in all template-* folders
+find "$ROOT_DIR/packages/create-vitto" -type f -name package.json | grep '/template-' | while read -r pkg; do
+    # Check if vitto exists in devDependencies
+    if jq -e '.devDependencies.vitto' "$pkg" >/dev/null 2>&1; then
+        jq --arg v "^$NEW_VERSION" '.devDependencies.vitto = $v' "$pkg" > "$pkg.tmp"
+        mv "$pkg.tmp" "$pkg"
+        echo "Updated vitto version in: $pkg"
+    fi
+done
+
 # Running code formatting after version update
 if command -v pnpm >/dev/null 2>&1; then
     pnpm run --silent format
@@ -35,3 +45,4 @@ else
 fi
 
 echo "Version updated from $CURRENT_VERSION to $NEW_VERSION in all package.json files."
+echo "Updated vitto devDependencies in all template-* folders."
