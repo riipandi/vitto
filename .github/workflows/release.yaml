@@ -125,10 +125,6 @@ jobs:
             Published to npm:
             - [vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/vitto/v/${{ steps.version.outputs.version }})
             - [create-vitto@${{ steps.version.outputs.version }}](https://www.npmjs.com/package/create-vitto/v/${{ steps.version.outputs.version }})
-
-            **Previous versions:**
-            - vitto: ${{ steps.check_versions.outputs.vitto_version }}
-            - create-vitto: ${{ steps.check_versions.outputs.create_vitto_version }}
           draft: false
           prerelease: ${{ contains(steps.version.outputs.version, '-') }}
         env:
