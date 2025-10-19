@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# filepath: /Users/ariss/Developer/github.com/riipandi/vitto/sync-version.sh
 set -euo pipefail
 
 ROOT_DIR=$(dirname "$0")
@@ -7,14 +8,31 @@ ROOT_DIR=$(dirname "$0")
 CURRENT_VERSION=$(jq -r '.version' "$ROOT_DIR/package.json")
 echo "Current version: $CURRENT_VERSION"
 
-# Get new version from user
-printf "%-20s: " "Enter new version (e.g. 1.2.3)"
-read NEW_VERSION
+# Check if version is provided as argument
+if [ $# -eq 1 ]; then
+    NEW_VERSION="$1"
+    echo "Using provided version: $NEW_VERSION"
+else
+    # Get new version from user
+    printf "%-20s: " "Enter new version (e.g. 1.2.3)"
+    read NEW_VERSION
+fi
 
-# Validate version format (semver)
-if [[ ! "$NEW_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo "Error: Version must be in format X.Y.Z"
+# Validate version format (semantic versioning: X.Y.Z or X.Y.Z-suffix)
+if [[ ! "$NEW_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.\-]+)?$ ]]; then
+    echo "Error: Version must follow semantic versioning format (e.g., 0.0.0 or 1.2.3-beta.1)"
     exit 1
+fi
+
+# Check if version is different from current
+if [ "$NEW_VERSION" = "$CURRENT_VERSION" ]; then
+    echo "Warning: New version is the same as current version"
+    read -p "Continue anyway? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Aborted."
+        exit 0
+    fi
 fi
 
 # Update version in ROOT_DIR/package.json
@@ -25,6 +43,7 @@ mv "$ROOT_DIR/package.json.tmp" "$ROOT_DIR/package.json"
 find "$ROOT_DIR/packages" -type f -name package.json | grep -v '/template-' | while read -r pkg; do
     jq --arg v "$NEW_VERSION" '.version = $v' "$pkg" > "$pkg.tmp"
     mv "$pkg.tmp" "$pkg"
+    echo "Updated version in: $pkg"
 done
 
 # Update vitto devDependencies in all template-* folders
@@ -39,10 +58,13 @@ done
 
 # Running code formatting after version update
 if command -v pnpm >/dev/null 2>&1; then
+    echo "Running code formatting..."
     pnpm run --silent format
 else
     echo "pnpm is not installed. Please run code formatting manually."
 fi
 
-echo "Version updated from $CURRENT_VERSION to $NEW_VERSION in all package.json files."
-echo "Updated vitto devDependencies in all template-* folders."
+echo ""
+echo "✓ Version updated from $CURRENT_VERSION to $NEW_VERSION"
+echo "✓ All package.json files have been updated"
+echo "✓ Template vitto devDependencies have been updated"
