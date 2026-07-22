@@ -3,3 +3,17 @@ packages:
   - "packages/vitto-plugin"
   - "!packages/**/template-*"
   - "website"
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - '@turbo/darwin-64@2.10.6'
+  - '@turbo/darwin-arm64@2.10.6'
+  - '@turbo/linux-64@2.10.6'
+  - '@turbo/linux-arm64@2.10.6'
+  - '@turbo/windows-64@2.10.6'
+  - '@turbo/windows-arm64@2.10.6'
+  - miniflare@4.20260721.0
+  - turbo@2.10.6
+  - wrangler@4.113.0

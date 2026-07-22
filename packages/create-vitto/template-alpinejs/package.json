@@ -11,14 +11,14 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "alpinejs": "^3.15.0"
+    "alpinejs": "^3.15.12"
   },
   "devDependencies": {
     "@types/alpinejs": "^3.13.11",
-    "@types/node": "^24.8.1",
-    "serve": "^14.2.5",
-    "typescript": "^5.9.3",
-    "vite": "^7.1.10",
+    "@types/node": "^26.1.1",
+    "serve": "^14.2.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.5",
     "vitto": "^0.1.2"
   }
 }

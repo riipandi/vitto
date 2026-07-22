@@ -36,20 +36,20 @@
         "vite": "^7.1.10"
     },
     "dependencies": {
-        "@swc/html": "^1.13.20",
+        "@swc/html": "^1.15.46",
         "itty-chroma": "^1.0.6",
         "itty-time": "^2.0.2",
-        "pagefind": "^1.4.0",
+        "pagefind": "^1.5.2",
         "picospinner": "^3.0.0",
-        "ufo": "^1.6.1",
-        "ventojs": "^2.2.0"
+        "ufo": "^1.6.4",
+        "ventojs": "^2.4.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.2.6",
-        "@types/node": "^24.8.1",
-        "tsdown": "^0.15.8",
-        "typescript": "^5.9.3",
-        "vite": "^7.1.10"
+        "@biomejs/biome": "^2.5.5",
+        "@types/node": "^26.1.1",
+        "tsdown": "^0.22.13",
+        "typescript": "^7.0.2",
+        "vite": "^8.1.5"
     },
     "files": [
         "dist/**/*",
