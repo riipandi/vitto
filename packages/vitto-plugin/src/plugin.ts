@@ -591,7 +591,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                 {
                   filePath: templatePath,
                   data,
-
+                  isDev: true,
                   assets: opts.assets ?? undefined,
                   minify: opts.minify ?? false,
                 },
@@ -599,7 +599,6 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                 url,
                 opts.metadata
               );
-
               res.setHeader('Content-Type', 'text/html');
               res.end(html);
               return;
