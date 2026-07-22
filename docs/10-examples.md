@@ -53,9 +53,9 @@ excerpt: Learn how to build static sites with Vitto
 date: 2024-01-15
 author: Your Name
 tags:
-  - vitto
-  - static-site
-  - tutorial
+    - vitto
+    - static-site
+    - tutorial
 ---
 
 # Getting Started with Vitto
@@ -68,103 +68,101 @@ This is my first blog post built with Vitto...
 `hooks/posts.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import matter from 'gray-matter'
-import { marked } from 'marked'
+import { defineHooks } from "vitto";
+import fs from "node:fs/promises";
+import path from "node:path";
+import matter from "gray-matter";
+import { marked } from "marked";
 
-export const postsHook = defineHooks('posts', async () => {
-  const postsDir = path.join(process.cwd(), 'content/posts')
-  const files = await fs.readdir(postsDir)
+export const postsHook = defineHooks("posts", async () => {
+    const postsDir = path.join(process.cwd(), "content/posts");
+    const files = await fs.readdir(postsDir);
 
-  const posts = await Promise.all(
-    files
-      .filter(file => file.endsWith('.md'))
-      .map(async (file) => {
-        const filePath = path.join(postsDir, file)
-        const content = await fs.readFile(filePath, 'utf-8')
-        const { data, content: markdown } = matter(content)
+    const posts = await Promise.all(
+        files
+            .filter((file) => file.endsWith(".md"))
+            .map(async (file) => {
+                const filePath = path.join(postsDir, file);
+                const content = await fs.readFile(filePath, "utf-8");
+                const { data, content: markdown } = matter(content);
+
+                return {
+                    slug: file.replace(".md", ""),
+                    title: data.title,
+                    excerpt: data.excerpt,
+                    date: data.date,
+                    author: data.author,
+                    tags: data.tags || [],
+                    content: await marked(markdown),
+                };
+            }),
+    );
+
+    return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+});
+
+export const postHook = defineHooks("post", async (params) => {
+    if (!params?.slug) return null;
+
+    const filePath = path.join(process.cwd(), "content/posts", `${params.slug}.md`);
+
+    try {
+        const content = await fs.readFile(filePath, "utf-8");
+        const { data, content: markdown } = matter(content);
 
         return {
-          slug: file.replace('.md', ''),
-          title: data.title,
-          excerpt: data.excerpt,
-          date: data.date,
-          author: data.author,
-          tags: data.tags || [],
-          content: await marked(markdown)
-        }
-      })
-  )
-
-  return posts.sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
-})
-
-export const postHook = defineHooks('post', async (params) => {
-  if (!params?.slug) return null
-
-  const filePath = path.join(process.cwd(), 'content/posts', `${params.slug}.md`)
-
-  try {
-    const content = await fs.readFile(filePath, 'utf-8')
-    const { data, content: markdown } = matter(content)
-
-    return {
-      slug: params.slug,
-      title: data.title,
-      excerpt: data.excerpt,
-      date: data.date,
-      author: data.author,
-      tags: data.tags || [],
-      content: await marked(markdown)
+            slug: params.slug,
+            title: data.title,
+            excerpt: data.excerpt,
+            date: data.date,
+            author: data.author,
+            tags: data.tags || [],
+            content: await marked(markdown),
+        };
+    } catch (error) {
+        console.error(`Failed to load post: ${params.slug}`, error);
+        return null;
     }
-  } catch (error) {
-    console.error(`Failed to load post: ${params.slug}`, error)
-    return null
-  }
-})
+});
 
-export default postsHook
+export default postsHook;
 ```
 
 `hooks/tags.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import { postsHook } from './posts'
+import { defineHooks } from "vitto";
+import { postsHook } from "./posts";
 
-export const tagsHook = defineHooks('tags', async () => {
-  const posts = await postsHook()
-  const tagMap = new Map()
+export const tagsHook = defineHooks("tags", async () => {
+    const posts = await postsHook();
+    const tagMap = new Map();
 
-  posts.forEach(post => {
-    post.tags.forEach(tag => {
-      if (!tagMap.has(tag)) {
-        tagMap.set(tag, [])
-      }
-      tagMap.get(tag).push(post)
-    })
-  })
+    posts.forEach((post) => {
+        post.tags.forEach((tag) => {
+            if (!tagMap.has(tag)) {
+                tagMap.set(tag, []);
+            }
+            tagMap.get(tag).push(post);
+        });
+    });
 
-  return Array.from(tagMap.entries()).map(([name, posts]) => ({
-    name,
-    slug: name.toLowerCase().replace(/\s+/g, '-'),
-    count: posts.length,
-    posts
-  }))
-})
+    return Array.from(tagMap.entries()).map(([name, posts]) => ({
+        name,
+        slug: name.toLowerCase().replace(/\s+/g, "-"),
+        count: posts.length,
+        posts,
+    }));
+});
 
-export const tagHook = defineHooks('tag', async (params) => {
-  if (!params?.slug) return null
+export const tagHook = defineHooks("tag", async (params) => {
+    if (!params?.slug) return null;
 
-  const tags = await tagsHook()
-  return tags.find(t => t.slug === params.slug)
-})
+    const tags = await tagsHook();
+    return tags.find((t) => t.slug === params.slug);
+});
 
-export default tagsHook
+export default tagsHook;
 ```
 
 ### Templates
@@ -268,45 +266,45 @@ export default tagsHook
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { postsHook, postHook } from './hooks/posts'
-import { tagsHook, tagHook } from './hooks/tags'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import { postsHook, postHook } from "./hooks/posts";
+import { tagsHook, tagHook } from "./hooks/tags";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Blog',
-        title: 'My Awesome Blog',
-        description: 'A blog about web development',
-        author: 'Your Name',
-        keywords: ['blog', 'web development', 'vitto']
-      },
-      hooks: {
-        posts: postsHook,
-        post: postHook,
-        tags: tagsHook,
-        tag: tagHook
-      },
-      dynamicRoutes: [
-        {
-          template: 'post',
-          dataSource: 'posts',
-          getParams: (post) => ({ slug: post.slug }),
-          getPath: (post) => `blog/${post.slug}.html`
-        },
-        {
-          template: 'tag',
-          dataSource: 'tags',
-          getParams: (tag) => ({ slug: tag.slug }),
-          getPath: (tag) => `tags/${tag.slug}.html`
-        }
-      ],
-      minify: process.env.NODE_ENV === 'production'
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Blog",
+                title: "My Awesome Blog",
+                description: "A blog about web development",
+                author: "Your Name",
+                keywords: ["blog", "web development", "vitto"],
+            },
+            hooks: {
+                posts: postsHook,
+                post: postHook,
+                tags: tagsHook,
+                tag: tagHook,
+            },
+            dynamicRoutes: [
+                {
+                    template: "post",
+                    dataSource: "posts",
+                    getParams: (post) => ({ slug: post.slug }),
+                    getPath: (post) => `blog/${post.slug}.html`,
+                },
+                {
+                    template: "tag",
+                    dataSource: "tags",
+                    getParams: (tag) => ({ slug: tag.slug }),
+                    getPath: (tag) => `tags/${tag.slug}.html`,
+                },
+            ],
+            minify: process.env.NODE_ENV === "production",
+        }),
+    ],
+});
 ```
 
 ## Documentation Site
@@ -318,78 +316,78 @@ Build a documentation site with sidebar navigation.
 `hooks/docs.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import matter from 'gray-matter'
-import { marked } from 'marked'
+import { defineHooks } from "vitto";
+import fs from "node:fs/promises";
+import path from "node:path";
+import matter from "gray-matter";
+import { marked } from "marked";
 
 interface DocItem {
-  type: 'file' | 'directory'
-  name?: string
-  slug?: string
-  title?: string
-  order?: number
-  children?: DocItem[]
+    type: "file" | "directory";
+    name?: string;
+    slug?: string;
+    title?: string;
+    order?: number;
+    children?: DocItem[];
 }
 
-export const docsHook = defineHooks('docs', async () => {
-  const docsDir = path.join(process.cwd(), 'content/docs')
+export const docsHook = defineHooks("docs", async () => {
+    const docsDir = path.join(process.cwd(), "content/docs");
 
-  async function readDocs(dir: string): Promise<DocItem[]> {
-    const entries = await fs.readdir(dir, { withFileTypes: true })
-    const docs: DocItem[] = []
+    async function readDocs(dir: string): Promise<DocItem[]> {
+        const entries = await fs.readdir(dir, { withFileTypes: true });
+        const docs: DocItem[] = [];
 
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name)
+        for (const entry of entries) {
+            const fullPath = path.join(dir, entry.name);
 
-      if (entry.isDirectory()) {
-        const children = await readDocs(fullPath)
-        docs.push({
-          type: 'directory',
-          name: entry.name,
-          children
-        })
-      } else if (entry.name.endsWith('.md')) {
-        const content = await fs.readFile(fullPath, 'utf-8')
-        const { data } = matter(content)
+            if (entry.isDirectory()) {
+                const children = await readDocs(fullPath);
+                docs.push({
+                    type: "directory",
+                    name: entry.name,
+                    children,
+                });
+            } else if (entry.name.endsWith(".md")) {
+                const content = await fs.readFile(fullPath, "utf-8");
+                const { data } = matter(content);
 
-        docs.push({
-          type: 'file',
-          slug: fullPath.replace(docsDir, '').replace('.md', ''),
-          title: data.title,
-          order: data.order || 999
-        })
-      }
+                docs.push({
+                    type: "file",
+                    slug: fullPath.replace(docsDir, "").replace(".md", ""),
+                    title: data.title,
+                    order: data.order || 999,
+                });
+            }
+        }
+
+        return docs.sort((a, b) => (a.order || 999) - (b.order || 999));
     }
 
-    return docs.sort((a, b) => (a.order || 999) - (b.order || 999))
-  }
+    return await readDocs(docsDir);
+});
 
-  return await readDocs(docsDir)
-})
+export const docHook = defineHooks("doc", async (params) => {
+    if (!params?.path) return null;
 
-export const docHook = defineHooks('doc', async (params) => {
-  if (!params?.path) return null
+    const filePath = path.join(process.cwd(), "content/docs", `${params.path}.md`);
 
-  const filePath = path.join(process.cwd(), 'content/docs', `${params.path}.md`)
+    try {
+        const content = await fs.readFile(filePath, "utf-8");
+        const { data, content: markdown } = matter(content);
 
-  try {
-    const content = await fs.readFile(filePath, 'utf-8')
-    const { data, content: markdown } = matter(content)
-
-    return {
-      title: data.title,
-      order: data.order,
-      content: await marked(markdown)
+        return {
+            title: data.title,
+            order: data.order,
+            content: await marked(markdown),
+        };
+    } catch (error) {
+        console.error(`Failed to load doc: ${params.path}`, error);
+        return null;
     }
-  } catch (error) {
-    console.error(`Failed to load doc: ${params.path}`, error)
-    return null
-  }
-})
+});
 
-export default docsHook
+export default docsHook;
 ```
 
 ### Sidebar Component
@@ -424,33 +422,33 @@ export default docsHook
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { docsHook, docHook } from './hooks/docs'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import { docsHook, docHook } from "./hooks/docs";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Docs',
-        title: 'Documentation',
-        description: 'Project documentation'
-      },
-      hooks: {
-        docs: docsHook,
-        doc: docHook
-      },
-      dynamicRoutes: [
-        {
-          template: 'doc',
-          dataSource: 'docs',
-          getParams: (doc) => ({ path: doc.slug }),
-          getPath: (doc) => `docs${doc.slug}.html`
-        }
-      ]
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Docs",
+                title: "Documentation",
+                description: "Project documentation",
+            },
+            hooks: {
+                docs: docsHook,
+                doc: docHook,
+            },
+            dynamicRoutes: [
+                {
+                    template: "doc",
+                    dataSource: "docs",
+                    getParams: (doc) => ({ path: doc.slug }),
+                    getPath: (doc) => `docs${doc.slug}.html`,
+                },
+            ],
+        }),
+    ],
+});
 ```
 
 ## Portfolio Website
@@ -462,65 +460,68 @@ Create a portfolio with project showcases.
 `hooks/projects.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from "vitto";
 
 interface Project {
-  id: number
-  slug: string
-  title: string
-  description: string
-  image: string
-  tags: string[]
-  url: string
-  github?: string
-  featured: boolean
+    id: number;
+    slug: string;
+    title: string;
+    description: string;
+    image: string;
+    tags: string[];
+    url: string;
+    github?: string;
+    featured: boolean;
 }
 
-export const projectsHook = defineHooks<Project[]>('projects', () => {
-  return [
-    {
-      id: 1,
-      slug: 'ecommerce-platform',
-      title: 'E-commerce Platform',
-      description: 'A full-featured e-commerce solution built with modern technologies',
-      image: '/images/projects/ecommerce.jpg',
-      tags: ['React', 'Node.js', 'MongoDB', 'TypeScript'],
-      url: 'https://example.com',
-      github: 'https://github.com/user/ecommerce',
-      featured: true
+export const projectsHook = defineHooks<Project[]>("projects", () => {
+    return [
+        {
+            id: 1,
+            slug: "ecommerce-platform",
+            title: "E-commerce Platform",
+            description: "A full-featured e-commerce solution built with modern technologies",
+            image: "/images/projects/ecommerce.jpg",
+            tags: ["React", "Node.js", "MongoDB", "TypeScript"],
+            url: "https://example.com",
+            github: "https://github.com/user/ecommerce",
+            featured: true,
+        },
+        {
+            id: 2,
+            slug: "mobile-app",
+            title: "Mobile App",
+            description: "Cross-platform mobile application with real-time features",
+            image: "/images/projects/mobile.jpg",
+            tags: ["React Native", "Firebase", "Redux"],
+            url: "https://example.com",
+            github: "https://github.com/user/mobile-app",
+            featured: true,
+        },
+        {
+            id: 3,
+            slug: "design-system",
+            title: "Design System",
+            description: "Comprehensive UI component library",
+            image: "/images/projects/design-system.jpg",
+            tags: ["React", "Storybook", "CSS"],
+            url: "https://example.com",
+            featured: false,
+        },
+    ];
+});
+
+export const projectHook = defineHooks<Project | null, { slug: string }>(
+    "project",
+    async (params) => {
+        if (!params?.slug) return null;
+
+        const projects = await projectsHook();
+        return projects.find((p) => p.slug === params.slug) || null;
     },
-    {
-      id: 2,
-      slug: 'mobile-app',
-      title: 'Mobile App',
-      description: 'Cross-platform mobile application with real-time features',
-      image: '/images/projects/mobile.jpg',
-      tags: ['React Native', 'Firebase', 'Redux'],
-      url: 'https://example.com',
-      github: 'https://github.com/user/mobile-app',
-      featured: true
-    },
-    {
-      id: 3,
-      slug: 'design-system',
-      title: 'Design System',
-      description: 'Comprehensive UI component library',
-      image: '/images/projects/design-system.jpg',
-      tags: ['React', 'Storybook', 'CSS'],
-      url: 'https://example.com',
-      featured: false
-    }
-  ]
-})
+);
 
-export const projectHook = defineHooks<Project | null, { slug: string }>('project', async (params) => {
-  if (!params?.slug) return null
-
-  const projects = await projectsHook()
-  return projects.find(p => p.slug === params.slug) || null
-})
-
-export default projectsHook
+export default projectsHook;
 ```
 
 ### Template
@@ -571,35 +572,35 @@ export default projectsHook
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { projectsHook, projectHook } from './hooks/projects'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import { projectsHook, projectHook } from "./hooks/projects";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'Your Name Portfolio',
-        title: 'Your Name - Web Developer',
-        description: 'Full-stack web developer specializing in React and Node.js',
-        author: 'Your Name',
-        keywords: ['portfolio', 'web developer', 'react', 'nodejs']
-      },
-      hooks: {
-        projects: projectsHook,
-        project: projectHook
-      },
-      dynamicRoutes: [
-        {
-          template: 'project',
-          dataSource: 'projects',
-          getParams: (project) => ({ slug: project.slug }),
-          getPath: (project) => `projects/${project.slug}.html`
-        }
-      ]
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "Your Name Portfolio",
+                title: "Your Name - Web Developer",
+                description: "Full-stack web developer specializing in React and Node.js",
+                author: "Your Name",
+                keywords: ["portfolio", "web developer", "react", "nodejs"],
+            },
+            hooks: {
+                projects: projectsHook,
+                project: projectHook,
+            },
+            dynamicRoutes: [
+                {
+                    template: "project",
+                    dataSource: "projects",
+                    getParams: (project) => ({ slug: project.slug }),
+                    getPath: (project) => `projects/${project.slug}.html`,
+                },
+            ],
+        }),
+    ],
+});
 ```
 
 ## E-commerce Product Catalog
@@ -611,64 +612,67 @@ Build a product catalog with categories.
 `hooks/products.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from "vitto";
 
 interface Product {
-  id: number
-  slug: string
-  name: string
-  description: string
-  price: number
-  image: string
-  category: string
-  sku: string
-  inStock: boolean
+    id: number;
+    slug: string;
+    name: string;
+    description: string;
+    price: number;
+    image: string;
+    category: string;
+    sku: string;
+    inStock: boolean;
 }
 
-export const productsHook = defineHooks<Product[]>('products', async () => {
-  try {
-    const response = await fetch('https://api.example.com/products')
-    if (!response.ok) throw new Error('Failed to fetch products')
-    return await response.json()
-  } catch (error) {
-    console.error('Failed to fetch products:', error)
-    return []
-  }
-})
-
-export const productHook = defineHooks<Product | null, { id: string }>('product', async (params) => {
-  if (!params?.id) return null
-
-  try {
-    const response = await fetch(`https://api.example.com/products/${params.id}`)
-    if (!response.ok) return null
-    return await response.json()
-  } catch (error) {
-    console.error(`Failed to fetch product ${params.id}:`, error)
-    return null
-  }
-})
-
-export const categoriesHook = defineHooks('categories', async () => {
-  const products = await productsHook()
-  const categoryMap = new Map()
-
-  products.forEach(product => {
-    if (!categoryMap.has(product.category)) {
-      categoryMap.set(product.category, [])
+export const productsHook = defineHooks<Product[]>("products", async () => {
+    try {
+        const response = await fetch("https://api.example.com/products");
+        if (!response.ok) throw new Error("Failed to fetch products");
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+        return [];
     }
-    categoryMap.get(product.category).push(product)
-  })
+});
 
-  return Array.from(categoryMap.entries()).map(([name, products]) => ({
-    name,
-    slug: name.toLowerCase().replace(/\s+/g, '-'),
-    count: products.length,
-    products
-  }))
-})
+export const productHook = defineHooks<Product | null, { id: string }>(
+    "product",
+    async (params) => {
+        if (!params?.id) return null;
 
-export default productsHook
+        try {
+            const response = await fetch(`https://api.example.com/products/${params.id}`);
+            if (!response.ok) return null;
+            return await response.json();
+        } catch (error) {
+            console.error(`Failed to fetch product ${params.id}:`, error);
+            return null;
+        }
+    },
+);
+
+export const categoriesHook = defineHooks("categories", async () => {
+    const products = await productsHook();
+    const categoryMap = new Map();
+
+    products.forEach((product) => {
+        if (!categoryMap.has(product.category)) {
+            categoryMap.set(product.category, []);
+        }
+        categoryMap.get(product.category).push(product);
+    });
+
+    return Array.from(categoryMap.entries()).map(([name, products]) => ({
+        name,
+        slug: name.toLowerCase().replace(/\s+/g, "-"),
+        count: products.length,
+        products,
+    }));
+});
+
+export default productsHook;
 ```
 
 ### Product Page
@@ -715,35 +719,35 @@ export default productsHook
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { productsHook, productHook, categoriesHook } from './hooks/products'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import { productsHook, productHook, categoriesHook } from "./hooks/products";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Shop',
-        title: 'My Shop - Quality Products',
-        description: 'Shop quality products at great prices',
-        keywords: ['shop', 'ecommerce', 'products']
-      },
-      hooks: {
-        products: productsHook,
-        product: productHook,
-        categories: categoriesHook
-      },
-      dynamicRoutes: [
-        {
-          template: 'product',
-          dataSource: 'products',
-          getParams: (product) => ({ id: product.id }),
-          getPath: (product) => `products/${product.slug}.html`
-        }
-      ]
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Shop",
+                title: "My Shop - Quality Products",
+                description: "Shop quality products at great prices",
+                keywords: ["shop", "ecommerce", "products"],
+            },
+            hooks: {
+                products: productsHook,
+                product: productHook,
+                categories: categoriesHook,
+            },
+            dynamicRoutes: [
+                {
+                    template: "product",
+                    dataSource: "products",
+                    getParams: (product) => ({ id: product.id }),
+                    getPath: (product) => `products/${product.slug}.html`,
+                },
+            ],
+        }),
+    ],
+});
 ```
 
 ## Multi-language Site
@@ -755,36 +759,36 @@ Create a multi-language site with i18n support.
 `hooks/i18n.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from "vitto";
 
 const translations = {
-  en: {
-    home: 'Home',
-    about: 'About',
-    contact: 'Contact',
-    readMore: 'Read More',
-    welcome: 'Welcome to our site'
-  },
-  es: {
-    home: 'Inicio',
-    about: 'Acerca de',
-    contact: 'Contacto',
-    readMore: 'Leer Más',
-    welcome: 'Bienvenido a nuestro sitio'
-  },
-  fr: {
-    home: 'Accueil',
-    about: 'À propos',
-    contact: 'Contact',
-    readMore: 'Lire la suite',
-    welcome: 'Bienvenue sur notre site'
-  }
-}
+    en: {
+        home: "Home",
+        about: "About",
+        contact: "Contact",
+        readMore: "Read More",
+        welcome: "Welcome to our site",
+    },
+    es: {
+        home: "Inicio",
+        about: "Acerca de",
+        contact: "Contacto",
+        readMore: "Leer Más",
+        welcome: "Bienvenido a nuestro sitio",
+    },
+    fr: {
+        home: "Accueil",
+        about: "À propos",
+        contact: "Contact",
+        readMore: "Lire la suite",
+        welcome: "Bienvenue sur notre site",
+    },
+};
 
-export default defineHooks('i18n', (params) => {
-  const lang = params?.lang || 'en'
-  return translations[lang] || translations.en
-})
+export default defineHooks("i18n", (params) => {
+    const lang = params?.lang || "en";
+    return translations[lang] || translations.en;
+});
 ```
 
 ### Template
@@ -818,24 +822,24 @@ export default defineHooks('i18n', (params) => {
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import i18nHook from './hooks/i18n'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import i18nHook from "./hooks/i18n";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Multilingual Site',
-        title: 'Welcome',
-        description: 'A site available in multiple languages'
-      },
-      hooks: {
-        i18n: i18nHook
-      }
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Multilingual Site",
+                title: "Welcome",
+                description: "A site available in multiple languages",
+            },
+            hooks: {
+                i18n: i18nHook,
+            },
+        }),
+    ],
+});
 ```
 
 ## RSS Feed
@@ -847,14 +851,17 @@ Generate an RSS feed for your blog.
 `hooks/rss.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import { postsHook } from './posts'
+import { defineHooks } from "vitto";
+import { postsHook } from "./posts";
 
-export default defineHooks('rss', async () => {
-  const posts = await postsHook()
-  const baseUrl = 'https://example.com'
+export default defineHooks("rss", async () => {
+    const posts = await postsHook();
+    const baseUrl = "https://example.com";
 
-  const items = posts.slice(0, 20).map(post => `
+    const items = posts
+        .slice(0, 20)
+        .map(
+            (post) => `
     <item>
       <title><![CDATA[${post.title}]]></title>
       <link>${baseUrl}/blog/${post.slug}.html</link>
@@ -862,9 +869,11 @@ export default defineHooks('rss', async () => {
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
       <guid>${baseUrl}/blog/${post.slug}.html</guid>
     </item>
-  `).join('')
+  `,
+        )
+        .join("");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
+    return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>My Blog</title>
@@ -874,8 +883,8 @@ export default defineHooks('rss', async () => {
     <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml"/>
     ${items}
   </channel>
-</rss>`
-})
+</rss>`;
+});
 ```
 
 ### Template
@@ -891,27 +900,27 @@ export default defineHooks('rss', async () => {
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import rssHook from './hooks/rss'
-import { postsHook, postHook } from './hooks/posts'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import rssHook from "./hooks/rss";
+import { postsHook, postHook } from "./hooks/posts";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Blog',
-        title: 'My Blog',
-        description: 'A blog about web development'
-      },
-      hooks: {
-        posts: postsHook,
-        post: postHook,
-        rss: rssHook
-      }
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Blog",
+                title: "My Blog",
+                description: "A blog about web development",
+            },
+            hooks: {
+                posts: postsHook,
+                post: postHook,
+                rss: rssHook,
+            },
+        }),
+    ],
+});
 ```
 
 ## Sitemap Generation
@@ -923,38 +932,42 @@ Generate a sitemap.xml file.
 `hooks/sitemap.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import { postsHook } from './posts'
+import { defineHooks } from "vitto";
+import { postsHook } from "./posts";
 
-export default defineHooks('sitemap', async () => {
-  const posts = await postsHook()
-  const baseUrl = 'https://example.com'
+export default defineHooks("sitemap", async () => {
+    const posts = await postsHook();
+    const baseUrl = "https://example.com";
 
-  const urls = [
-    { loc: `${baseUrl}/`, priority: '1.0', changefreq: 'daily' },
-    { loc: `${baseUrl}/about.html`, priority: '0.8', changefreq: 'monthly' },
-    { loc: `${baseUrl}/blog.html`, priority: '0.9', changefreq: 'daily' },
-    ...posts.map(post => ({
-      loc: `${baseUrl}/blog/${post.slug}.html`,
-      lastmod: post.date,
-      priority: '0.7',
-      changefreq: 'weekly'
-    }))
-  ]
+    const urls = [
+        { loc: `${baseUrl}/`, priority: "1.0", changefreq: "daily" },
+        { loc: `${baseUrl}/about.html`, priority: "0.8", changefreq: "monthly" },
+        { loc: `${baseUrl}/blog.html`, priority: "0.9", changefreq: "daily" },
+        ...posts.map((post) => ({
+            loc: `${baseUrl}/blog/${post.slug}.html`,
+            lastmod: post.date,
+            priority: "0.7",
+            changefreq: "weekly",
+        })),
+    ];
 
-  const urlElements = urls.map(url => `
+    const urlElements = urls
+        .map(
+            (url) => `
   <url>
     <loc>${url.loc}</loc>
-    ${url.lastmod ? `<lastmod>${url.lastmod}</lastmod>` : ''}
+    ${url.lastmod ? `<lastmod>${url.lastmod}</lastmod>` : ""}
     <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
-  </url>`).join('')
+  </url>`,
+        )
+        .join("");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
+    return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urlElements}
-</urlset>`
-})
+</urlset>`;
+});
 ```
 
 ### Template
@@ -970,27 +983,27 @@ ${urlElements}
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import sitemapHook from './hooks/sitemap'
-import { postsHook, postHook } from './hooks/posts'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import sitemapHook from "./hooks/sitemap";
+import { postsHook, postHook } from "./hooks/posts";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Site',
-        title: 'My Site',
-        description: 'A website built with Vitto'
-      },
-      hooks: {
-        posts: postsHook,
-        post: postHook,
-        sitemap: sitemapHook
-      }
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Site",
+                title: "My Site",
+                description: "A website built with Vitto",
+            },
+            hooks: {
+                posts: postsHook,
+                post: postHook,
+                sitemap: sitemapHook,
+            },
+        }),
+    ],
+});
 ```
 
 ## JSON API
@@ -1002,26 +1015,30 @@ Generate JSON files for API consumption.
 `hooks/api.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import { postsHook } from './posts'
+import { defineHooks } from "vitto";
+import { postsHook } from "./posts";
 
-export default defineHooks('api', async () => {
-  const posts = await postsHook()
+export default defineHooks("api", async () => {
+    const posts = await postsHook();
 
-  return JSON.stringify({
-    version: '1.0',
-    generated: new Date().toISOString(),
-    posts: posts.map(post => ({
-      slug: post.slug,
-      title: post.title,
-      excerpt: post.excerpt,
-      date: post.date,
-      author: post.author,
-      tags: post.tags,
-      url: `/blog/${post.slug}.html`
-    }))
-  }, null, 2)
-})
+    return JSON.stringify(
+        {
+            version: "1.0",
+            generated: new Date().toISOString(),
+            posts: posts.map((post) => ({
+                slug: post.slug,
+                title: post.title,
+                excerpt: post.excerpt,
+                date: post.date,
+                author: post.author,
+                tags: post.tags,
+                url: `/blog/${post.slug}.html`,
+            })),
+        },
+        null,
+        2,
+    );
+});
 ```
 
 ### Template
@@ -1037,27 +1054,27 @@ export default defineHooks('api', async () => {
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import apiHook from './hooks/api'
-import { postsHook, postHook } from './hooks/posts'
+import { defineConfig } from "vite";
+import vitto from "vitto";
+import apiHook from "./hooks/api";
+import { postsHook, postHook } from "./hooks/posts";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Blog',
-        title: 'My Blog',
-        description: 'A blog with JSON API'
-      },
-      hooks: {
-        posts: postsHook,
-        post: postHook,
-        api: apiHook
-      }
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Blog",
+                title: "My Blog",
+                description: "A blog with JSON API",
+            },
+            hooks: {
+                posts: postsHook,
+                post: postHook,
+                api: apiHook,
+            },
+        }),
+    ],
+});
 ```
 
 ## Next Steps

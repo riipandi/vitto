@@ -173,7 +173,7 @@ This automatically generates:
 <script type="module" src="/src/main.js"></script>
 
 <!-- In production -->
-<link rel="stylesheet" href="/assets/style-abc123.css">
+<link rel="stylesheet" href="/assets/style-abc123.css" />
 <script type="module" src="/assets/main-def456.js"></script>
 ```
 
@@ -281,27 +281,27 @@ You can add custom filters via `ventoOptions`:
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from "vite";
+import vitto from "vitto";
 
 export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: {
-        siteName: 'My Site',
-        title: 'My Site'
-      },
-      ventoOptions: {
-        filters: {
-          dateFormat: (date: Date, format: string) => {
-            // Your date formatting logic
-            return formattedDate
-          }
-        }
-      }
-    })
-  ]
-})
+    plugins: [
+        vitto({
+            metadata: {
+                siteName: "My Site",
+                title: "My Site",
+            },
+            ventoOptions: {
+                filters: {
+                    dateFormat: (date: Date, format: string) => {
+                        // Your date formatting logic
+                        return formattedDate;
+                    },
+                },
+            },
+        }),
+    ],
+});
 ```
 
 Use in templates:
@@ -369,17 +369,17 @@ Store site-wide information in metadata instead of hardcoding:
 ```ts
 // vite.config.ts
 vitto({
-  metadata: {
-    siteName: 'My Blog',
-    title: 'My Blog',
-    description: 'A blog about web development',
-    author: 'Your Name',
-    social: {
-      twitter: '@johndoe',
-      github: 'johndoe'
-    }
-  }
-})
+    metadata: {
+        siteName: "My Blog",
+        title: "My Blog",
+        description: "A blog about web development",
+        author: "Your Name",
+        social: {
+            twitter: "@johndoe",
+            github: "johndoe",
+        },
+    },
+});
 ```
 
 ```vento

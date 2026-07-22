@@ -227,17 +227,17 @@ We aim for high test coverage:
 ```ts
 // Good
 interface HookData {
-  title: string
-  items: string[]
+    title: string;
+    items: string[];
 }
 
 function processData(data: HookData): void {
-  // Implementation
+    // Implementation
 }
 
 // Avoid
 function processData(data: any) {
-  // Implementation
+    // Implementation
 }
 ```
 
@@ -268,19 +268,19 @@ pnpm format
 // File: my-component.ts
 
 export const DEFAULT_CONFIG = {
-  // constants
-}
+    // constants
+};
 
 export interface MyComponentOptions {
-  // interface
+    // interface
 }
 
 export class MyComponent {
-  // class
+    // class
 }
 
 export function createComponent() {
-  // function
+    // function
 }
 ```
 
@@ -290,7 +290,7 @@ export function createComponent() {
 - Write clear inline comments for complex logic
 - Explain "why", not "what"
 
-```ts
+````ts
 /**
  * Creates a hook function for data injection.
  *
@@ -306,26 +306,26 @@ export function createComponent() {
  * ```
  */
 export function defineHooks<T, P>(
-  name: string,
-  handler: (params?: P) => T | Promise<T>
+    name: string,
+    handler: (params?: P) => T | Promise<T>,
 ): HookFunction<T, P> {
-  // Implementation
+    // Implementation
 }
-```
+````
 
 ## Submitting Changes
 
 ### Pull Request Guidelines
 
 1. **Title**: Clear and descriptive
-   - Good: "feat: add support for custom Vento filters"
-   - Bad: "Update code"
+    - Good: "feat: add support for custom Vento filters"
+    - Bad: "Update code"
 
 2. **Description**: Include:
-   - What changes were made
-   - Why the changes were necessary
-   - Any breaking changes
-   - Related issues (use `Closes #123`)
+    - What changes were made
+    - Why the changes were necessary
+    - Any breaking changes
+    - Related issues (use `Closes #123`)
 
 3. **Tests**: All tests must pass
 4. **Documentation**: Update docs if needed
@@ -335,15 +335,18 @@ export function defineHooks<T, P>(
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Checklist
+
 - [ ] Tests pass locally
 - [ ] Type checking passes
 - [ ] Code linted and formatted
@@ -352,6 +355,7 @@ Brief description of changes
 - [ ] Self-review completed
 
 ## Related Issues
+
 Closes #123
 ```
 
@@ -387,6 +391,7 @@ Closes #123
 Clear description of the bug
 
 **To Reproduce**
+
 1. Create file `example.vto`
 2. Add content: ...
 3. Run `pnpm build`
@@ -399,6 +404,7 @@ Should build successfully
 Error: ...
 
 **Environment**
+
 - OS: macOS 14.0
 - Node: 22.0.0
 - PNPM: 10.18.3
@@ -415,7 +421,7 @@ https://github.com/username/vitto-bug-reproduction
 - Alternative solutions considered
 - Examples of how it would be used
 
-```markdown
+````markdown
 **Is your feature request related to a problem?**
 I'm frustrated when...
 
@@ -426,11 +432,13 @@ Add a new option `customFilter` that...
 Considered using... but it doesn't work because...
 
 **Example Usage**
+
 ```ts
 vitto({
-  customFilter: (value) => value.toUpperCase()
-})
+    customFilter: (value) => value.toUpperCase(),
+});
 ```
+````
 
 ## Documentation
 
@@ -469,48 +477,55 @@ We use [Semantic Versioning](https://semver.org/):
 ### Publishing Steps
 
 1. **Ensure all checks pass**:
-   ```bash
-   pnpm typecheck
-   pnpm lint
-   pnpm check
-   ```
+
+    ```bash
+    pnpm typecheck
+    pnpm lint
+    pnpm check
+    ```
 
 2. **Update changelog**:
-   ```bash
-   # Edit CHANGELOG.md in each package
-   # Add release notes under new version
-   ```
+
+    ```bash
+    # Edit CHANGELOG.md in each package
+    # Add release notes under new version
+    ```
 
 3. **Update dependencies**:
-   ```bash
-   pnpm update-deps
-   ```
+
+    ```bash
+    pnpm update-deps
+    ```
 
 4. **Build all packages**:
-   ```bash
-   pnpm build
-   ```
+
+    ```bash
+    pnpm build
+    ```
 
 5. **Dry run publish** (test before actual publish):
-   ```bash
-   pnpm publish:dry
-   ```
+
+    ```bash
+    pnpm publish:dry
+    ```
 
 6. **Publish to npm**:
-   ```bash
-   pnpm publish:npm
-   ```
+
+    ```bash
+    pnpm publish:npm
+    ```
 
 7. **Push tags**:
-   ```bash
-   git push --follow-tags
-   ```
+
+    ```bash
+    git push --follow-tags
+    ```
 
 8. **Create GitHub release**:
-   - Go to GitHub releases
-   - Create new release from tag
-   - Copy changelog content
-   - Publish release
+    - Go to GitHub releases
+    - Create new release from tag
+    - Copy changelog content
+    - Publish release
 
 ### Release Checklist
 

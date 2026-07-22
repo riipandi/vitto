@@ -11,6 +11,7 @@ npm run build
 ```
 
 This creates an optimized static site in the `dist/` directory with:
+
 - Minified HTML, CSS, and JavaScript
 - Optimized assets with cache-busting hashes
 - Generated search index (if enabled)
@@ -42,10 +43,10 @@ Create `vercel.json`:
 
 ```json
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "devCommand": "npm run dev",
-  "framework": "vite"
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "devCommand": "npm run dev",
+    "framework": "vite"
 }
 ```
 
@@ -83,8 +84,8 @@ Create `netlify.toml`:
 1. Push your code to GitHub/GitLab/Bitbucket
 2. Connect repository on [netlify.com](https://netlify.com)
 3. Configure build settings:
-   - **Build command**: `npm run build`
-   - **Publish directory**: `dist`
+    - **Build command**: `npm run build`
+    - **Publish directory**: `dist`
 
 ### Cloudflare Pages
 
@@ -105,9 +106,9 @@ wrangler pages deploy dist
 1. Push code to GitHub/GitLab
 2. Connect repository on [pages.cloudflare.com](https://pages.cloudflare.com)
 3. Configure build settings:
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-   - **Root directory**: `/`
+    - **Build command**: `npm run build`
+    - **Build output directory**: `dist`
+    - **Root directory**: `/`
 
 ### GitHub Pages
 
@@ -121,53 +122,53 @@ Create `.github/workflows/deploy.yml`:
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+    push:
+        branches: [main]
+    workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+    contents: read
+    pages: write
+    id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: true
+    group: "pages"
+    cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  cache: "npm"
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Build
-        run: npm run build
+            - name: Build
+              run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: ./dist
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    deploy:
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
 ```
 
 #### Base Path Configuration
@@ -176,13 +177,13 @@ If deploying to a subdirectory (e.g., `username.github.io/repo-name`), configure
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from "vite";
+import vitto from "vitto";
 
 export default defineConfig({
-  base: '/repo-name/', // Your repository name
-  plugins: [vitto()]
-})
+    base: "/repo-name/", // Your repository name
+    plugins: [vitto()],
+});
 ```
 
 ### Azure Static Web Apps
@@ -197,30 +198,30 @@ Create `.github/workflows/azure-static-web-apps.yml`:
 name: Azure Static Web Apps CI/CD
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        types: [opened, synchronize, reopened, closed]
+        branches: [main]
 
 jobs:
-  build_and_deploy_job:
-    runs-on: ubuntu-latest
-    name: Build and Deploy Job
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
+    build_and_deploy_job:
+        runs-on: ubuntu-latest
+        name: Build and Deploy Job
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: true
 
-      - name: Build And Deploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "/"
-          api_location: ""
-          output_location: "dist"
+            - name: Build And Deploy
+              uses: Azure/static-web-apps-deploy@v1
+              with:
+                  azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  action: "upload"
+                  app_location: "/"
+                  api_location: ""
+                  output_location: "dist"
 ```
 
 ### AWS Amplify
@@ -234,20 +235,20 @@ Create `amplify.yml`:
 ```yaml
 version: 1
 frontend:
-  phases:
-    preBuild:
-      commands:
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: dist
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - node_modules/**/*
+    phases:
+        preBuild:
+            commands:
+                - npm ci
+        build:
+            commands:
+                - npm run build
+    artifacts:
+        baseDirectory: dist
+        files:
+            - "**/*"
+    cache:
+        paths:
+            - node_modules/**/*
 ```
 
 ### DigitalOcean App Platform
@@ -258,24 +259,24 @@ Deploy to DigitalOcean for simple cloud hosting.
 
 1. Connect your repository on [cloud.digitalocean.com](https://cloud.digitalocean.com)
 2. Configure app settings:
-   - **Build command**: `npm run build`
-   - **Output directory**: `dist`
-   - **Environment**: Node.js
+    - **Build command**: `npm run build`
+    - **Output directory**: `dist`
+    - **Environment**: Node.js
 
 Or use `app.yaml`:
 
 ```yaml
 name: vitto-site
 static_sites:
-  - name: web
-    github:
-      repo: username/repo-name
-      branch: main
-      deploy_on_push: true
-    build_command: npm run build
-    output_dir: dist
-    routes:
-      - path: /
+    - name: web
+      github:
+          repo: username/repo-name
+          branch: main
+          deploy_on_push: true
+      build_command: npm run build
+      output_dir: dist
+      routes:
+          - path: /
 ```
 
 ### Render
@@ -288,15 +289,15 @@ Create `render.yaml`:
 
 ```yaml
 services:
-  - type: web
-    name: vitto-site
-    env: static
-    buildCommand: npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    - type: web
+      name: vitto-site
+      env: static
+      buildCommand: npm run build
+      staticPublishPath: ./dist
+      routes:
+          - type: rewrite
+            source: /*
+            destination: /index.html
 ```
 
 ### Firebase Hosting
@@ -322,20 +323,16 @@ Update `firebase.json`:
 
 ```json
 {
-  "hosting": {
-    "public": "dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
+    "hosting": {
+        "public": "dist",
+        "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
+    }
 }
 ```
 
@@ -418,10 +415,10 @@ Access via `import.meta.env`:
 ```ts
 // vite.config.ts
 export default defineConfig({
-  define: {
-    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL)
-  }
-})
+    define: {
+        "import.meta.env.VITE_API_URL": JSON.stringify(process.env.VITE_API_URL),
+    },
+});
 ```
 
 ### Platform-Specific
@@ -499,11 +496,13 @@ Platforms like Vercel, Netlify, and Cloudflare Pages automatically create previe
 Trigger builds programmatically:
 
 **Netlify**:
+
 ```bash
 curl -X POST -d {} https://api.netlify.com/build_hooks/YOUR_HOOK_ID
 ```
 
 **Vercel**:
+
 ```bash
 curl -X POST https://api.vercel.com/v1/integrations/deploy/YOUR_HOOK_ID
 ```
@@ -515,6 +514,7 @@ curl -X POST https://api.vercel.com/v1/integrations/deploy/YOUR_HOOK_ID
 Add analytics to track visitors:
 
 **Google Analytics**:
+
 ```vento
 <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
 <script>
@@ -526,6 +526,7 @@ Add analytics to track visitors:
 ```
 
 **Plausible Analytics**:
+
 ```vento
 <script defer data-domain="yourdomain.com" src="https://plausible.io/js/script.js"></script>
 ```
@@ -533,13 +534,11 @@ Add analytics to track visitors:
 ### Error Tracking
 
 **Sentry**:
+
 ```html
-<script
-  src="https://browser.sentry-cdn.com/7.x.x/bundle.min.js"
-  crossorigin="anonymous"
-></script>
+<script src="https://browser.sentry-cdn.com/7.x.x/bundle.min.js" crossorigin="anonymous"></script>
 <script>
-  Sentry.init({ dsn: 'YOUR_DSN' });
+    Sentry.init({ dsn: "YOUR_DSN" });
 </script>
 ```
 
@@ -569,13 +568,13 @@ Configure rewrites to serve `index.html` for all routes. See platform-specific c
 
 ```ts
 export default defineConfig(({ mode }) => ({
-  plugins: [
-    vitto({
-      minify: mode === 'production',
-      enableSearchIndex: mode === 'production'
-    })
-  ]
-}))
+    plugins: [
+        vitto({
+            minify: mode === "production",
+            enableSearchIndex: mode === "production",
+        }),
+    ],
+}));
 ```
 
 ### 2. Test Builds Locally
@@ -588,6 +587,7 @@ npm run preview
 ### 3. Monitor Build Times
 
 Keep builds under platform limits:
+
 - Vercel Free: 45 minutes
 - Netlify Free: 300 minutes/month
 - GitHub Pages: No limit
