@@ -140,7 +140,7 @@ When `minify: true`, Vitto uses these defaults:
   selfClosingVoidElements: false,
   sortAttributes: true,
   sortSpaceSeparatedAttributeValues: true,
-  tagOmission: true
+  tagOmission: false
 }
 ```
 

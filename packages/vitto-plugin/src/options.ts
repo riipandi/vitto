@@ -346,5 +346,5 @@ export const MINIFY_OPTIONS: MinifyOptions = {
   selfClosingVoidElements: false,
   sortAttributes: true,
   sortSpaceSeparatedAttributeValues: true,
-  tagOmission: true,
+  tagOmission: false,
 } as const

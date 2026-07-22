@@ -231,7 +231,7 @@ interface MinifyOptions {
   selfClosingVoidElements: false,
   sortAttributes: true,
   sortSpaceSeparatedAttributeValues: true,
-  tagOmission: true
+  tagOmission: false
 }
 ```
 
@@ -714,7 +714,7 @@ interface MinifyOptions {
   selfClosingVoidElements: false,
   sortAttributes: true,
   sortSpaceSeparatedAttributeValues: true,
-  tagOmission: true
+  tagOmission: false
 }
 ```
 
