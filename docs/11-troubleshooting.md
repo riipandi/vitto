@@ -88,7 +88,7 @@ npm install -D vitto
 3. Check `vite.config.ts`:
 
 ```ts
-import vitto from "vitto"; // Correct
+import vitto from 'vitto'; // Correct
 // not: import vitto from '@vitto/core'
 ```
 
@@ -105,16 +105,16 @@ Error: metadata is required in VittoOptions
 ```ts
 // Wrong - missing metadata
 vitto({
-    pagesDir: "src/pages",
+  pagesDir: 'src/pages',
 });
 
 // Correct - metadata is required
 vitto({
-    metadata: {
-        siteName: "My Site", // Required
-        title: "My Site", // Required
-    },
-    pagesDir: "src/pages",
+  metadata: {
+    siteName: 'My Site', // Required
+    title: 'My Site', // Required
+  },
+  pagesDir: 'src/pages',
 });
 ```
 
@@ -158,15 +158,15 @@ const controller = new AbortController();
 const timeout = setTimeout(() => controller.abort(), 5000);
 
 try {
-    const response = await fetch(url, { signal: controller.signal });
-    return await response.json();
+  const response = await fetch(url, { signal: controller.signal });
+  return await response.json();
 } catch (error) {
-    if (error.name === "AbortError") {
-        console.error("Request timed out");
-    }
-    return [];
+  if (error.name === 'AbortError') {
+    console.error('Request timed out');
+  }
+  return [];
 } finally {
-    clearTimeout(timeout);
+  clearTimeout(timeout);
 }
 ```
 
@@ -174,13 +174,13 @@ try {
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    pagefindOptions: {
-        verbose: true,
-    },
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  pagefindOptions: {
+    verbose: true,
+  },
 });
 ```
 
@@ -200,9 +200,9 @@ NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 ```json
 {
-    "scripts": {
-        "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build"
-    }
+  "scripts": {
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build"
+  }
 }
 ```
 
@@ -210,16 +210,16 @@ NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 ```ts
 // Only return necessary fields
-export default defineHooks("posts", async () => {
-    const allPosts = await fetchPosts();
+export default defineHooks('posts', async () => {
+  const allPosts = await fetchPosts();
 
-    return allPosts.map((post) => ({
-        slug: post.slug,
-        title: post.title,
-        excerpt: post.excerpt,
-        date: post.date,
-        // Don't include full content here for list pages
-    }));
+  return allPosts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    date: post.date,
+    // Don't include full content here for list pages
+  }));
 });
 ```
 
@@ -241,11 +241,11 @@ export default defineHooks("posts", async () => {
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    layoutsDir: "src/layouts", // Default
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  layoutsDir: 'src/layouts', // Default
 });
 ```
 
@@ -272,11 +272,11 @@ ls src/layouts/base.vto
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    partialsDir: "src/partials",
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  partialsDir: 'src/partials',
 });
 ```
 
@@ -289,26 +289,26 @@ vitto({
 1. Check hook is registered:
 
 ```ts
-import postsHook from "./hooks/posts";
+import postsHook from './hooks/posts';
 
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    hooks: {
-        posts: postsHook, // Make sure this is included
-    },
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  hooks: {
+    posts: postsHook, // Make sure this is included
+  },
 });
 ```
 
 2. Verify hook returns data:
 
 ```ts
-export default defineHooks("posts", async () => {
-    const data = await fetchData();
-    console.log("Posts data:", data); // Debug
-    return data; // Must return something (array, object, etc.)
+export default defineHooks('posts', async () => {
+  const data = await fetchData();
+  console.log('Posts data:', data); // Debug
+  return data; // Must return something (array, object, etc.)
 });
 ```
 
@@ -361,22 +361,22 @@ export default defineHooks("posts", async () => {
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  hooks: {
+    posts: postsHook,
+    post: postHook,
+  },
+  dynamicRoutes: [
+    {
+      template: 'post', // Must match template name (without .vto)
+      dataSource: 'posts', // Must match hook name
+      getParams: (post) => ({ slug: post.slug }),
+      getPath: (post) => `blog/${post.slug}.html`, // Must include .html
     },
-    hooks: {
-        posts: postsHook,
-        post: postHook,
-    },
-    dynamicRoutes: [
-        {
-            template: "post", // Must match template name (without .vto)
-            dataSource: "posts", // Must match hook name
-            getParams: (post) => ({ slug: post.slug }),
-            getPath: (post) => `blog/${post.slug}.html`, // Must include .html
-        },
-    ],
+  ],
 });
 ```
 
@@ -389,14 +389,14 @@ ls src/pages/post.vto
 3. Ensure hook returns array:
 
 ```ts
-export default defineHooks("posts", async () => {
-    try {
-        const posts = await fetchPosts();
-        return posts; // Must return array
-    } catch (error) {
-        console.error("Failed to fetch posts:", error);
-        return []; // Return empty array on error
-    }
+export default defineHooks('posts', async () => {
+  try {
+    const posts = await fetchPosts();
+    return posts; // Must return array
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+    return []; // Return empty array on error
+  }
 });
 ```
 
@@ -410,8 +410,8 @@ export default defineHooks("posts", async () => {
 
 ```ts
 {
-    // For /blog/my-post.html
-    getPath: (post) => `blog/${post.slug}.html`;
+  // For /blog/my-post.html
+  getPath: (post) => `blog/${post.slug}.html`;
 }
 ```
 
@@ -419,19 +419,19 @@ export default defineHooks("posts", async () => {
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  outputStrategy: 'directory', // Generates: /blog/my-post/index.html
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (post) => ({ slug: post.slug }),
+      getPath: (post) => `blog/${post.slug}.html`,
     },
-    outputStrategy: "directory", // Generates: /blog/my-post/index.html
-    dynamicRoutes: [
-        {
-            template: "post",
-            dataSource: "posts",
-            getParams: (post) => ({ slug: post.slug }),
-            getPath: (post) => `blog/${post.slug}.html`,
-        },
-    ],
+  ],
 });
 ```
 
@@ -444,39 +444,39 @@ vitto({
 1. Ensure hook accepts params:
 
 ```ts
-export const postHook = defineHooks("post", async (params) => {
-    if (!params?.slug) {
-        console.error("Slug parameter missing");
-        return null;
-    }
+export const postHook = defineHooks('post', async (params) => {
+  if (!params?.slug) {
+    console.error('Slug parameter missing');
+    return null;
+  }
 
-    console.log("Received params:", params);
-    return await fetchPost(params.slug);
+  console.log('Received params:', params);
+  return await fetchPost(params.slug);
 });
 ```
 
 2. Register parameterized hook:
 
 ```ts
-import { postsHook, postHook } from "./hooks/posts";
+import { postsHook, postHook } from './hooks/posts';
 
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  hooks: {
+    posts: postsHook, // List of all posts
+    post: postHook, // Individual post with params
+  },
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (post) => ({ slug: post.slug }), // These params go to postHook
+      getPath: (post) => `blog/${post.slug}.html`,
     },
-    hooks: {
-        posts: postsHook, // List of all posts
-        post: postHook, // Individual post with params
-    },
-    dynamicRoutes: [
-        {
-            template: "post",
-            dataSource: "posts",
-            getParams: (post) => ({ slug: post.slug }), // These params go to postHook
-            getPath: (post) => `blog/${post.slug}.html`,
-        },
-    ],
+  ],
 });
 ```
 
@@ -491,16 +491,16 @@ vitto({
 1. Check hook is imported and registered:
 
 ```ts
-import myHook from "./hooks/myHook";
+import myHook from './hooks/myHook';
 
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    hooks: {
-        myData: myHook, // Use this name in templates: {{ myData }}
-    },
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  hooks: {
+    myData: myHook, // Use this name in templates: {{ myData }}
+  },
 });
 ```
 
@@ -508,18 +508,18 @@ vitto({
 
 ```ts
 // Named export (good for multiple hooks)
-export const myHook = defineHooks("myData", async () => {
-    return await fetchData();
+export const myHook = defineHooks('myData', async () => {
+  return await fetchData();
 });
 
 // Default export (preferred for single hook per file)
-export default defineHooks("myData", async () => {
-    return await fetchData();
+export default defineHooks('myData', async () => {
+  return await fetchData();
 });
 
 // Both (best practice)
-export const myHook = defineHooks("myData", async () => {
-    return await fetchData();
+export const myHook = defineHooks('myData', async () => {
+  return await fetchData();
 });
 export default myHook;
 ```
@@ -534,33 +534,33 @@ export default myHook;
 
 ```ts
 // Wrong - don't use .then()
-export default defineHooks("data", () => {
-    return fetch(url).then((r) => r.json());
+export default defineHooks('data', () => {
+  return fetch(url).then((r) => r.json());
 });
 
 // Correct - use async/await
-export default defineHooks("data", async () => {
-    const response = await fetch(url);
-    return await response.json();
+export default defineHooks('data', async () => {
+  const response = await fetch(url);
+  return await response.json();
 });
 ```
 
 2. Handle errors properly:
 
 ```ts
-export default defineHooks("data", async () => {
-    try {
-        const response = await fetch(url);
+export default defineHooks('data', async () => {
+  try {
+    const response = await fetch(url);
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error("Hook failed:", error);
-        return []; // Return fallback data
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Hook failed:', error);
+    return []; // Return fallback data
+  }
 });
 ```
 
@@ -573,36 +573,36 @@ export default defineHooks("data", async () => {
 1. Use absolute paths:
 
 ```ts
-import path from "node:path";
-import fs from "node:fs/promises";
+import path from 'node:path';
+import fs from 'node:fs/promises';
 
-export default defineHooks("data", async () => {
-    const filePath = path.join(process.cwd(), "content", "data.json");
+export default defineHooks('data', async () => {
+  const filePath = path.join(process.cwd(), 'content', 'data.json');
 
-    try {
-        const content = await fs.readFile(filePath, "utf-8");
-        return JSON.parse(content);
-    } catch (error) {
-        console.error("Failed to read file:", filePath, error);
-        return {};
-    }
+  try {
+    const content = await fs.readFile(filePath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Failed to read file:', filePath, error);
+    return {};
+  }
 });
 ```
 
 2. Check file exists before reading:
 
 ```ts
-import fs from "node:fs/promises";
+import fs from 'node:fs/promises';
 
 try {
-    await fs.access(filePath);
-    const content = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(content);
+  await fs.access(filePath);
+  const content = await fs.readFile(filePath, 'utf-8');
+  return JSON.parse(content);
 } catch (error) {
-    if (error.code === "ENOENT") {
-        console.error("File not found:", filePath);
-    }
-    return {};
+  if (error.code === 'ENOENT') {
+    console.error('File not found:', filePath);
+  }
+  return {};
 }
 ```
 
@@ -618,11 +618,11 @@ try {
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    enableSearchIndex: true, // Default is true
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  enableSearchIndex: true, // Default is true
 });
 ```
 
@@ -659,14 +659,14 @@ ls dist/_pagefind/
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    pagefindOptions: {
-        rootSelector: "html", // Default
-        verbose: true, // Enable for debugging
-    },
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  pagefindOptions: {
+    rootSelector: 'html', // Default
+    verbose: true, // Enable for debugging
+  },
 });
 ```
 
@@ -694,14 +694,14 @@ vitto({
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    pagefindOptions: {
-        rootSelector: "main",
-        excludeSelectors: ["nav", "footer", "aside", ".sidebar", ".comments"],
-    },
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  pagefindOptions: {
+    rootSelector: 'main',
+    excludeSelectors: ['nav', 'footer', 'aside', '.sidebar', '.comments'],
+  },
 });
 ```
 
@@ -747,25 +747,25 @@ vitto({
 
 ```ts
 // src/main.ts or main.js
-import "./style.css";
+import './style.css';
 ```
 
 3. Verify Vite config:
 
 ```ts
-import { defineConfig } from "vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            metadata: {
-                siteName: "My Site",
-                title: "My Site",
-            },
-        }),
-    ],
-    // No need to configure CSS, Vite handles it automatically
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site',
+      },
+    }),
+  ],
+  // No need to configure CSS, Vite handles it automatically
 });
 ```
 
@@ -822,7 +822,7 @@ public/
 
 ```ts
 // In your script file
-import logo from "./assets/logo.png";
+import logo from './assets/logo.png';
 // logo will be the processed URL
 ```
 
@@ -841,19 +841,19 @@ let cache = null;
 let cacheTime = 0;
 const CACHE_DURATION = 60000; // 1 minute
 
-export default defineHooks("data", async () => {
-    const now = Date.now();
+export default defineHooks('data', async () => {
+  const now = Date.now();
 
-    if (cache && now - cacheTime < CACHE_DURATION) {
-        console.log("Using cached data");
-        return cache;
-    }
-
-    console.log("Fetching fresh data");
-    cache = await fetchExpensiveData();
-    cacheTime = now;
-
+  if (cache && now - cacheTime < CACHE_DURATION) {
+    console.log('Using cached data');
     return cache;
+  }
+
+  console.log('Fetching fresh data');
+  cache = await fetchExpensiveData();
+  cacheTime = now;
+
+  return cache;
 });
 ```
 
@@ -863,7 +863,7 @@ export default defineHooks("data", async () => {
 // Slow - sequential (10 seconds for 10 files)
 const results = [];
 for (const file of files) {
-    results.push(await processFile(file));
+  results.push(await processFile(file));
 }
 
 // Fast - parallel (1 second for 10 files)
@@ -874,11 +874,11 @@ const results = await Promise.all(files.map((file) => processFile(file)));
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    minify: process.env.NODE_ENV === "production",
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  minify: process.env.NODE_ENV === 'production',
 });
 ```
 
@@ -886,13 +886,13 @@ vitto({
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    pagefindOptions: {
-        verbose: false,
-    },
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  pagefindOptions: {
+    verbose: false,
+  },
 });
 ```
 
@@ -906,11 +906,11 @@ vitto({
 
 ```ts
 vitto({
-    metadata: {
-        siteName: "My Site",
-        title: "My Site",
-    },
-    minify: true,
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  minify: true,
 });
 ```
 
@@ -936,7 +936,7 @@ See [Performance Guide](./09-performance.md) for more details.
 # .github/workflows/deploy.yml
 - uses: actions/setup-node@v4
   with:
-      node-version: "20" # Match your local version
+    node-version: '20' # Match your local version
 ```
 
 2. Use `npm ci` instead of `npm install`:
@@ -950,8 +950,8 @@ See [Performance Guide](./09-performance.md) for more details.
 
 ```yaml
 env:
-    NODE_ENV: production
-    NODE_OPTIONS: "--max-old-space-size=4096"
+  NODE_ENV: production
+  NODE_OPTIONS: '--max-old-space-size=4096'
 ```
 
 4. Check for missing dependencies:
@@ -971,19 +971,19 @@ npm install <missing-package> --save
 
 ```ts
 // vite.config.ts
-import { defineConfig } from "vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    base: "/repo-name/", // For GitHub Pages or subdirectory
-    plugins: [
-        vitto({
-            metadata: {
-                siteName: "My Site",
-                title: "My Site",
-            },
-        }),
-    ],
+  base: '/repo-name/', // For GitHub Pages or subdirectory
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site',
+      },
+    }),
+  ],
 });
 ```
 
@@ -1002,7 +1002,7 @@ export default defineConfig({
 
 ```json
 {
-    "cleanUrls": true
+  "cleanUrls": true
 }
 ```
 
@@ -1024,15 +1024,15 @@ location / {
 
 ```ts
 export default defineConfig({
-    base: "/my-site/", // Must match your hosting path
-    plugins: [
-        vitto({
-            metadata: {
-                siteName: "My Site",
-                title: "My Site",
-            },
-        }),
-    ],
+  base: '/my-site/', // Must match your hosting path
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site',
+      },
+    }),
+  ],
 });
 ```
 

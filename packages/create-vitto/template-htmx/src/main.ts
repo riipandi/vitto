@@ -1,14 +1,13 @@
-import './styles/global.css'
-
-import htmx from 'htmx.org'
+import './styles/global.css';
+import htmx from 'htmx.org';
 
 declare global {
   interface Window {
-    htmx: typeof htmx
+    htmx: typeof htmx;
   }
 }
 
-window.htmx = htmx
+window.htmx = htmx;
 
 // Configure HTMX
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,11 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('htmx:beforeSwap', (event: any) => {
     const isJsonResponse = event.detail.xhr
       .getResponseHeader('content-type')
-      ?.includes('application/json')
+      ?.includes('application/json');
 
     if (isJsonResponse) {
       try {
-        const posts = JSON.parse(event.detail.xhr.responseText)
+        const posts = JSON.parse(event.detail.xhr.responseText);
         const html = posts
           .map(
             (post: any) => `
@@ -34,17 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `
           )
-          .join('')
+          .join('');
 
         // Set the server response to our transformed HTML
-        event.detail.serverResponse = html
+        event.detail.serverResponse = html;
       } catch (e) {
-        console.error('Failed to parse JSON response:', e)
+        console.error('Failed to parse JSON response:', e);
       }
     }
-  })
+  });
 
   document.body.addEventListener('htmx:afterSwap', (event) => {
-    console.info('HTMX content swapped:', event)
-  })
-})
+    console.info('HTMX content swapped:', event);
+  });
+});

@@ -1,9 +1,10 @@
-import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import postsHook from './src/hooks/posts'
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
-const isProduction = process.env.NODE_ENV === 'production'
+import postsHook from './src/hooks/posts';
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   plugins: [
@@ -45,4 +46,4 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: true,
   },
-})
+});

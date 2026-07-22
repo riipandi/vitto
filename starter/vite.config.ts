@@ -1,6 +1,6 @@
-import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
@@ -18,4 +18,4 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
-})
+});

@@ -1,6 +1,7 @@
-import { glob } from 'node:fs/promises'
-import path from 'node:path'
-import type { OutputStrategy } from './options'
+import { glob } from 'node:fs/promises';
+import path from 'node:path';
+
+import type { OutputStrategy } from './options';
 
 /**
  * Extract Vite-generated assets (JS and CSS files) from the build bundle.
@@ -19,31 +20,31 @@ import type { OutputStrategy } from './options'
  * // Returns: { main: 'assets/main-abc123.js', css: ['assets/style-def456.css'] }
  */
 export function getViteAssetsFromBundle(bundle: Record<string, any>): {
-  main: string
-  css: string[]
+  main: string;
+  css: string[];
 } {
-  let main = ''
-  const css: string[] = []
+  let main = '';
+  const css: string[] = [];
 
   // Iterate through all files in the bundle
   for (const [fileName, chunk] of Object.entries(bundle)) {
     // Skip null or non-object entries (safety check)
     if (!chunk || typeof chunk !== 'object') {
-      continue
+      continue;
     }
 
     // Find the main entry point JavaScript file
     if ('isEntry' in chunk && chunk.isEntry === true && fileName.endsWith('.js')) {
-      main = fileName
+      main = fileName;
     }
 
     // Collect all CSS files
     if (fileName.endsWith('.css')) {
-      css.push(fileName)
+      css.push(fileName);
     }
   }
 
-  return { main, css }
+  return { main, css };
 }
 
 /**
@@ -57,8 +58,8 @@ export function getViteAssetsFromBundle(bundle: Record<string, any>): {
  * normalizePath('/') // Returns: '/'
  */
 export function normalizePath(path: string): string {
-  if (path === '/' || !path) return '/'
-  return path.endsWith('/') ? path.slice(0, -1) : path
+  if (path === '/' || !path) return '/';
+  return path.endsWith('/') ? path.slice(0, -1) : path;
 }
 
 /**
@@ -75,11 +76,11 @@ export function normalizePath(path: string): string {
  * // Returns: ['/project/src/pages/index.vto', '/project/src/pages/about.vto', ...]
  */
 export async function findVtoFiles(pagesDir: string): Promise<string[]> {
-  const files: string[] = []
+  const files: string[] = [];
   for await (const file of glob('**/*.vto', { cwd: pagesDir })) {
-    files.push(path.resolve(pagesDir, file))
+    files.push(path.resolve(pagesDir, file));
   }
-  return files
+  return files;
 }
 
 /**
@@ -96,13 +97,13 @@ export async function findVtoFiles(pagesDir: string): Promise<string[]> {
 export function convertUrlPath(urlPath: string, strategy?: OutputStrategy): string {
   // For html strategy, return as is
   if (strategy !== 'directory') {
-    return urlPath
+    return urlPath;
   }
 
   // For directory strategy, ensure trailing slash (except for root)
   if (urlPath === '' || urlPath === '/') {
-    return '/'
+    return '/';
   }
 
-  return urlPath.endsWith('/') ? urlPath : `${urlPath}/`
+  return urlPath.endsWith('/') ? urlPath : `${urlPath}/`;
 }

@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @layer base {
-    html,
-    body {
-        @apply antialiased min-h-screen scroll-smooth;
-    }
-    pre,
-    code {
-        @apply font-mono;
-    }
+  html,
+  body {
+    @apply antialiased min-h-screen scroll-smooth;
+  }
+  pre,
+  code {
+    @apply font-mono;
+  }
 }
 
 /* Debug element */
 @utility debug {
-    border-width: 1px;
-    border-style: dashed;
-    border-color: #f87171;
+  border-width: 1px;
+  border-style: dashed;
+  border-color: #f87171;
 }

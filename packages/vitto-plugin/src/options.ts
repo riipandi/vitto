@@ -1,21 +1,21 @@
-import type { Options as MinifyOptions } from '@swc/html'
-import type { PagefindServiceConfig } from 'pagefind'
-import type { Options as VentoOptions } from 'ventojs'
+import type { Options as MinifyOptions } from '@swc/html';
+import type { PagefindServiceConfig } from 'pagefind';
+import type { Options as VentoOptions } from 'ventojs';
 
 /**
  * Options for rendering a Vento template to HTML.
  */
 export interface RenderOptions {
   /** Path to the .vto template file */
-  filePath: string
+  filePath: string;
   /** Data to be injected into the template context */
-  data?: Record<string, unknown>
+  data?: Record<string, unknown>;
   /** Whether running in development mode */
-  isDev?: boolean
+  isDev?: boolean;
   /** Vite-generated assets (JS and CSS files) */
-  assets?: { main: string; css: string[] }
+  assets?: { main: string; css: string[] };
   /** Whether to minify the output HTML */
-  minify?: boolean | MinifyOptions
+  minify?: boolean | MinifyOptions;
 }
 
 /**
@@ -40,7 +40,7 @@ export interface DynamicRouteConfig {
    *
    * @example 'post'
    */
-  template: string
+  template: string;
 
   /**
    * Hook name to fetch data for generating pages.
@@ -48,7 +48,7 @@ export interface DynamicRouteConfig {
    *
    * @example 'posts'
    */
-  dataSource: string
+  dataSource: string;
 
   /**
    * Function to extract route params from each data item.
@@ -59,7 +59,7 @@ export interface DynamicRouteConfig {
    *
    * @example (post) => ({ id: post.id, slug: post.slug })
    */
-  getParams: (item: any) => Record<string, any>
+  getParams: (item: any) => Record<string, any>;
 
   /**
    * Function to generate output file path from data item.
@@ -70,7 +70,7 @@ export interface DynamicRouteConfig {
    *
    * @example (post) => `blog/${post.id}.html`
    */
-  getPath: (item: any) => string
+  getPath: (item: any) => string;
 }
 
 /**
@@ -78,7 +78,7 @@ export interface DynamicRouteConfig {
  * - 'html': Generate files as page.html (e.g., about.html)
  * - 'directory': Generate files as page/index.html for clean URLs (e.g., about/index.html)
  */
-export type OutputStrategy = 'html' | 'directory'
+export type OutputStrategy = 'html' | 'directory';
 
 /**
  * Metadata interface for page templates.
@@ -87,27 +87,27 @@ export interface Metadata {
   /**
    * Site name.
    */
-  siteName: string
+  siteName: string;
 
   /**
    * Site title.
    */
-  title: string
+  title: string;
 
   /**
    * Site description.
    */
-  description?: string
+  description?: string;
 
   /**
    * Site keywords.
    */
-  keywords?: string[] | string
+  keywords?: string[] | string;
 
   /**
    * Additional metadata fields.
    */
-  [key: string]: any
+  [key: string]: any;
 }
 
 /**
@@ -117,42 +117,42 @@ export interface VittoOptions {
   /**
    * Site metadata to inject into all page templates.
    */
-  metadata: Metadata
+  metadata: Metadata;
 
   /**
    * Directory containing page templates.
    * @default 'src/pages'
    */
-  pagesDir?: string
+  pagesDir?: string;
 
   /**
    * Directory containing layout templates.
    * @default 'src/layouts'
    */
-  layoutsDir?: string
+  layoutsDir?: string;
 
   /**
    * Directory containing partial templates.
    * @default 'src/partials'
    */
-  partialsDir?: string
+  partialsDir?: string;
 
   /**
    * Minify HTML output. If true, uses default minify options.
    * If object, merges with default minify options.
    * @default false
    */
-  minify?: boolean | Partial<MinifyOptions>
+  minify?: boolean | Partial<MinifyOptions>;
 
   /**
    * Override Vite assets (main JS and CSS) for template injection.
    */
-  assets?: { main: string; css: string[] }
+  assets?: { main: string; css: string[] };
 
   /**
    * Options to pass to Vento template engine.
    */
-  ventoOptions?: Partial<VentoOptions>
+  ventoOptions?: Partial<VentoOptions>;
 
   /**
    * Manual hook registration for injecting dynamic data into page templates.
@@ -181,7 +181,7 @@ export interface VittoOptions {
    * - Handler can be sync or async
    * - Returned data is automatically injected into template context
    */
-  hooks?: Record<string, (params?: any) => Promise<any>>
+  hooks?: Record<string, (params?: any) => Promise<any>>;
 
   /**
    * Configuration for dynamic route generation.
@@ -205,7 +205,7 @@ export interface VittoOptions {
    *   }
    * ]
    */
-  dynamicRoutes?: DynamicRouteConfig[]
+  dynamicRoutes?: DynamicRouteConfig[];
 
   /**
    * Enable automatic search index generation using Pagefind after build.
@@ -255,7 +255,7 @@ export interface VittoOptions {
    *
    * @see {@link https://pagefind.app/ | Pagefind Documentation}
    */
-  enableSearchIndex?: boolean
+  enableSearchIndex?: boolean;
 
   /**
    * Configuration options for Pagefind search indexing.
@@ -283,7 +283,7 @@ export interface VittoOptions {
    *
    * @see {@link https://pagefind.app/docs/config-options/ | Pagefind Configuration Options}
    */
-  pagefindOptions?: Partial<PagefindServiceConfig>
+  pagefindOptions?: Partial<PagefindServiceConfig>;
 
   /**
    * Output strategy for generated HTML files.
@@ -301,7 +301,7 @@ export interface VittoOptions {
    * // Pretty URLs (about/index.html, blog/1/index.html)
    * outputStrategy: 'directory'
    */
-  outputStrategy?: OutputStrategy
+  outputStrategy?: OutputStrategy;
 }
 
 export const PAGEFIND_OPTIONS: PagefindServiceConfig = {
@@ -309,7 +309,7 @@ export const PAGEFIND_OPTIONS: PagefindServiceConfig = {
   writePlayground: false,
   keepIndexUrl: true,
   verbose: false,
-}
+};
 
 /**
  * Default options for Vitto plugin.
@@ -328,7 +328,7 @@ export const DEFAULT_OPTS: VittoOptions = {
     siteName: 'Vitto',
     title: 'Vitto Site',
   },
-}
+};
 
 // Configuration for HTML minifier
 export const MINIFY_OPTIONS: MinifyOptions = {
@@ -347,4 +347,4 @@ export const MINIFY_OPTIONS: MinifyOptions = {
   sortAttributes: true,
   sortSpaceSeparatedAttributeValues: true,
   tagOmission: false,
-} as const
+} as const;

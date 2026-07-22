@@ -1,25 +1,48 @@
 {
     "name": "vitto",
     "version": "0.0.0",
-    "type": "module",
     "description": "A minimal static site generator built with Vite and the Vento templating engine.",
-    "author": "Aris Ripandi <aris@duck.com>",
-    "license": "MIT",
+    "keywords": [
+        "generator",
+        "hmr",
+        "jamstack",
+        "pagefind",
+        "ssg",
+        "static",
+        "vento",
+        "vite",
+        "website"
+    ],
     "homepage": "https://github.com/riipandi/vitto",
-    "funding": "https://github.com/riipandi/vitto?sponsor=1",
+    "bugs": {
+        "url": "https://github.com/riipandi/vitto/issues"
+    },
+    "license": "MIT",
+    "author": "Aris Ripandi <aris@duck.com>",
     "repository": {
         "type": "git",
         "url": "https://github.com/riipandi/vitto",
         "directory": "packages/vitto-plugin"
     },
-    "bugs": {
-        "url": "https://github.com/riipandi/vitto/issues"
-    },
+    "funding": "https://github.com/riipandi/vitto?sponsor=1",
+    "files": [
+        "dist/**/*",
+        "!tests/**/*",
+        "!dist/**/*.*.map",
+        "!tests/**/*.*.map",
+        "package.json",
+        "LICENSE",
+        "README.md"
+    ],
+    "type": "module",
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": "./dist/index.js"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "scripts": {
         "dev": "tsdown --watch",
@@ -28,12 +51,10 @@
         "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
         "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
         "cleanup": "pnpm dlx del-cli dist node_modules .turbo",
-        "lint": "biome lint . --write",
-        "check": "biome check . --write",
+        "lint": "oxlint --fix",
+        "check": "oxlint --fix && oxfmt --write",
+        "format": "oxfmt --write",
         "typecheck": "tsc --noEmit"
-    },
-    "peerDependencies": {
-        "vite": "^7.1.10"
     },
     "dependencies": {
         "@swc/html": "^1.15.46",
@@ -45,35 +66,16 @@
         "ventojs": "^2.4.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.5.5",
         "@types/node": "^26.1.1",
+        "oxfmt": "0.60.0",
+        "oxlint": "^1.75.0",
         "tsdown": "^0.22.13",
         "typescript": "^7.0.2",
         "vite": "^8.1.5"
     },
-    "files": [
-        "dist/**/*",
-        "!tests/**/*",
-        "!dist/**/*.*.map",
-        "!tests/**/*.*.map",
-        "package.json",
-        "LICENSE",
-        "README.md"
-    ],
-    "publishConfig": {
-        "access": "public"
+    "peerDependencies": {
+        "vite": "^7.1.10"
     },
-    "keywords": [
-        "vite",
-        "vento",
-        "ssg",
-        "hmr",
-        "pagefind",
-        "generator",
-        "static",
-        "website",
-        "jamstack"
-    ],
     "engines": {
         "node": "^20.19.0 || >=22.12.0"
     }

@@ -34,7 +34,7 @@ Vitto is a lightweight, Vite-powered static site generator that focuses on simpl
 Because Vitto is built on Vite, you get:
 
 - ⚡ Lightning-fast HMR (Hot Module Replacement)
-- 📦 Optimized bundling with Rollup
+- 📦 Optimized bundling with Rolldown
 - 🎨 Easy integration with CSS frameworks (Tailwind CSS, UnoCSS, etc.)
 - 🔧 Plugin ecosystem (PostCSS, autoprefixer, etc.)
 - 🚀 Modern JavaScript/TypeScript support out of the box
@@ -43,20 +43,20 @@ Because Vitto is built on Vite, you get:
 
 ```ts
 // vite.config.ts - Tailwind CSS via bundler
-import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            metadata: {
-                siteName: "My Site",
-                title: "My Site",
-            },
-        }),
-        tailwindcss(),
-    ],
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: 'My Site',
+        title: 'My Site',
+      },
+    }),
+    tailwindcss(),
+  ],
 });
 ```
 
@@ -133,28 +133,28 @@ Next.js is a full-featured React framework with SSR, SSG, and ISR capabilities.
 **Next.js** (pages/blog/[slug].tsx):
 
 ```tsx
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const posts = await fetchPosts();
-    return {
-        paths: posts.map((post) => ({ params: { slug: post.slug } })),
-        fallback: false,
-    };
+  const posts = await fetchPosts();
+  return {
+    paths: posts.map((post) => ({ params: { slug: post.slug } })),
+    fallback: false,
+  };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const post = await fetchPost(params.slug);
-    return { props: { post } };
+  const post = await fetchPost(params.slug);
+  return { props: { post } };
 };
 
 export default function Post({ post }) {
-    return (
-        <article>
-            <h1>{post.title}</h1>
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
-        </article>
-    );
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+    </article>
+  );
 }
 ```
 
@@ -171,26 +171,26 @@ export default function Post({ post }) {
 
 ```ts
 // hooks/posts.ts
-export const postsHook = defineHooks("posts", async () => {
-    return await fetchPosts();
+export const postsHook = defineHooks('posts', async () => {
+  return await fetchPosts();
 });
 
-export const postHook = defineHooks("post", async (params) => {
-    return await fetchPost(params.slug);
+export const postHook = defineHooks('post', async (params) => {
+  return await fetchPost(params.slug);
 });
 
 // vite.config.ts
 vitto({
-    metadata: { siteName: "Blog", title: "Blog" },
-    hooks: { posts: postsHook, post: postHook },
-    dynamicRoutes: [
-        {
-            template: "post",
-            dataSource: "posts",
-            getParams: (post) => ({ slug: post.slug }),
-            getPath: (post) => `blog/${post.slug}.html`,
-        },
-    ],
+  metadata: { siteName: 'Blog', title: 'Blog' },
+  hooks: { posts: postsHook, post: postHook },
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (post) => ({ slug: post.slug }),
+      getPath: (post) => `blog/${post.slug}.html`,
+    },
+  ],
 });
 ```
 
@@ -243,17 +243,17 @@ Astro is a modern static site builder that supports multiple UI frameworks and s
 
 ```ts
 // vite.config.ts
-import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            metadata: { siteName: "My App", title: "My App" },
-        }),
-        tailwindcss(),
-    ],
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My App', title: 'My App' },
+    }),
+    tailwindcss(),
+  ],
 });
 ```
 
@@ -273,9 +273,9 @@ export default defineConfig({
 
 ```ts
 // src/main.ts
-import "htmx.org";
-import Alpine from "alpinejs";
-import "./style.css";
+import 'htmx.org';
+import Alpine from 'alpinejs';
+import './style.css';
 
 window.Alpine = Alpine;
 Alpine.start();
@@ -347,14 +347,14 @@ Gatsby is a React-based framework with GraphQL for data management and a rich pl
 ```javascript
 // gatsby-config.js
 module.exports = {
-    plugins: [
-        "gatsby-plugin-postcss",
-        "gatsby-plugin-image",
-        {
-            resolve: "gatsby-plugin-react-helmet",
-            options: {/* ... */},
-        },
-    ],
+  plugins: [
+    'gatsby-plugin-postcss',
+    'gatsby-plugin-image',
+    {
+      resolve: 'gatsby-plugin-react-helmet',
+      options: {/* ... */},
+    },
+  ],
 };
 
 // Need separate webpack config for custom libraries
@@ -364,17 +364,17 @@ module.exports = {
 
 ```ts
 // vite.config.ts - Everything in one place
-import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            metadata: { siteName: "My Site", title: "My Site" },
-        }),
-        tailwindcss(),
-    ],
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My Site', title: 'My Site' },
+    }),
+    tailwindcss(),
+  ],
 });
 ```
 
@@ -495,14 +495,14 @@ Since both use Vite, they share similar benefits:
 
 ```ts
 // Both can use Vite plugins the same way
-import { defineConfig } from "vite";
-import UnoCSS from "unocss/vite";
+import { defineConfig } from 'vite';
+import UnoCSS from 'unocss/vite';
 
 export default defineConfig({
-    plugins: [
-        vitto({/* ... */}), // or VitePress
-        UnoCSS(),
-    ],
+  plugins: [
+    vitto({/* ... */}), // or VitePress
+    UnoCSS(),
+  ],
 });
 ```
 
@@ -570,12 +570,12 @@ Eleventy is a simpler static site generator with multiple template language supp
 ```javascript
 // .eleventy.js
 module.exports = function (eleventyConfig) {
-    // Need to manually copy assets
-    eleventyConfig.addPassthroughCopy("src/js");
-    eleventyConfig.addPassthroughCopy("src/css");
+  // Need to manually copy assets
+  eleventyConfig.addPassthroughCopy('src/js');
+  eleventyConfig.addPassthroughCopy('src/css');
 
-    // Manual CSS processing
-    eleventyConfig.addPlugin(require("eleventy-plugin-postcss"));
+  // Manual CSS processing
+  eleventyConfig.addPlugin(require('eleventy-plugin-postcss'));
 };
 ```
 
@@ -583,26 +583,26 @@ module.exports = function (eleventyConfig) {
 
 ```ts
 // vite.config.ts - Vite handles everything
-import { defineConfig } from "vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            metadata: { siteName: "My Site", title: "My Site" },
-        }),
-    ],
-    // CSS processing is automatic
-    // HMR is built-in
-    // Modern JS is transpiled automatically
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My Site', title: 'My Site' },
+    }),
+  ],
+  // CSS processing is automatic
+  // HMR is built-in
+  // Modern JS is transpiled automatically
 });
 ```
 
 ```ts
 // src/main.ts - Import libraries like any Vite app
-import "htmx.org";
-import Alpine from "alpinejs";
-import "./style.css"; // Processed automatically
+import 'htmx.org';
+import Alpine from 'alpinejs';
+import './style.css'; // Processed automatically
 
 window.Alpine = Alpine;
 Alpine.start();
@@ -640,29 +640,29 @@ Alpine.start();
 Vitto is perfect for:
 
 1. **Blogs**
-    - Personal blogs
-    - Tech blogs
-    - Content-heavy sites
+   - Personal blogs
+   - Tech blogs
+   - Content-heavy sites
 
 2. **Documentation**
-    - Project documentation
-    - API documentation
-    - Internal wiki
+   - Project documentation
+   - API documentation
+   - Internal wiki
 
 3. **Landing Pages**
-    - Product pages
-    - Marketing sites
-    - Portfolio sites
+   - Product pages
+   - Marketing sites
+   - Portfolio sites
 
 4. **Small to Medium Sites**
-    - Company websites
-    - Event websites
-    - Community sites
+   - Company websites
+   - Event websites
+   - Community sites
 
 5. **Sites Using Vanilla JS Libraries**
-    - HTMX-powered applications
-    - Alpine.js interactive sites
-    - Tailwind CSS designs
+   - HTMX-powered applications
+   - Alpine.js interactive sites
+   - Tailwind CSS designs
 
 ### Vitto Strengths
 
@@ -717,17 +717,17 @@ npm install -D tailwindcss @tailwindcss/vite
 
 ```ts
 // vite.config.ts
-import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            metadata: { siteName: "My Site", title: "My Site" },
-        }),
-        tailwindcss(),
-    ],
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My Site', title: 'My Site' },
+    }),
+    tailwindcss(),
+  ],
 });
 ```
 
@@ -739,9 +739,9 @@ npm install htmx.org alpinejs
 
 ```ts
 // src/main.ts
-import "htmx.org";
-import Alpine from "alpinejs";
-import "./style.css";
+import 'htmx.org';
+import Alpine from 'alpinejs';
+import './style.css';
 
 window.Alpine = Alpine;
 Alpine.start();
@@ -808,23 +808,23 @@ Alpine.start();
 
 ```tsx
 // pages/blog/[slug].tsx
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const posts = await getPosts();
-    return {
-        paths: posts.map((p) => ({ params: { slug: p.slug } })),
-        fallback: false,
-    };
+  const posts = await getPosts();
+  return {
+    paths: posts.map((p) => ({ params: { slug: p.slug } })),
+    fallback: false,
+  };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const post = await getPost(params.slug);
-    return { props: { post } };
+  const post = await getPost(params.slug);
+  return { props: { post } };
 };
 
 export default function Post({ post }) {
-    return <article>{/* ... */}</article>;
+  return <article>{/* ... */}</article>;
 }
 ```
 
@@ -832,12 +832,12 @@ export default function Post({ post }) {
 
 ```ts
 // hooks/posts.ts
-export const postsHook = defineHooks("posts", async () => {
-    return await getPosts();
+export const postsHook = defineHooks('posts', async () => {
+  return await getPosts();
 });
 
-export const postHook = defineHooks("post", async (params) => {
-    return await getPost(params.slug);
+export const postHook = defineHooks('post', async (params) => {
+  return await getPost(params.slug);
 });
 ```
 
@@ -850,16 +850,16 @@ export const postHook = defineHooks("post", async (params) => {
 ```ts
 // vite.config.ts
 vitto({
-    metadata: { siteName: "Blog", title: "Blog" },
-    hooks: { posts: postsHook, post: postHook },
-    dynamicRoutes: [
-        {
-            template: "post",
-            dataSource: "posts",
-            getParams: (p) => ({ slug: p.slug }),
-            getPath: (p) => `blog/${p.slug}.html`,
-        },
-    ],
+  metadata: { siteName: 'Blog', title: 'Blog' },
+  hooks: { posts: postsHook, post: postHook },
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (p) => ({ slug: p.slug }),
+      getPath: (p) => `blog/${p.slug}.html`,
+    },
+  ],
 });
 ```
 
@@ -898,27 +898,27 @@ Same as Next.js migration above.
 ```javascript
 // gatsby-node.js
 exports.createPages = async ({ graphql, actions }) => {
-    const { data } = await graphql(`
-        query {
-            allMarkdownRemark {
-                edges {
-                    node {
-                        fields {
-                            slug
-                        }
-                    }
-                }
+  const { data } = await graphql(`
+    query {
+      allMarkdownRemark {
+        edges {
+          node {
+            fields {
+              slug
             }
+          }
         }
-    `);
+      }
+    }
+  `);
 
-    data.allMarkdownRemark.edges.forEach(({ node }) => {
-        actions.createPage({
-            path: node.fields.slug,
-            component: "./src/templates/post.js",
-            context: { slug: node.fields.slug },
-        });
+  data.allMarkdownRemark.edges.forEach(({ node }) => {
+    actions.createPage({
+      path: node.fields.slug,
+      component: './src/templates/post.js',
+      context: { slug: node.fields.slug },
     });
+  });
 };
 ```
 
@@ -927,23 +927,23 @@ Replace GraphQL with simple hooks:
 
 ```ts
 // hooks/posts.ts
-import fs from "node:fs/promises";
-import path from "node:path";
-import matter from "gray-matter";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import matter from 'gray-matter';
 
-export default defineHooks("posts", async () => {
-    const postsDir = path.join(process.cwd(), "content/posts");
-    const files = await fs.readdir(postsDir);
+export default defineHooks('posts', async () => {
+  const postsDir = path.join(process.cwd(), 'content/posts');
+  const files = await fs.readdir(postsDir);
 
-    return await Promise.all(
-        files
-            .filter((file) => file.endsWith(".md"))
-            .map(async (file) => {
-                const content = await fs.readFile(path.join(postsDir, file), "utf-8");
-                const { data, content: markdown } = matter(content);
-                return { ...data, slug: file.replace(".md", ""), content: markdown };
-            }),
-    );
+  return await Promise.all(
+    files
+      .filter((file) => file.endsWith('.md'))
+      .map(async (file) => {
+        const content = await fs.readFile(path.join(postsDir, file), 'utf-8');
+        const { data, content: markdown } = matter(content);
+        return { ...data, slug: file.replace('.md', ''), content: markdown };
+      })
+  );
 });
 ```
 
@@ -954,11 +954,11 @@ export default defineHooks("posts", async () => {
 ```javascript
 // .eleventy.js
 module.exports = function (eleventyConfig) {
-    eleventyConfig.addCollection("posts", (api) => api.getFilteredByGlob("posts/*.md"));
+  eleventyConfig.addCollection('posts', (api) => api.getFilteredByGlob('posts/*.md'));
 
-    // Manual asset handling
-    eleventyConfig.addPassthroughCopy("src/css");
-    eleventyConfig.addPassthroughCopy("src/js");
+  // Manual asset handling
+  eleventyConfig.addPassthroughCopy('src/css');
+  eleventyConfig.addPassthroughCopy('src/js');
 };
 ```
 
@@ -966,36 +966,36 @@ module.exports = function (eleventyConfig) {
 
 ```ts
 // hooks/posts.ts
-import { glob } from "glob";
-import fs from "node:fs/promises";
-import matter from "gray-matter";
+import { glob } from 'glob';
+import fs from 'node:fs/promises';
+import matter from 'gray-matter';
 
-export default defineHooks("posts", async () => {
-    const files = await glob("content/posts/*.md");
-    return await Promise.all(
-        files.map(async (file) => {
-            const content = await fs.readFile(file, "utf-8");
-            const { data, content: markdown } = matter(content);
-            return { ...data, content: markdown };
-        }),
-    );
+export default defineHooks('posts', async () => {
+  const files = await glob('content/posts/*.md');
+  return await Promise.all(
+    files.map(async (file) => {
+      const content = await fs.readFile(file, 'utf-8');
+      const { data, content: markdown } = matter(content);
+      return { ...data, content: markdown };
+    })
+  );
 });
 ```
 
 ```ts
 // vite.config.ts - Assets handled automatically by Vite!
-import { defineConfig } from "vite";
-import vitto from "vitto";
-import { postsHook } from "./hooks/posts";
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook } from './hooks/posts';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            metadata: { siteName: "My Site", title: "My Site" },
-            hooks: { posts: postsHook },
-        }),
-    ],
-    // No need to configure CSS/JS - Vite handles it!
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My Site', title: 'My Site' },
+      hooks: { posts: postsHook },
+    }),
+  ],
+  // No need to configure CSS/JS - Vite handles it!
 });
 ```
 

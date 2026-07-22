@@ -21,15 +21,15 @@ Search indexing is enabled by default. During production builds, Vitto automatic
 In your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from "vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            enableSearchIndex: true, // Default: true
-        }),
-    ],
+  plugins: [
+    vitto({
+      enableSearchIndex: true, // Default: true
+    }),
+  ],
 });
 ```
 
@@ -93,13 +93,13 @@ Create a search component in your templates:
 
 ```ts
 vitto({
-    enableSearchIndex: true,
-    pagefindOptions: {
-        rootSelector: "html",
-        verbose: false,
-        keepIndexUrl: true,
-        writePlayground: false,
-    },
+  enableSearchIndex: true,
+  pagefindOptions: {
+    rootSelector: 'html',
+    verbose: false,
+    keepIndexUrl: true,
+    writePlayground: false,
+  },
 });
 ```
 
@@ -107,28 +107,28 @@ vitto({
 
 ```ts
 vitto({
-    pagefindOptions: {
-        // Element to index (default: 'html')
-        rootSelector: "main",
+  pagefindOptions: {
+    // Element to index (default: 'html')
+    rootSelector: 'main',
 
-        // Exclude elements from indexing
-        excludeSelectors: [".no-index", "nav", "footer"],
+    // Exclude elements from indexing
+    excludeSelectors: ['.no-index', 'nav', 'footer'],
 
-        // Show detailed indexing logs
-        verbose: true,
+    // Show detailed indexing logs
+    verbose: true,
 
-        // Keep index URL structure
-        keepIndexUrl: true,
+    // Keep index URL structure
+    keepIndexUrl: true,
 
-        // Generate interactive playground (development only)
-        writePlayground: false,
+    // Generate interactive playground (development only)
+    writePlayground: false,
 
-        // Force language
-        forceLanguage: "en",
+    // Force language
+    forceLanguage: 'en',
 
-        // Glob patterns to process
-        glob: "**/*.{html}",
-    },
+    // Glob patterns to process
+    glob: '**/*.{html}',
+  },
 });
 ```
 
@@ -204,38 +204,38 @@ For more control, use the Pagefind JavaScript API:
 <div id="search-results"></div>
 
 <script type="module">
-    import * as pagefind from "/_pagefind/pagefind.js";
+  import * as pagefind from '/_pagefind/pagefind.js';
 
-    await pagefind.init();
+  await pagefind.init();
 
-    const searchInput = document.getElementById("search-input");
-    const resultsDiv = document.getElementById("search-results");
+  const searchInput = document.getElementById('search-input');
+  const resultsDiv = document.getElementById('search-results');
 
-    searchInput.addEventListener("input", async (e) => {
-        const query = e.target.value;
+  searchInput.addEventListener('input', async (e) => {
+    const query = e.target.value;
 
-        if (query.length < 2) {
-            resultsDiv.innerHTML = "";
-            return;
-        }
+    if (query.length < 2) {
+      resultsDiv.innerHTML = '';
+      return;
+    }
 
-        const search = await pagefind.search(query);
+    const search = await pagefind.search(query);
 
-        const results = await Promise.all(search.results.map((r) => r.data()));
+    const results = await Promise.all(search.results.map((r) => r.data()));
 
-        resultsDiv.innerHTML = results
-            .map(
-                (result) => `
+    resultsDiv.innerHTML = results
+      .map(
+        (result) => `
       <div class="search-result">
         <h3>
           <a href="${result.url}">${result.meta.title}</a>
         </h3>
         <p>${result.excerpt}</p>
       </div>
-    `,
-            )
-            .join("");
-    });
+    `
+      )
+      .join('');
+  });
 </script>
 ```
 
@@ -245,33 +245,33 @@ Override Pagefind UI styles:
 
 ```css
 .pagefind-ui {
-    --pagefind-ui-primary: #034ad8;
-    --pagefind-ui-text: #393939;
-    --pagefind-ui-background: #ffffff;
-    --pagefind-ui-border: #eeeeee;
-    --pagefind-ui-tag: #eeeeee;
-    --pagefind-ui-border-width: 2px;
-    --pagefind-ui-border-radius: 8px;
-    --pagefind-ui-image-border-radius: 8px;
-    --pagefind-ui-image-box-ratio: 3 / 2;
-    --pagefind-ui-font: sans-serif;
+  --pagefind-ui-primary: #034ad8;
+  --pagefind-ui-text: #393939;
+  --pagefind-ui-background: #ffffff;
+  --pagefind-ui-border: #eeeeee;
+  --pagefind-ui-tag: #eeeeee;
+  --pagefind-ui-border-width: 2px;
+  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-image-border-radius: 8px;
+  --pagefind-ui-image-box-ratio: 3 / 2;
+  --pagefind-ui-font: sans-serif;
 }
 
 .pagefind-ui__search-input {
-    padding: 12px 16px;
-    font-size: 16px;
+  padding: 12px 16px;
+  font-size: 16px;
 }
 
 .pagefind-ui__result {
-    padding: 16px;
-    border: 1px solid var(--pagefind-ui-border);
-    border-radius: 8px;
-    margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid var(--pagefind-ui-border);
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 .pagefind-ui__result-link {
-    font-weight: 600;
-    color: var(--pagefind-ui-primary);
+  font-weight: 600;
+  color: var(--pagefind-ui-primary);
 }
 ```
 
@@ -281,10 +281,10 @@ Override Pagefind UI styles:
 
 ```ts
 vitto({
-    pagefindOptions: {
-        rootSelector: "main", // Only index main content
-        excludeSelectors: ["nav", "footer", "aside", ".sidebar"],
-    },
+  pagefindOptions: {
+    rootSelector: 'main', // Only index main content
+    excludeSelectors: ['nav', 'footer', 'aside', '.sidebar'],
+  },
 });
 ```
 
@@ -311,33 +311,33 @@ Load Pagefind only when needed:
 ```html
 <button id="open-search">Search</button>
 <div id="search-modal" style="display: none;">
-    <div id="search"></div>
+  <div id="search"></div>
 </div>
 
 <script>
-    let searchLoaded = false;
+  let searchLoaded = false;
 
-    document.getElementById("open-search").addEventListener("click", async () => {
-        const modal = document.getElementById("search-modal");
-        modal.style.display = "block";
+  document.getElementById('open-search').addEventListener('click', async () => {
+    const modal = document.getElementById('search-modal');
+    modal.style.display = 'block';
 
-        if (!searchLoaded) {
-            // Lazy load Pagefind UI
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = "/_pagefind/pagefind-ui.css";
-            document.head.appendChild(link);
+    if (!searchLoaded) {
+      // Lazy load Pagefind UI
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/_pagefind/pagefind-ui.css';
+      document.head.appendChild(link);
 
-            const script = document.createElement("script");
-            script.src = "/_pagefind/pagefind-ui.js";
-            script.onload = () => {
-                new PagefindUI({ element: "#search" });
-            };
-            document.body.appendChild(script);
+      const script = document.createElement('script');
+      script.src = '/_pagefind/pagefind-ui.js';
+      script.onload = () => {
+        new PagefindUI({ element: '#search' });
+      };
+      document.body.appendChild(script);
 
-            searchLoaded = true;
-        }
-    });
+      searchLoaded = true;
+    }
+  });
 </script>
 ```
 
@@ -347,9 +347,9 @@ Load Pagefind only when needed:
 
 ```ts
 vitto({
-    pagefindOptions: {
-        forceLanguage: "en", // or auto-detect
-    },
+  pagefindOptions: {
+    forceLanguage: 'en', // or auto-detect
+  },
 });
 ```
 
@@ -393,7 +393,7 @@ Then in your search UI:
 
 ```javascript
 const search = await pagefind.search(query, {
-    sort: { date: "desc" },
+  sort: { date: 'desc' },
 });
 ```
 
@@ -427,9 +427,9 @@ The index files are created in `dist/_pagefind/`.
 
 1. **Check if indexing is enabled**:
 
-    ```ts
-    vitto({ enableSearchIndex: true });
-    ```
+   ```ts
+   vitto({ enableSearchIndex: true });
+   ```
 
 2. **Verify production build**:
    Search only works in production builds, not in dev mode.
@@ -437,13 +437,13 @@ The index files are created in `dist/_pagefind/`.
 3. **Check browser console** for errors loading Pagefind files.
 
 4. **Verify files exist**:
-    ```
-    dist/
-    └── _pagefind/
-        ├── pagefind.js
-        ├── pagefind-ui.js
-        └── pagefind-ui.css
-    ```
+   ```
+   dist/
+   └── _pagefind/
+       ├── pagefind.js
+       ├── pagefind-ui.js
+       └── pagefind-ui.css
+   ```
 
 ### No Results Found
 
@@ -494,9 +494,9 @@ The index files are created in `dist/_pagefind/`.
 
 ```css
 @media (max-width: 768px) {
-    .pagefind-ui__search-input {
-        font-size: 16px; /* Prevent zoom on iOS */
-    }
+  .pagefind-ui__search-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
 }
 ```
 
@@ -506,13 +506,13 @@ The index files are created in `dist/_pagefind/`.
 <div id="search-status" aria-live="polite"></div>
 
 <script>
-    searchInput.addEventListener("input", async (e) => {
-        const status = document.getElementById("search-status");
-        status.textContent = "Searching...";
+  searchInput.addEventListener('input', async (e) => {
+    const status = document.getElementById('search-status');
+    status.textContent = 'Searching...';
 
-        const results = await pagefind.search(e.target.value);
-        status.textContent = `Found ${results.results.length} results`;
-    });
+    const results = await pagefind.search(e.target.value);
+    status.textContent = `Found ${results.results.length} results`;
+  });
 </script>
 ```
 

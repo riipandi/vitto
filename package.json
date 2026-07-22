@@ -12,14 +12,15 @@
         "update-deps": "npm-check-updates --configFileName .ncurc.json",
         "publish:dry": "turbo publish:dry --filter=vitto --filter=create-vitto",
         "publish:npm": "turbo publish:npm --filter=vitto --filter=create-vitto",
-        "format": "biome format . --write",
+        "format": "oxfmt --write",
         "lint": "turbo lint --cache=local:rw,remote:r",
         "check": "turbo check --cache=local:rw,remote:r",
         "typecheck": "turbo typecheck --cache=local:rw,remote:r"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.5.5",
         "npm-check-updates": "^22.2.9",
+        "oxfmt": "0.60.0",
+        "oxlint": "^1.75.0",
         "turbo": "^2.10.6"
     },
     "engines": {

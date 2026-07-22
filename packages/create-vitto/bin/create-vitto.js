@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import { runCmd } from '../dist/index.js'
+import { runCmd } from '../dist/index.js';
 
-runCmd()
+runCmd();

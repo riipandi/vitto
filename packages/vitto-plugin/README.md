@@ -31,8 +31,8 @@ yarn add --dev vitto
 ## Usage
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
@@ -42,10 +42,10 @@ export default defineConfig({
       metadata: {
         siteName: 'Vitto',
         title: 'Vitto - Static Site Generator Powered by Vite & Vento',
-      }
-    })
+      },
+    }),
   ],
-})
+});
 ```
 
 ## License

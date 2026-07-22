@@ -227,23 +227,23 @@ We aim for high test coverage:
 ```ts
 // Good
 interface HookData {
-    title: string;
-    items: string[];
+  title: string;
+  items: string[];
 }
 
 function processData(data: HookData): void {
-    // Implementation
+  // Implementation
 }
 
 // Avoid
 function processData(data: any) {
-    // Implementation
+  // Implementation
 }
 ```
 
 ### Formatting and Linting
 
-We use Biome for formatting and linting:
+We use Oxlint for linting and Oxfmt for formatting:
 
 ```bash
 # Check code
@@ -268,19 +268,19 @@ pnpm format
 // File: my-component.ts
 
 export const DEFAULT_CONFIG = {
-    // constants
+  // constants
 };
 
 export interface MyComponentOptions {
-    // interface
+  // interface
 }
 
 export class MyComponent {
-    // class
+  // class
 }
 
 export function createComponent() {
-    // function
+  // function
 }
 ```
 
@@ -306,10 +306,10 @@ export function createComponent() {
  * ```
  */
 export function defineHooks<T, P>(
-    name: string,
-    handler: (params?: P) => T | Promise<T>,
+  name: string,
+  handler: (params?: P) => T | Promise<T>
 ): HookFunction<T, P> {
-    // Implementation
+  // Implementation
 }
 ````
 
@@ -318,14 +318,14 @@ export function defineHooks<T, P>(
 ### Pull Request Guidelines
 
 1. **Title**: Clear and descriptive
-    - Good: "feat: add support for custom Vento filters"
-    - Bad: "Update code"
+   - Good: "feat: add support for custom Vento filters"
+   - Bad: "Update code"
 
 2. **Description**: Include:
-    - What changes were made
-    - Why the changes were necessary
-    - Any breaking changes
-    - Related issues (use `Closes #123`)
+   - What changes were made
+   - Why the changes were necessary
+   - Any breaking changes
+   - Related issues (use `Closes #123`)
 
 3. **Tests**: All tests must pass
 4. **Documentation**: Update docs if needed
@@ -435,7 +435,7 @@ Considered using... but it doesn't work because...
 
 ```ts
 vitto({
-    customFilter: (value) => value.toUpperCase(),
+  customFilter: (value) => value.toUpperCase(),
 });
 ```
 ````
@@ -478,54 +478,54 @@ We use [Semantic Versioning](https://semver.org/):
 
 1. **Ensure all checks pass**:
 
-    ```bash
-    pnpm typecheck
-    pnpm lint
-    pnpm check
-    ```
+   ```bash
+   pnpm typecheck
+   pnpm lint
+   pnpm check
+   ```
 
 2. **Update changelog**:
 
-    ```bash
-    # Edit CHANGELOG.md in each package
-    # Add release notes under new version
-    ```
+   ```bash
+   # Edit CHANGELOG.md in each package
+   # Add release notes under new version
+   ```
 
 3. **Update dependencies**:
 
-    ```bash
-    pnpm update-deps
-    ```
+   ```bash
+   pnpm update-deps
+   ```
 
 4. **Build all packages**:
 
-    ```bash
-    pnpm build
-    ```
+   ```bash
+   pnpm build
+   ```
 
 5. **Dry run publish** (test before actual publish):
 
-    ```bash
-    pnpm publish:dry
-    ```
+   ```bash
+   pnpm publish:dry
+   ```
 
 6. **Publish to npm**:
 
-    ```bash
-    pnpm publish:npm
-    ```
+   ```bash
+   pnpm publish:npm
+   ```
 
 7. **Push tags**:
 
-    ```bash
-    git push --follow-tags
-    ```
+   ```bash
+   git push --follow-tags
+   ```
 
 8. **Create GitHub release**:
-    - Go to GitHub releases
-    - Create new release from tag
-    - Copy changelog content
-    - Publish release
+   - Go to GitHub releases
+   - Create new release from tag
+   - Copy changelog content
+   - Publish release
 
 ### Release Checklist
 
@@ -597,7 +597,8 @@ Thank you for contributing to Vitto! 🎉
 - [Vite](https://vitejs.dev/) - Build tool
 - [Vento](https://vento.js.org/) - Template engine
 - [Pagefind](https://pagefind.app/) - Static search
-- [Biome](https://biomejs.dev/) - Linter and formatter
+- [Oxlint](https://oxc.rs/docs/guide/usage/linter/) - Linter
+- [Oxfmt](https://oxc.rs/docs/guide/usage/formatter/) - Formatter
 - [Turborepo](https://turbo.build/repo) - Monorepo build system
 
 ### Useful Commands
@@ -611,7 +612,7 @@ pnpm build            # Build all packages
 
 # Code Quality
 pnpm lint             # Lint all packages
-pnpm check            # Check code with Biome
+pnpm check            # Lint and format with fixes
 pnpm format           # Format code
 pnpm typecheck        # Type check all packages
 

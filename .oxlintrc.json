@@ -1,0 +1,31 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["typescript", "unicorn", "import", "eslint"],
+    "env": {
+        "builtin": true,
+        "node": true
+    },
+    "categories": {
+        "correctness": "error",
+        "suspicious": "error"
+    },
+    "rules": {
+        "no-console": "off",
+        "no-debugger": "off",
+        "typescript/no-explicit-any": "off",
+        "typescript/consistent-type-definitions": ["error", "interface"],
+        "no-empty": ["error", { "allowEmptyCatch": true }],
+        "eslint/no-underscore-dangle": "off",
+        "eslint/no-shadow": "off",
+        "import/no-unassigned-import": "off",
+        "import/no-named-as-default": "off"
+    },
+    "overrides": [
+        {
+            "files": ["packages/create-vitto/**/*", "bin/**/*"],
+            "env": {
+                "node": true
+            }
+        }
+    ]
+}

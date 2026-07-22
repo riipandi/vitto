@@ -15,21 +15,21 @@ Enable HTML minification in production:
 
 ```ts
 // vite.config.ts
-import { defineConfig } from "vite";
-import vitto from "vitto";
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-    plugins: [
-        vitto({
-            minify: process.env.NODE_ENV === "production",
-            minifyOptions: {
-                collapseWhitespaces: "conservative",
-                removeComments: true,
-                minifyCss: { lib: "lightningcss" },
-                minifyJs: true,
-            },
-        }),
-    ],
+  plugins: [
+    vitto({
+      minify: process.env.NODE_ENV === 'production',
+      minifyOptions: {
+        collapseWhitespaces: 'conservative',
+        removeComments: true,
+        minifyCss: { lib: 'lightningcss' },
+        minifyJs: true,
+      },
+    }),
+  ],
 });
 ```
 
@@ -39,10 +39,10 @@ Vite automatically removes unused code. Import only what you need:
 
 ```js
 // Good - imports only what's needed
-import { debounce } from "lodash-es";
+import { debounce } from 'lodash-es';
 
 // Avoid - imports entire library
-import _ from "lodash";
+import _ from 'lodash';
 ```
 
 ### Code Splitting
@@ -51,7 +51,7 @@ Vite automatically splits code. For manual control:
 
 ```js
 // Lazy load heavy components
-const HeavyComponent = () => import("./HeavyComponent.js");
+const HeavyComponent = () => import('./HeavyComponent.js');
 ```
 
 ## Asset Optimization
@@ -81,21 +81,21 @@ npm install sharp
 
 ```js
 // hooks/images.ts
-import sharp from "sharp";
+import sharp from 'sharp';
 
-export default defineHooks("optimizedImages", async () => {
-    const images = await getImages();
+export default defineHooks('optimizedImages', async () => {
+  const images = await getImages();
 
-    await Promise.all(
-        images.map(async (img) => {
-            await sharp(img.path)
-                .resize(1200, 800, { fit: "inside" })
-                .webp({ quality: 80 })
-                .toFile(img.outputPath);
-        }),
-    );
+  await Promise.all(
+    images.map(async (img) => {
+      await sharp(img.path)
+        .resize(1200, 800, { fit: 'inside' })
+        .webp({ quality: 80 })
+        .toFile(img.outputPath);
+    })
+  );
 
-    return images;
+  return images;
 });
 ```
 
@@ -144,8 +144,8 @@ Use PurgeCSS with Tailwind CSS:
 ```js
 // tailwind.config.js
 module.exports = {
-    content: ["./src/**/*.{vto,html,js,ts}"],
-    // ...
+  content: ['./src/**/*.{vto,html,js,ts}'],
+  // ...
 };
 ```
 
@@ -171,14 +171,14 @@ Vite automatically optimizes CSS. For more control:
 ```ts
 // vite.config.ts
 export default defineConfig({
-    css: {
-        devSourcemap: false,
-        preprocessorOptions: {
-            scss: {
-                additionalData: '@import "./src/styles/variables.scss";',
-            },
-        },
+  css: {
+    devSourcemap: false,
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@import "./src/styles/variables.scss";',
+      },
     },
+  },
 });
 ```
 
@@ -209,12 +209,12 @@ Vite builds for modern browsers by default:
 ```ts
 // vite.config.ts
 export default defineConfig({
-    build: {
-        target: "esnext",
-        modulePreload: {
-            polyfill: false,
-        },
+  build: {
+    target: 'esnext',
+    modulePreload: {
+      polyfill: false,
     },
+  },
 });
 ```
 
@@ -226,11 +226,11 @@ export default defineConfig({
 
 ```ts
 vitto({
-    minify: true,
-    minifyOptions: {
-        removeComments: true,
-        collapseWhitespaces: "conservative",
-    },
+  minify: true,
+  minifyOptions: {
+    removeComments: true,
+    collapseWhitespaces: 'conservative',
+  },
 });
 ```
 
@@ -239,17 +239,17 @@ vitto({
 Only pass necessary data to templates:
 
 ```ts
-export default defineHooks("posts", async () => {
-    const posts = await getAllPosts();
+export default defineHooks('posts', async () => {
+  const posts = await getAllPosts();
 
-    // Only return fields needed for display
-    return posts.map((post) => ({
-        slug: post.slug,
-        title: post.title,
-        excerpt: post.excerpt,
-        date: post.date,
-        // Don't include full content in list view
-    }));
+  // Only return fields needed for display
+  return posts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    date: post.date,
+    // Don't include full content in list view
+  }));
 });
 ```
 
@@ -258,18 +258,18 @@ export default defineHooks("posts", async () => {
 ```ts
 const POSTS_PER_PAGE = 10;
 
-export default defineHooks("paginatedPosts", async () => {
-    const allPosts = await getAllPosts();
-    const pages = [];
+export default defineHooks('paginatedPosts', async () => {
+  const allPosts = await getAllPosts();
+  const pages = [];
 
-    for (let i = 0; i < allPosts.length; i += POSTS_PER_PAGE) {
-        pages.push({
-            posts: allPosts.slice(i, i + POSTS_PER_PAGE),
-            pageNumber: Math.floor(i / POSTS_PER_PAGE) + 1,
-        });
-    }
+  for (let i = 0; i < allPosts.length; i += POSTS_PER_PAGE) {
+    pages.push({
+      posts: allPosts.slice(i, i + POSTS_PER_PAGE),
+      pageNumber: Math.floor(i / POSTS_PER_PAGE) + 1,
+    });
+  }
 
-    return pages;
+  return pages;
 });
 ```
 
@@ -279,10 +279,10 @@ export default defineHooks("paginatedPosts", async () => {
 
 ```css
 @font-face {
-    font-family: "Inter";
-    src: url("/fonts/inter-var.woff2") format("woff2");
-    font-weight: 100 900;
-    font-display: swap;
+  font-family: 'Inter';
+  src: url('/fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
 }
 ```
 
@@ -290,9 +290,9 @@ export default defineHooks("paginatedPosts", async () => {
 
 ```css
 @font-face {
-    font-family: "MyFont";
-    src: url("/fonts/myfont.woff2") format("woff2");
-    font-display: swap; /* or 'optional' */
+  font-family: 'MyFont';
+  src: url('/fonts/myfont.woff2') format('woff2');
+  font-display: swap; /* or 'optional' */
 }
 ```
 
@@ -327,17 +327,17 @@ Implement a service worker for offline support:
 
 ```js
 // public/sw.js
-const CACHE_NAME = "vitto-v1";
-const urlsToCache = ["/", "/styles.css", "/main.js"];
+const CACHE_NAME = 'vitto-v1';
+const urlsToCache = ['/', '/styles.css', '/main.js'];
 
-self.addEventListener("install", (event) => {
-    event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
 });
 
-self.addEventListener("fetch", (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => response || fetch(event.request)),
-    );
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => response || fetch(event.request))
+  );
 });
 ```
 
@@ -391,10 +391,10 @@ Register in your template:
 
 ```ts
 vitto({
-    pagefindOptions: {
-        rootSelector: "main", // Index only main content
-        excludeSelectors: ["nav", "footer", ".sidebar"],
-    },
+  pagefindOptions: {
+    rootSelector: 'main', // Index only main content
+    excludeSelectors: ['nav', 'footer', '.sidebar'],
+  },
 });
 ```
 
@@ -464,25 +464,25 @@ In GitHub Actions:
 ```yaml
 - uses: actions/setup-node@v4
   with:
-      node-version: "20"
-      cache: "npm"
+    node-version: '20'
+    cache: 'npm'
 ```
 
 #### 3. Parallel Processing
 
 ```ts
 // Process data in parallel
-export default defineHooks("posts", async () => {
-    const files = await getMarkdownFiles();
+export default defineHooks('posts', async () => {
+  const files = await getMarkdownFiles();
 
-    // Process in parallel
-    const posts = await Promise.all(
-        files.map(async (file) => {
-            return await processMarkdown(file);
-        }),
-    );
+  // Process in parallel
+  const posts = await Promise.all(
+    files.map(async (file) => {
+      return await processMarkdown(file);
+    })
+  );
 
-    return posts;
+  return posts;
 });
 ```
 
@@ -491,11 +491,11 @@ export default defineHooks("posts", async () => {
 ```ts
 let cachedData = null;
 
-export default defineHooks("data", async () => {
-    if (cachedData) return cachedData;
+export default defineHooks('data', async () => {
+  if (cachedData) return cachedData;
 
-    cachedData = await fetchExpensiveData();
-    return cachedData;
+  cachedData = await fetchExpensiveData();
+  return cachedData;
 });
 ```
 
@@ -524,17 +524,17 @@ Set performance budgets:
 ```ts
 // vite.config.ts
 export default defineConfig({
-    build: {
-        reportCompressedSize: true,
-        chunkSizeWarningLimit: 500, // KB
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vendor: ["heavy-library"],
-                },
-            },
+  build: {
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 500, // KB
+    rolldownOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['heavy-library'],
         },
+      },
     },
+  },
 });
 ```
 
