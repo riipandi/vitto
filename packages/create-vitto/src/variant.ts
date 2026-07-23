@@ -30,6 +30,11 @@ const frameworkVariants: TemplateVariant[] = [
     display: 'Tailwind CSS',
     color: (text: string) => styleText('cyan', text),
   },
+  {
+    name: 'blog',
+    display: 'Blog (Tailwind + Pagination)',
+    color: (text: string) => styleText('green', text),
+  },
 ];
 
 export { frameworkVariants };

@@ -23,7 +23,7 @@
     },
     "funding": "https://github.com/riipandi/vitto?sponsor=1",
     "bin": {
-        "create-vitto": "./bin/create-vitto.js"
+        "create-vitto": "./bin/create-vitto.mjs"
     },
     "files": [
         "bin/**/*",
@@ -47,12 +47,12 @@
     "publishConfig": {
         "access": "public",
         "executableFiles": [
-            "./bin/create-vitto.js"
+            "./bin/create-vitto.mjs"
         ]
     },
     "scripts": {
         "build": "tsdown",
-        "dev": "pnpm build &>/dev/null && NODE_ENV=development node ./bin/create-vitto.js",
+        "dev": "pnpm build &>/dev/null && NODE_ENV=development node ./bin/create-vitto.mjs",
         "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
         "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
         "cleanup": "pnpm dlx del-cli dist node_modules .turbo",

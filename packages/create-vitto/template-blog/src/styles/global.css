@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body {
+    @apply antialiased min-h-screen scroll-smooth;
+  }
+  body {
+    @apply font-sans;
+  }
+  pre,
+  code {
+    @apply font-mono;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Debug utility */
+@utility debug {
+  border-width: 1px;
+  border-style: dashed;
+  border-color: #f87171;
+}
