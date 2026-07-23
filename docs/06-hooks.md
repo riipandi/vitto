@@ -18,12 +18,12 @@ Hooks allow you to:
 Use the `defineHooks` helper to create a hook:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
 
 export default defineHooks('hookName', async (params) => {
   // Fetch or generate your data
-  return data
-})
+  return data;
+});
 ```
 
 ### Basic Example
@@ -31,7 +31,7 @@ export default defineHooks('hookName', async (params) => {
 `hooks/site.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
 
 export default defineHooks('site', () => {
   return {
@@ -40,10 +40,10 @@ export default defineHooks('site', () => {
     author: 'Your Name',
     social: {
       twitter: '@johndoe',
-      github: 'johndoe'
-    }
-  }
-})
+      github: 'johndoe',
+    },
+  };
+});
 ```
 
 ## Using Hooks
@@ -53,23 +53,23 @@ export default defineHooks('site', () => {
 In your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import siteHook from './hooks/site'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import siteHook from './hooks/site';
 
 export default defineConfig({
   plugins: [
     vitto({
       metadata: {
         siteName: 'My Site',
-        title: 'My Site'
+        title: 'My Site',
       },
       hooks: {
-        site: siteHook
-      }
-    })
-  ]
-})
+        site: siteHook,
+      },
+    }),
+  ],
+});
 ```
 
 ### 2. Access Data in Templates
@@ -94,9 +94,9 @@ export default defineHooks('navigation', () => {
   return [
     { label: 'Home', url: '/' },
     { label: 'About', url: '/about.html' },
-    { label: 'Blog', url: '/blog.html' }
-  ]
-})
+    { label: 'Blog', url: '/blog.html' },
+  ];
+});
 ```
 
 ### Async Hooks
@@ -105,9 +105,9 @@ Fetch data asynchronously:
 
 ```ts
 export default defineHooks('posts', async () => {
-  const response = await fetch('https://api.example.com/posts')
-  return response.json()
-})
+  const response = await fetch('https://api.example.com/posts');
+  return response.json();
+});
 ```
 
 ### Parameterized Hooks
@@ -116,11 +116,11 @@ Accept parameters for filtering or customization:
 
 ```ts
 export default defineHooks('post', async (params) => {
-  if (!params?.slug) return null
+  if (!params?.slug) return null;
 
-  const response = await fetch(`https://api.example.com/posts/${params.slug}`)
-  return response.json()
-})
+  const response = await fetch(`https://api.example.com/posts/${params.slug}`);
+  return response.json();
+});
 ```
 
 Use with dynamic routes:
@@ -130,17 +130,17 @@ Use with dynamic routes:
 vitto({
   metadata: {
     siteName: 'My Blog',
-    title: 'My Blog'
+    title: 'My Blog',
   },
   dynamicRoutes: [
     {
       template: 'post',
       dataSource: 'posts',
       getParams: (post) => ({ slug: post.slug }),
-      getPath: (post) => `blog/${post.slug}.html`
-    }
-  ]
-})
+      getPath: (post) => `blog/${post.slug}.html`,
+    },
+  ],
+});
 ```
 
 ## Common Use Cases
@@ -150,35 +150,33 @@ vitto({
 `hooks/posts.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import matter from 'gray-matter'
+import { defineHooks } from 'vitto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import matter from 'gray-matter';
 
 export default defineHooks('posts', async () => {
-  const postsDir = path.join(process.cwd(), 'content/posts')
-  const files = await fs.readdir(postsDir)
+  const postsDir = path.join(process.cwd(), 'content/posts');
+  const files = await fs.readdir(postsDir);
 
   const posts = await Promise.all(
     files
-      .filter(file => file.endsWith('.md'))
+      .filter((file) => file.endsWith('.md'))
       .map(async (file) => {
-        const filePath = path.join(postsDir, file)
-        const content = await fs.readFile(filePath, 'utf-8')
-        const { data, content: markdown } = matter(content)
+        const filePath = path.join(postsDir, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const { data, content: markdown } = matter(content);
 
         return {
           slug: file.replace('.md', ''),
           ...data,
-          content: markdown
-        }
+          content: markdown,
+        };
       })
-  )
+  );
 
-  return posts.sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
-})
+  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+});
 ```
 
 ### Fetching from an API
@@ -186,23 +184,23 @@ export default defineHooks('posts', async () => {
 `hooks/products.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
 
 export default defineHooks('products', async () => {
   try {
-    const response = await fetch('https://api.example.com/products')
+    const response = await fetch('https://api.example.com/products');
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const products = await response.json()
-    return products
+    const products = await response.json();
+    return products;
   } catch (error) {
-    console.error('Failed to fetch products:', error)
-    return []
+    console.error('Failed to fetch products:', error);
+    return [];
   }
-})
+});
 ```
 
 ### Reading JSON Files
@@ -210,15 +208,15 @@ export default defineHooks('products', async () => {
 `hooks/data.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import { defineHooks } from 'vitto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 export default defineHooks('data', async () => {
-  const filePath = path.join(process.cwd(), 'data', 'config.json')
-  const content = await fs.readFile(filePath, 'utf-8')
-  return JSON.parse(content)
-})
+  const filePath = path.join(process.cwd(), 'data', 'config.json');
+  const content = await fs.readFile(filePath, 'utf-8');
+  return JSON.parse(content);
+});
 ```
 
 ### Processing Images
@@ -226,22 +224,22 @@ export default defineHooks('data', async () => {
 `hooks/gallery.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import { defineHooks } from 'vitto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 export default defineHooks('gallery', async () => {
-  const imagesDir = path.join(process.cwd(), 'public/images/gallery')
-  const files = await fs.readdir(imagesDir)
+  const imagesDir = path.join(process.cwd(), 'public/images/gallery');
+  const files = await fs.readdir(imagesDir);
 
   return files
-    .filter(file => /\.(jpg|jpeg|png|webp)$/i.test(file))
-    .map(file => ({
+    .filter((file) => /\.(jpg|jpeg|png|webp)$/i.test(file))
+    .map((file) => ({
       filename: file,
       url: `/images/gallery/${file}`,
-      alt: file.replace(/\.[^.]+$/, '').replace(/-/g, ' ')
-    }))
-})
+      alt: file.replace(/\.[^.]+$/, '').replace(/-/g, ' '),
+    }));
+});
 ```
 
 ### Environment-Based Data
@@ -249,16 +247,16 @@ export default defineHooks('gallery', async () => {
 `hooks/config.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
 
 export default defineHooks('config', () => {
   return {
     apiUrl: process.env.VITE_API_URL || 'http://localhost:3000',
     environment: process.env.NODE_ENV || 'development',
     enableAnalytics: process.env.NODE_ENV === 'production',
-    version: process.env.npm_package_version || '1.0.0'
-  }
-})
+    version: process.env.npm_package_version || '1.0.0',
+  };
+});
 ```
 
 ## Advanced Patterns
@@ -266,22 +264,22 @@ export default defineHooks('config', () => {
 ### Caching Hook Results
 
 ```ts
-let cache: any = null
-let cacheTime = 0
-const CACHE_DURATION = 60000 // 1 minute
+let cache: any = null;
+let cacheTime = 0;
+const CACHE_DURATION = 60000; // 1 minute
 
 export default defineHooks('data', async () => {
-  const now = Date.now()
+  const now = Date.now();
 
-  if (cache && (now - cacheTime) < CACHE_DURATION) {
-    return cache
+  if (cache && now - cacheTime < CACHE_DURATION) {
+    return cache;
   }
 
-  cache = await fetchExpensiveData()
-  cacheTime = now
+  cache = await fetchExpensiveData();
+  cacheTime = now;
 
-  return cache
-})
+  return cache;
+});
 ```
 
 ### Combining Multiple Data Sources
@@ -289,26 +287,26 @@ export default defineHooks('data', async () => {
 ```ts
 export default defineHooks('combined', async () => {
   const [posts, products, users] = await Promise.all([
-    fetch('https://api.example.com/posts').then(r => r.json()),
-    fetch('https://api.example.com/products').then(r => r.json()),
-    fetch('https://api.example.com/users').then(r => r.json())
-  ])
+    fetch('https://api.example.com/posts').then((r) => r.json()),
+    fetch('https://api.example.com/products').then((r) => r.json()),
+    fetch('https://api.example.com/users').then((r) => r.json()),
+  ]);
 
   return {
     posts,
     products,
-    users
-  }
-})
+    users,
+  };
+});
 ```
 
 ### Transforming Data
 
 ```ts
 export default defineHooks('posts', async () => {
-  const rawPosts = await fetchPosts()
+  const rawPosts = await fetchPosts();
 
-  return rawPosts.map(post => ({
+  return rawPosts.map((post) => ({
     ...post,
     // Add computed fields
     excerpt: post.content.substring(0, 200) + '...',
@@ -316,37 +314,37 @@ export default defineHooks('posts', async () => {
     formattedDate: new Date(post.date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
-    })
-  }))
-})
+      day: 'numeric',
+    }),
+  }));
+});
 ```
 
 ### Filtering and Sorting
 
 ```ts
 export default defineHooks('featuredPosts', async () => {
-  const allPosts = await getAllPosts()
+  const allPosts = await getAllPosts();
 
   return allPosts
-    .filter(post => post.featured === true)
+    .filter((post) => post.featured === true)
     .sort((a, b) => b.views - a.views)
-    .slice(0, 5) // Top 5 featured posts
-})
+    .slice(0, 5); // Top 5 featured posts
+});
 ```
 
 ### Nested Relationships
 
 ```ts
 export default defineHooks('postsWithAuthors', async () => {
-  const posts = await fetchPosts()
-  const authors = await fetchAuthors()
+  const posts = await fetchPosts();
+  const authors = await fetchAuthors();
 
-  return posts.map(post => ({
+  return posts.map((post) => ({
     ...post,
-    author: authors.find(author => author.id === post.authorId)
-  }))
-})
+    author: authors.find((author) => author.id === post.authorId),
+  }));
+});
 ```
 
 ## Hook Organization
@@ -377,46 +375,46 @@ You can export multiple hooks from a single file:
 `hooks/blog.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
 
 export const postsHook = defineHooks('posts', async () => {
   // Fetch all posts
-  return await fetchAllPosts()
-})
+  return await fetchAllPosts();
+});
 
 export const postHook = defineHooks('post', async (params) => {
   // Fetch single post
-  return await fetchPost(params.slug)
-})
+  return await fetchPost(params.slug);
+});
 
 export const categoriesHook = defineHooks('categories', async () => {
   // Fetch categories
-  return await fetchCategories()
-})
+  return await fetchCategories();
+});
 ```
 
 Then register all at once:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { postsHook, postHook, categoriesHook } from './hooks/blog'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook, postHook, categoriesHook } from './hooks/blog';
 
 export default defineConfig({
   plugins: [
     vitto({
       metadata: {
         siteName: 'My Blog',
-        title: 'My Blog'
+        title: 'My Blog',
       },
       hooks: {
         posts: postsHook,
         post: postHook,
-        categories: categoriesHook
-      }
-    })
-  ]
-})
+        categories: categoriesHook,
+      },
+    }),
+  ],
+});
 ```
 
 ## Type Safety
@@ -424,38 +422,38 @@ export default defineConfig({
 Add TypeScript types for better IDE support:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
 
 interface Post {
-  id: number
-  slug: string
-  title: string
-  content: string
-  date: string
-  author: string
+  id: number;
+  slug: string;
+  title: string;
+  content: string;
+  date: string;
+  author: string;
 }
 
 export default defineHooks<Post[]>('posts', async () => {
-  const posts: Post[] = await fetchPosts()
-  return posts
-})
+  const posts: Post[] = await fetchPosts();
+  return posts;
+});
 ```
 
 With parameters:
 
 ```ts
 interface PostParams {
-  slug: string
+  slug: string;
 }
 
 export default defineHooks<Post, PostParams>('post', async (params) => {
   if (!params?.slug) {
-    throw new Error('Slug is required')
+    throw new Error('Slug is required');
   }
 
-  const post: Post = await fetchPost(params.slug)
-  return post
-})
+  const post: Post = await fetchPost(params.slug);
+  return post;
+});
 ```
 
 ## Best Practices
@@ -465,12 +463,12 @@ export default defineHooks<Post, PostParams>('post', async (params) => {
 ```ts
 export default defineHooks('data', async () => {
   try {
-    return await fetchData()
+    return await fetchData();
   } catch (error) {
-    console.error('Failed to fetch data:', error)
-    return [] // Return safe default
+    console.error('Failed to fetch data:', error);
+    return []; // Return safe default
   }
-})
+});
 ```
 
 ### 2. Validate Parameters
@@ -478,15 +476,15 @@ export default defineHooks('data', async () => {
 ```ts
 export default defineHooks('item', async (params) => {
   if (!params?.id) {
-    throw new Error('ID parameter is required')
+    throw new Error('ID parameter is required');
   }
 
   if (typeof params.id !== 'number') {
-    throw new Error('ID must be a number')
+    throw new Error('ID must be a number');
   }
 
-  return await fetchItem(params.id)
-})
+  return await fetchItem(params.id);
+});
 ```
 
 ### 3. Use Meaningful Names
@@ -514,7 +512,7 @@ defineHooks('stuff', ...)
  */
 export default defineHooks('posts', async () => {
   // Implementation
-})
+});
 ```
 
 ### 5. Keep Hooks Focused
@@ -522,21 +520,21 @@ export default defineHooks('posts', async () => {
 ```ts
 // Good - single responsibility
 export const postsHook = defineHooks('posts', async () => {
-  return await fetchPosts()
-})
+  return await fetchPosts();
+});
 
 export const categoriesHook = defineHooks('categories', async () => {
-  return await fetchCategories()
-})
+  return await fetchCategories();
+});
 
 // Avoid - doing too much
 export const everythingHook = defineHooks('everything', async () => {
-  const posts = await fetchPosts()
-  const categories = await fetchCategories()
-  const users = await fetchUsers()
-  const comments = await fetchComments()
+  const posts = await fetchPosts();
+  const categories = await fetchCategories();
+  const users = await fetchUsers();
+  const comments = await fetchComments();
   // Too much!
-})
+});
 ```
 
 ### 6. Export Both Named and Default
@@ -544,10 +542,10 @@ export const everythingHook = defineHooks('everything', async () => {
 ```ts
 // Good practice for better imports
 export const postsHook = defineHooks('posts', async () => {
-  return await fetchPosts()
-})
+  return await fetchPosts();
+});
 
-export default postsHook
+export default postsHook;
 ```
 
 ## Debugging Hooks
@@ -556,40 +554,40 @@ export default postsHook
 
 ```ts
 export default defineHooks('posts', async () => {
-  const posts = await fetchPosts()
-  console.log(`Loaded ${posts.length} posts`)
-  return posts
-})
+  const posts = await fetchPosts();
+  console.log(`Loaded ${posts.length} posts`);
+  return posts;
+});
 ```
 
 ### Validate Data Structure
 
 ```ts
 export default defineHooks('posts', async () => {
-  const posts = await fetchPosts()
+  const posts = await fetchPosts();
 
   posts.forEach((post, index) => {
     if (!post.title || !post.slug) {
-      console.warn(`Post at index ${index} is missing required fields`, post)
+      console.warn(`Post at index ${index} is missing required fields`, post);
     }
-  })
+  });
 
-  return posts
-})
+  return posts;
+});
 ```
 
 ### Development vs Production
 
 ```ts
 export default defineHooks('data', async () => {
-  const data = await fetchData()
+  const data = await fetchData();
 
   if (process.env.NODE_ENV === 'development') {
-    console.log('Hook data:', JSON.stringify(data, null, 2))
+    console.log('Hook data:', JSON.stringify(data, null, 2));
   }
 
-  return data
-})
+  return data;
+});
 ```
 
 ## Complete Example
@@ -599,56 +597,54 @@ Here's a complete example showing hooks in action:
 `hooks/blog.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import matter from 'gray-matter'
+import { defineHooks } from 'vitto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import matter from 'gray-matter';
 
 export const postsHook = defineHooks('posts', async () => {
-  const postsDir = path.join(process.cwd(), 'content/posts')
-  const files = await fs.readdir(postsDir)
+  const postsDir = path.join(process.cwd(), 'content/posts');
+  const files = await fs.readdir(postsDir);
 
   const posts = await Promise.all(
     files
-      .filter(file => file.endsWith('.md'))
+      .filter((file) => file.endsWith('.md'))
       .map(async (file) => {
-        const content = await fs.readFile(path.join(postsDir, file), 'utf-8')
-        const { data } = matter(content)
+        const content = await fs.readFile(path.join(postsDir, file), 'utf-8');
+        const { data } = matter(content);
         return {
           slug: file.replace('.md', ''),
-          ...data
-        }
+          ...data,
+        };
       })
-  )
+  );
 
-  return posts.sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
-})
+  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+});
 
 export const postHook = defineHooks('post', async (params) => {
-  if (!params?.slug) return null
+  if (!params?.slug) return null;
 
-  const filePath = path.join(process.cwd(), 'content/posts', `${params.slug}.md`)
-  const content = await fs.readFile(filePath, 'utf-8')
-  const { data, content: markdown } = matter(content)
+  const filePath = path.join(process.cwd(), 'content/posts', `${params.slug}.md`);
+  const content = await fs.readFile(filePath, 'utf-8');
+  const { data, content: markdown } = matter(content);
 
   return {
     slug: params.slug,
     ...data,
-    content: markdown
-  }
-})
+    content: markdown,
+  };
+});
 
-export default postsHook
+export default postsHook;
 ```
 
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { postsHook, postHook } from './hooks/blog'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook, postHook } from './hooks/blog';
 
 export default defineConfig({
   plugins: [
@@ -656,24 +652,43 @@ export default defineConfig({
       metadata: {
         siteName: 'My Blog',
         title: 'My Blog',
-        description: 'A blog about web development'
+        description: 'A blog about web development',
       },
       hooks: {
         posts: postsHook,
-        post: postHook
+        post: postHook,
       },
       dynamicRoutes: [
         {
           template: 'post',
           dataSource: 'posts',
           getParams: (post) => ({ slug: post.slug }),
-          getPath: (post) => `blog/${post.slug}.html`
-        }
-      ]
-    })
-  ]
-})
+          getPath: (post) => `blog/${post.slug}.html`,
+        },
+      ],
+    }),
+  ],
+});
 ```
+
+### Pagination Hook
+
+For paginated routes, return **all items** from the hook. The plugin slices them per page automatically:
+
+```ts
+import { defineHooks } from 'vitto';
+
+export const postsHook = defineHooks('posts', async () => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const allPosts = await res.json();
+  // Return everything - plugin handles pagination
+  return allPosts;
+});
+
+export default postsHook;
+```
+
+Then configure `dynamicRoutes` in `vite.config.ts`. The template receives `posts.items`, `posts.page`, `posts.totalPages`, and navigation URLs as described in [Dynamic Routes](./05-dynamic-routes.md).
 
 ## Next Steps
 

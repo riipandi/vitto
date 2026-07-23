@@ -1,28 +1,47 @@
-import { withQuery } from 'ufo'
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 export default defineHooks('posts', async (params) => {
-  // If id or slug is provided, fetch single post
   if (params?.id || params?.slug) {
-    const postId = params.id || params.slug
-    const url = `https://jsonplaceholder.typicode.com/posts/${postId}`
-
-    const res = await fetch(url)
-    if (!res.ok) {
-      return null
+    const cache = (globalThis as any).__vitto_posts_slug_map;
+    if (!cache?.length) {
+      const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+      const data = await res.json();
+      (globalThis as any).__vitto_posts_slug_map = buildSlugMap(data);
     }
-
-    return res.json()
+    const post = (globalThis as any).__vitto_posts_slug_map.find(
+      (p: any) => p.slug === (params.id || params.slug)
+    );
+    if (!post) return null;
+    const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${post.id}`);
+    if (!res.ok) return null;
+    return res.json();
   }
 
-  // Otherwise, fetch list of posts
-  const url = withQuery('https://jsonplaceholder.typicode.com/posts', {
-    _page: params?._page ?? 1,
-    _limit: params?._limit ?? 10,
-  })
+  const cache = (globalThis as any).__vitto_posts_slug_map;
+  if (!cache?.length) {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
+    (globalThis as any).__vitto_posts_slug_map = buildSlugMap(data);
+  }
+  return (globalThis as any).__vitto_posts_slug_map;
+});
 
-  const res = await fetch(url)
-  const data = await res.json()
-
-  return data
-})
+function buildSlugMap(posts: any[]) {
+  const baseCounts = new Map<string, number>();
+  return posts.map((post) => {
+    const base = slugify(post.title);
+    const count = baseCounts.get(base) || 0;
+    const slug = count === 0 ? base : `${base}-${count}`;
+    baseCounts.set(base, count + 1);
+    return { ...post, slug };
+  });
+}

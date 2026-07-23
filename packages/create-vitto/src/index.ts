@@ -1,9 +1,10 @@
-import { defineCommand, runMain, showUsage } from 'citty'
-import pkg from '../package.json' with { type: 'json' }
-import generateProject from './generate'
-import _console from './logger'
-import { frameworkVariants } from './variant'
-import { runWizard } from './wizard'
+import { defineCommand, runMain, showUsage } from 'citty';
+
+import pkg from '../package.json' with { type: 'json' };
+import generateProject from './generate';
+import _console from './logger';
+import { frameworkVariants } from './variant';
+import { runWizard } from './wizard';
 
 const main = defineCommand({
   meta: {
@@ -52,40 +53,40 @@ const main = defineCommand({
   },
   async run({ args, cmd }) {
     if (args.version) {
-      _console.log(`create-vitto v${pkg.version}`)
-      return
+      _console.log(`create-vitto v${pkg.version}`);
+      return;
     }
 
     if (args.templates) {
-      _console.log('\nAvailable templates:\n')
+      _console.log('\nAvailable templates:\n');
       frameworkVariants.forEach((variant) => {
-        _console.log(`  ${variant.color(variant.name.padEnd(15))} - ${variant.display}`)
-      })
-      _console.log('')
-      return
+        _console.log(`  ${variant.color(variant.name.padEnd(15))} - ${variant.display}`);
+      });
+      _console.log('');
+      return;
     }
 
     if (args.help) {
-      showUsage(cmd)
-      return
+      showUsage(cmd);
+      return;
     }
 
     // Run wizard if no name argument is provided
     if (!args.name) {
-      const wizardResult = await runWizard()
+      const wizardResult = await runWizard();
       return await generateProject({
         name: wizardResult.name,
         preset: wizardResult.preset,
         overwrite: wizardResult.overwrite,
         start: wizardResult.start,
-      })
+      });
     }
 
     if (args.preset && !frameworkVariants.find((v) => v.name === args.preset)) {
       _console.error(
         `Preset "${args.preset}" not found. Use --templates to see available templates.`
-      )
-      process.exit(1)
+      );
+      process.exit(1);
     }
 
     return await generateProject({
@@ -93,10 +94,10 @@ const main = defineCommand({
       preset: args.preset,
       overwrite: args.overwrite,
       start: args.start,
-    })
+    });
   },
-})
+});
 
-const runCmd = () => runMain(main)
+const runCmd = () => runMain(main);
 
-export { runCmd }
+export { runCmd };

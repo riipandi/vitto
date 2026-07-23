@@ -6,7 +6,7 @@
 
 <p align="left">
     <a href="https://vite.dev">
-        <img src="https://img.shields.io/badge/Vite-v7.1-bd34fe.svg?logo=Vite&logoColor=yellow" alt="TypeScript v7.1">
+        <img src="https://img.shields.io/badge/Vite-v8-bd34fe.svg?logo=Vite&logoColor=yellow" alt="Vite">
     </a>
     <a href="https://github.com/riipandi/vitto/releases">
         <img src="https://img.shields.io/github/v/release/riipandi/vitto?logo=npm&logoColor=white" alt="Release">
@@ -34,7 +34,7 @@ Vitto combines the speed of Vite's development experience with the simplicity of
 a modern static site generator. Perfect for documentation sites, blogs, portfolios, and any project that
 needs fast builds and flexible templating without the complexity of larger frameworks.
 
-**Compatibility Note:** Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+, 22.12+.
+**Compatibility Note:** Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+.
 
 **Live Demo:** Check out Vitto in action at [vitto.pages.dev](https://vitto.pages.dev)
 
@@ -131,8 +131,8 @@ yarn add --dev vitto
 ## Usage
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
@@ -142,10 +142,10 @@ export default defineConfig({
       metadata: {
         siteName: 'Vitto',
         title: 'Vitto - Static Site Generator Powered by Vite & Vento',
-      }
-    })
+      },
+    }),
   ],
-})
+});
 ```
 
 ## Documentation
@@ -153,21 +153,25 @@ export default defineConfig({
 For comprehensive documentation, visit our [docs folder](./docs) or check out these guides:
 
 ### Getting Started
+
 - [Introduction](./docs/01-introduction.md) - What is Vitto and why use it
 - [Getting Started](./docs/02-getting-started.md) - Installation and basic setup
 - [Configuration](./docs/03-configuration.md) - Configure Vitto for your project
 
 ### Core Concepts
+
 - [Templates](./docs/04-templating.md) - Working with Vento templates
 - [Dynamic Routes](./docs/05-dynamic-routes.md) - Generate pages from data
 - [Hooks System](./docs/06-hooks.md) - Data injection and processing
 
 ### Advanced Features
+
 - [Search Integration](./docs/07-search.md) - Set up Pagefind search
 - [Deployment](./docs/08-deployment.md) - Deploy to various platforms
 - [Performance](./docs/09-performance.md) - Optimize your site
 
 ### Reference
+
 - [Examples](./docs/10-examples.md) - Real-world examples and use cases
 - [Troubleshooting](./docs/11-troubleshooting.md) - Common issues and solutions
 - [API Reference](./docs/12-api-reference.md) - Complete API documentation
@@ -178,6 +182,7 @@ For comprehensive documentation, visit our [docs folder](./docs) or check out th
 
 - [GitHub Discussions](https://github.com/riipandi/vitto/discussions) - Ask questions and discuss
 - [GitHub Issues](https://github.com/riipandi/vitto/issues) - Report bugs and request features
+
 <!-- - [Discord](https://discord.gg/vitto) - Join our community (coming soon) -->
 
 ## Contributing

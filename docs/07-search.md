@@ -5,6 +5,7 @@ Vitto includes built-in search functionality powered by [Pagefind](https://pagef
 ## Overview
 
 Pagefind automatically:
+
 - Indexes your site content during build
 - Generates a lightweight search index
 - Provides a fast, client-side search experience
@@ -20,16 +21,16 @@ Search indexing is enabled by default. During production builds, Vitto automatic
 In your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
     vitto({
-      enableSearchIndex: true // Default: true
-    })
-  ]
-})
+      enableSearchIndex: true, // Default: true
+    }),
+  ],
+});
 ```
 
 ### 2. Add Search UI to Your Site
@@ -97,9 +98,9 @@ vitto({
     rootSelector: 'html',
     verbose: false,
     keepIndexUrl: true,
-    writePlayground: false
-  }
-})
+    writePlayground: false,
+  },
+});
 ```
 
 ### Advanced Pagefind Options
@@ -126,9 +127,9 @@ vitto({
     forceLanguage: 'en',
 
     // Glob patterns to process
-    glob: '**/*.{html}'
-  }
-})
+    glob: '**/*.{html}',
+  },
+});
 ```
 
 ## Customizing Search Behavior
@@ -199,40 +200,42 @@ Or exclude specific elements:
 For more control, use the Pagefind JavaScript API:
 
 ```html
-<input type="search" id="search-input" placeholder="Search...">
+<input type="search" id="search-input" placeholder="Search..." />
 <div id="search-results"></div>
 
 <script type="module">
-  import * as pagefind from "/_pagefind/pagefind.js"
+  import * as pagefind from '/_pagefind/pagefind.js';
 
-  await pagefind.init()
+  await pagefind.init();
 
-  const searchInput = document.getElementById('search-input')
-  const resultsDiv = document.getElementById('search-results')
+  const searchInput = document.getElementById('search-input');
+  const resultsDiv = document.getElementById('search-results');
 
   searchInput.addEventListener('input', async (e) => {
-    const query = e.target.value
+    const query = e.target.value;
 
     if (query.length < 2) {
-      resultsDiv.innerHTML = ''
-      return
+      resultsDiv.innerHTML = '';
+      return;
     }
 
-    const search = await pagefind.search(query)
+    const search = await pagefind.search(query);
 
-    const results = await Promise.all(
-      search.results.map(r => r.data())
-    )
+    const results = await Promise.all(search.results.map((r) => r.data()));
 
-    resultsDiv.innerHTML = results.map(result => `
+    resultsDiv.innerHTML = results
+      .map(
+        (result) => `
       <div class="search-result">
         <h3>
           <a href="${result.url}">${result.meta.title}</a>
         </h3>
         <p>${result.excerpt}</p>
       </div>
-    `).join('')
-  })
+    `
+      )
+      .join('');
+  });
 </script>
 ```
 
@@ -280,9 +283,9 @@ Override Pagefind UI styles:
 vitto({
   pagefindOptions: {
     rootSelector: 'main', // Only index main content
-    excludeSelectors: ['nav', 'footer', 'aside', '.sidebar']
-  }
-})
+    excludeSelectors: ['nav', 'footer', 'aside', '.sidebar'],
+  },
+});
 ```
 
 ### Reduce Index Size
@@ -312,29 +315,29 @@ Load Pagefind only when needed:
 </div>
 
 <script>
-  let searchLoaded = false
+  let searchLoaded = false;
 
   document.getElementById('open-search').addEventListener('click', async () => {
-    const modal = document.getElementById('search-modal')
-    modal.style.display = 'block'
+    const modal = document.getElementById('search-modal');
+    modal.style.display = 'block';
 
     if (!searchLoaded) {
       // Lazy load Pagefind UI
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = '/_pagefind/pagefind-ui.css'
-      document.head.appendChild(link)
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/_pagefind/pagefind-ui.css';
+      document.head.appendChild(link);
 
-      const script = document.createElement('script')
-      script.src = '/_pagefind/pagefind-ui.js'
+      const script = document.createElement('script');
+      script.src = '/_pagefind/pagefind-ui.js';
       script.onload = () => {
-        new PagefindUI({ element: "#search" })
-      }
-      document.body.appendChild(script)
+        new PagefindUI({ element: '#search' });
+      };
+      document.body.appendChild(script);
 
-      searchLoaded = true
+      searchLoaded = true;
     }
-  })
+  });
 </script>
 ```
 
@@ -345,9 +348,9 @@ Load Pagefind only when needed:
 ```ts
 vitto({
   pagefindOptions: {
-    forceLanguage: 'en' // or auto-detect
-  }
-})
+    forceLanguage: 'en', // or auto-detect
+  },
+});
 ```
 
 Mark content with language:
@@ -390,8 +393,8 @@ Then in your search UI:
 
 ```javascript
 const search = await pagefind.search(query, {
-  sort: { date: "desc" }
-})
+  sort: { date: 'desc' },
+});
 ```
 
 ## Development vs Production
@@ -423,8 +426,9 @@ The index files are created in `dist/_pagefind/`.
 ### Search Not Working
 
 1. **Check if indexing is enabled**:
+
    ```ts
-   vitto({ enableSearchIndex: true })
+   vitto({ enableSearchIndex: true });
    ```
 
 2. **Verify production build**:
@@ -503,12 +507,12 @@ The index files are created in `dist/_pagefind/`.
 
 <script>
   searchInput.addEventListener('input', async (e) => {
-    const status = document.getElementById('search-status')
-    status.textContent = 'Searching...'
+    const status = document.getElementById('search-status');
+    status.textContent = 'Searching...';
 
-    const results = await pagefind.search(e.target.value)
-    status.textContent = `Found ${results.results.length} results`
-  })
+    const results = await pagefind.search(e.target.value);
+    status.textContent = `Found ${results.results.length} results`;
+  });
 </script>
 ```
 

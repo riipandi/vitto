@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# filepath: /Users/ariss/Developer/github.com/riipandi/vitto/sync-version.sh
 set -euo pipefail
 
 ROOT_DIR=$(dirname "$0")
@@ -36,12 +35,12 @@ if [ "$NEW_VERSION" = "$CURRENT_VERSION" ]; then
 fi
 
 # Update version in ROOT_DIR/package.json
-jq --arg v "$NEW_VERSION" '.version = $v' "$ROOT_DIR/package.json" > "$ROOT_DIR/package.json.tmp"
+jq --arg v "$NEW_VERSION" '.version = $v' "$ROOT_DIR/package.json" >"$ROOT_DIR/package.json.tmp"
 mv "$ROOT_DIR/package.json.tmp" "$ROOT_DIR/package.json"
 
 # Update version in all package.json in packages/**/** (exclude template-* folders)
 find "$ROOT_DIR/packages" -type f -name package.json | grep -v '/template-' | while read -r pkg; do
-    jq --arg v "$NEW_VERSION" '.version = $v' "$pkg" > "$pkg.tmp"
+    jq --arg v "$NEW_VERSION" '.version = $v' "$pkg" >"$pkg.tmp"
     mv "$pkg.tmp" "$pkg"
     echo "Updated version in: $pkg"
 done
@@ -50,7 +49,7 @@ done
 find "$ROOT_DIR/packages/create-vitto" -type f -name package.json | grep '/template-' | while read -r pkg; do
     # Check if vitto exists in devDependencies
     if jq -e '.devDependencies.vitto' "$pkg" >/dev/null 2>&1; then
-        jq --arg v "^$NEW_VERSION" '.devDependencies.vitto = $v' "$pkg" > "$pkg.tmp"
+        jq --arg v "^$NEW_VERSION" '.devDependencies.vitto = $v' "$pkg" >"$pkg.tmp"
         mv "$pkg.tmp" "$pkg"
         echo "Updated vitto version in: $pkg"
     fi

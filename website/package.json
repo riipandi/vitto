@@ -6,9 +6,9 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "check": "biome check . --write",
-        "format": "biome format . --write",
-        "lint": "biome lint . --write",
+        "check": "oxlint --fix && oxfmt --write",
+        "format": "oxfmt --write",
+        "lint": "oxlint --fix",
         "cleanup": "pnpm dlx del-cli .wrangler dist",
         "cf:deploy": "pnpm -s build && wrangler pages deploy",
         "cf:preview": "pnpm -s build && wrangler pages dev",
@@ -17,17 +17,18 @@
         "typecheck": "tsc -b --noEmit"
     },
     "dependencies": {
-        "ufo": "^1.6.1"
+        "ufo": "^1.6.4"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.2.6",
-        "@tailwindcss/vite": "^4.1.14",
-        "@types/node": "^24.8.1",
-        "serve": "^14.2.5",
-        "tailwindcss": "^4.1.14",
-        "typescript": "^5.9.3",
-        "vite": "^7.1.10",
+        "@tailwindcss/vite": "^4.3.3",
+        "@types/node": "^26.1.1",
+        "oxfmt": "0.60.0",
+        "oxlint": "^1.75.0",
+        "serve": "^14.2.6",
+        "tailwindcss": "^4.3.3",
+        "typescript": "^7.0.2",
+        "vite": "^8.1.5",
         "vitto": "workspace:*",
-        "wrangler": "^4.43.0"
+        "wrangler": "^4.113.0"
     }
 }

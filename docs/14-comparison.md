@@ -34,7 +34,7 @@ Vitto is a lightweight, Vite-powered static site generator that focuses on simpl
 Because Vitto is built on Vite, you get:
 
 - ⚡ Lightning-fast HMR (Hot Module Replacement)
-- 📦 Optimized bundling with Rollup
+- 📦 Optimized bundling with Rolldown
 - 🎨 Easy integration with CSS frameworks (Tailwind CSS, UnoCSS, etc.)
 - 🔧 Plugin ecosystem (PostCSS, autoprefixer, etc.)
 - 🚀 Modern JavaScript/TypeScript support out of the box
@@ -43,21 +43,21 @@ Because Vitto is built on Vite, you get:
 
 ```ts
 // vite.config.ts - Tailwind CSS via bundler
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
     vitto({
       metadata: {
         siteName: 'My Site',
-        title: 'My Site'
-      }
+        title: 'My Site',
+      },
     }),
     tailwindcss(),
-  ]
-})
+  ],
+});
 ```
 
 ```vento
@@ -93,17 +93,17 @@ Next.js is a full-featured React framework with SSR, SSG, and ISR capabilities.
 ### Comparison
 
 | Feature                 | Vitto                  | Next.js                |
-|-------------------------|------------------------|------------------------|
+| ----------------------- | ---------------------- | ---------------------- |
 | **Framework**           | Vite + Vento           | React                  |
 | **Learning Curve**      | Low                    | Medium-High            |
 | **Build Speed**         | Very Fast (Vite)       | Fast                   |
 | **Bundle Size**         | Minimal                | Larger (React runtime) |
-| **SSG**                 | ✅                      | ✅                      |
-| **SSR**                 | ❌                      | ✅                      |
-| **API Routes**          | ❌                      | ✅                      |
+| **SSG**                 | ✅                     | ✅                     |
+| **SSR**                 | ❌                     | ✅                     |
+| **API Routes**          | ❌                     | ✅                     |
 | **Image Optimization**  | Manual/Vite plugins    | Built-in               |
-| **Built-in Search**     | ✅ (Pagefind)           | ❌                      |
-| **TypeScript**          | ✅                      | ✅                      |
+| **Built-in Search**     | ✅ (Pagefind)          | ❌                     |
+| **TypeScript**          | ✅                     | ✅                     |
 | **Setup Complexity**    | Minimal                | Medium                 |
 | **Library Integration** | Any (via Vite/CDN)     | React ecosystem        |
 | **CSS Framework**       | Any (Tailwind, UnoCSS) | Any (with setup)       |
@@ -111,6 +111,7 @@ Next.js is a full-featured React framework with SSR, SSG, and ISR capabilities.
 ### When to Use Vitto
 
 ✅ **Choose Vitto if:**
+
 - You need a simple static blog or documentation site
 - You want minimal JavaScript in the browser
 - You prefer template-based development
@@ -120,6 +121,7 @@ Next.js is a full-featured React framework with SSR, SSG, and ISR capabilities.
 - You need easy CSS framework integration (Tailwind, UnoCSS)
 
 ❌ **Choose Next.js if:**
+
 - You need server-side rendering (SSR)
 - You're building a complex web application
 - You need API routes
@@ -129,21 +131,22 @@ Next.js is a full-featured React framework with SSR, SSG, and ISR capabilities.
 ### Example Comparison
 
 **Next.js** (pages/blog/[slug].tsx):
+
 ```tsx
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await fetchPosts()
+  const posts = await fetchPosts();
   return {
-    paths: posts.map(post => ({ params: { slug: post.slug } })),
-    fallback: false
-  }
-}
+    paths: posts.map((post) => ({ params: { slug: post.slug } })),
+    fallback: false,
+  };
+};
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const post = await fetchPost(params.slug)
-  return { props: { post } }
-}
+  const post = await fetchPost(params.slug);
+  return { props: { post } };
+};
 
 export default function Post({ post }) {
   return (
@@ -151,11 +154,12 @@ export default function Post({ post }) {
       <h1>{post.title}</h1>
       <div dangerouslySetInnerHTML={{ __html: post.content }} />
     </article>
-  )
+  );
 }
 ```
 
 **Vitto** (src/pages/post.vto):
+
 ```vento
 {{ layout "layouts/base.vto" }}
 
@@ -168,24 +172,26 @@ export default function Post({ post }) {
 ```ts
 // hooks/posts.ts
 export const postsHook = defineHooks('posts', async () => {
-  return await fetchPosts()
-})
+  return await fetchPosts();
+});
 
 export const postHook = defineHooks('post', async (params) => {
-  return await fetchPost(params.slug)
-})
+  return await fetchPost(params.slug);
+});
 
 // vite.config.ts
 vitto({
   metadata: { siteName: 'Blog', title: 'Blog' },
   hooks: { posts: postsHook, post: postHook },
-  dynamicRoutes: [{
-    template: 'post',
-    dataSource: 'posts',
-    getParams: (post) => ({ slug: post.slug }),
-    getPath: (post) => `blog/${post.slug}.html`
-  }]
-})
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (post) => ({ slug: post.slug }),
+      getPath: (post) => `blog/${post.slug}.html`,
+    },
+  ],
+});
 ```
 
 ## Vitto vs Astro
@@ -197,23 +203,24 @@ Astro is a modern static site builder that supports multiple UI frameworks and s
 ### Comparison
 
 | Feature                 | Vitto                    | Astro                    |
-|-------------------------|--------------------------|--------------------------|
+| ----------------------- | ------------------------ | ------------------------ |
 | **Framework**           | Vite + Vento             | Astro + Any Framework    |
 | **UI Framework**        | Template-based           | React, Vue, Svelte, etc. |
 | **Learning Curve**      | Low                      | Low-Medium               |
 | **Build Speed**         | Very Fast (Vite)         | Very Fast                |
-| **Zero JS by Default**  | ✅                        | ✅                        |
-| **Component Islands**   | ❌                        | ✅                        |
-| **Built-in Search**     | ✅ (Pagefind)             | ❌ (Add-on)               |
+| **Zero JS by Default**  | ✅                       | ✅                       |
+| **Component Islands**   | ❌                       | ✅                       |
+| **Built-in Search**     | ✅ (Pagefind)            | ❌ (Add-on)              |
 | **Content Collections** | Hooks                    | Built-in                 |
-| **TypeScript**          | ✅                        | ✅                        |
-| **SSR Support**         | ❌                        | ✅ (Optional)             |
+| **TypeScript**          | ✅                       | ✅                       |
+| **SSR Support**         | ❌                       | ✅ (Optional)            |
 | **Library Integration** | Any (HTMX, Alpine, etc.) | Framework-specific       |
-| **Vite Plugins**        | ✅ Direct access          | ✅ Through Astro config   |
+| **Vite Plugins**        | ✅ Direct access         | ✅ Through Astro config  |
 
 ### When to Use Vitto
 
 ✅ **Choose Vitto if:**
+
 - You prefer template-based development
 - You want minimal configuration
 - You need built-in search
@@ -223,6 +230,7 @@ Astro is a modern static site builder that supports multiple UI frameworks and s
 - You prefer direct Vite configuration
 
 ❌ **Choose Astro if:**
+
 - You want to use React/Vue/Svelte components
 - You need component-level hydration (islands)
 - You want content collections out of the box
@@ -232,20 +240,21 @@ Astro is a modern static site builder that supports multiple UI frameworks and s
 ### Library Integration Example
 
 **Vitto with HTMX + Alpine.js + Tailwind:**
+
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
     vitto({
-      metadata: { siteName: 'My App', title: 'My App' }
+      metadata: { siteName: 'My App', title: 'My App' },
     }),
     tailwindcss(),
   ],
-})
+});
 ```
 
 ```vento
@@ -264,15 +273,16 @@ export default defineConfig({
 
 ```ts
 // src/main.ts
-import 'htmx.org'
-import Alpine from 'alpinejs'
-import './style.css'
+import 'htmx.org';
+import Alpine from 'alpinejs';
+import './style.css';
 
-window.Alpine = Alpine
-Alpine.start()
+window.Alpine = Alpine;
+Alpine.start();
 ```
 
 **Or use CDN for quick setup:**
+
 ```vento
 <!DOCTYPE html>
 <html>
@@ -297,15 +307,15 @@ Gatsby is a React-based framework with GraphQL for data management and a rich pl
 ### Comparison
 
 | Feature                 | Vitto                 | Gatsby                 |
-|-------------------------|-----------------------|------------------------|
+| ----------------------- | --------------------- | ---------------------- |
 | **Framework**           | Vite + Vento          | React + GraphQL        |
 | **Learning Curve**      | Low                   | High                   |
 | **Build Speed**         | Very Fast (Vite)      | Slow (for large sites) |
 | **Data Layer**          | Hooks (Simple)        | GraphQL (Complex)      |
 | **Plugin Ecosystem**    | Growing               | Extensive              |
 | **Image Optimization**  | Vite plugins          | gatsby-plugin-image    |
-| **Built-in Search**     | ✅ (Pagefind)          | Plugin required        |
-| **TypeScript**          | ✅                     | ✅                      |
+| **Built-in Search**     | ✅ (Pagefind)         | Plugin required        |
+| **TypeScript**          | ✅                    | ✅                     |
 | **Setup Complexity**    | Minimal               | High                   |
 | **CSS Framework**       | Easy (via Vite)       | Needs plugins          |
 | **Library Integration** | Simple (Vite-powered) | Complex (plugin-based) |
@@ -313,6 +323,7 @@ Gatsby is a React-based framework with GraphQL for data management and a rich pl
 ### When to Use Vitto
 
 ✅ **Choose Vitto if:**
+
 - You want fast build times with Vite
 - You don't need GraphQL complexity
 - You prefer simplicity over features
@@ -322,6 +333,7 @@ Gatsby is a React-based framework with GraphQL for data management and a rich pl
 - You prefer direct configuration over plugins
 
 ❌ **Choose Gatsby if:**
+
 - You need GraphQL for data management
 - You want extensive plugin ecosystem
 - You need advanced image optimization
@@ -331,6 +343,7 @@ Gatsby is a React-based framework with GraphQL for data management and a rich pl
 ### Integration Comparison
 
 **Gatsby** (Complex setup):
+
 ```javascript
 // gatsby-config.js
 module.exports = {
@@ -339,29 +352,30 @@ module.exports = {
     'gatsby-plugin-image',
     {
       resolve: 'gatsby-plugin-react-helmet',
-      options: { /* ... */ }
-    }
-  ]
-}
+      options: {/* ... */},
+    },
+  ],
+};
 
 // Need separate webpack config for custom libraries
 ```
 
 **Vitto** (Simple setup):
+
 ```ts
 // vite.config.ts - Everything in one place
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
     vitto({
-      metadata: { siteName: 'My Site', title: 'My Site' }
+      metadata: { siteName: 'My Site', title: 'My Site' },
     }),
     tailwindcss(),
   ],
-})
+});
 ```
 
 ## Vitto vs Docusaurus
@@ -373,23 +387,24 @@ Docusaurus is a documentation-focused static site generator built with React.
 ### Comparison
 
 | Feature                 | Vitto                     | Docusaurus       |
-|-------------------------|---------------------------|------------------|
+| ----------------------- | ------------------------- | ---------------- |
 | **Primary Use**         | General Purpose           | Documentation    |
 | **Framework**           | Vite + Vento              | React            |
 | **Learning Curve**      | Low                       | Low-Medium       |
 | **Versioning**          | Manual                    | Built-in         |
 | **i18n**                | Manual                    | Built-in         |
-| **Search**              | ✅ Pagefind                | ✅ Algolia        |
-| **MDX Support**         | Hooks                     | ✅                |
+| **Search**              | ✅ Pagefind               | ✅ Algolia       |
+| **MDX Support**         | Hooks                     | ✅               |
 | **API Docs**            | Manual                    | Built-in         |
 | **Theming**             | Custom (Full control)     | Pre-built themes |
-| **TypeScript**          | ✅                         | ✅                |
+| **TypeScript**          | ✅                        | ✅               |
 | **Library Integration** | Easy (HTMX, Alpine, etc.) | React-based      |
 | **Build Tool**          | Vite                      | Webpack          |
 
 ### When to Use Vitto
 
 ✅ **Choose Vitto if:**
+
 - You need flexibility beyond documentation
 - You want faster builds with Vite
 - You prefer template-based development
@@ -399,6 +414,7 @@ Docusaurus is a documentation-focused static site generator built with React.
 - You prefer full control over theming
 
 ❌ **Choose Docusaurus if:**
+
 - You're building documentation specifically
 - You need doc versioning
 - You need i18n out of the box
@@ -409,6 +425,7 @@ Docusaurus is a documentation-focused static site generator built with React.
 ### Library Integration Example
 
 **Vitto** (Flexible approach):
+
 ```vento
 {{/* Add any library easily */}}
 <!DOCTYPE html>
@@ -438,7 +455,7 @@ VitePress is a Vite-powered static site generator optimized for documentation, s
 ### Comparison
 
 | Feature                 | Vitto                     | VitePress        |
-|-------------------------|---------------------------|------------------|
+| ----------------------- | ------------------------- | ---------------- |
 | **Primary Use**         | General Purpose           | Documentation    |
 | **Framework**           | Vento                     | Vue 3            |
 | **Learning Curve**      | Low                       | Low              |
@@ -447,14 +464,15 @@ VitePress is a Vite-powered static site generator optimized for documentation, s
 | **Sidebar**             | Custom via hooks          | Built-in         |
 | **Search**              | Pagefind                  | MiniSearch       |
 | **Markdown**            | Via hooks                 | Built-in         |
-| **TypeScript**          | ✅                         | ✅                |
-| **SFC Support**         | ❌                         | ✅ (Vue)          |
-| **Vite Plugins**        | ✅ Direct access           | ✅ Direct access  |
+| **TypeScript**          | ✅                        | ✅               |
+| **SFC Support**         | ❌                        | ✅ (Vue)         |
+| **Vite Plugins**        | ✅ Direct access          | ✅ Direct access |
 | **Library Integration** | Any vanilla JS library    | Vue-based        |
 
 ### When to Use Vitto
 
 ✅ **Choose Vitto if:**
+
 - You need more than just documentation
 - You prefer template syntax over Vue
 - You want more flexibility in structure
@@ -464,6 +482,7 @@ VitePress is a Vite-powered static site generator optimized for documentation, s
 - You prefer complete control over markup
 
 ❌ **Choose VitePress if:**
+
 - You're building documentation primarily
 - You want pre-built doc themes
 - You like Vue and want to use Vue components
@@ -476,18 +495,19 @@ Since both use Vite, they share similar benefits:
 
 ```ts
 // Both can use Vite plugins the same way
-import { defineConfig } from 'vite'
-import UnoCSS from 'unocss/vite'
+import { defineConfig } from 'vite';
+import UnoCSS from 'unocss/vite';
 
 export default defineConfig({
   plugins: [
-    vitto({ /* ... */ }), // or VitePress
-    UnoCSS()
-  ]
-})
+    vitto({/* ... */}), // or VitePress
+    UnoCSS(),
+  ],
+});
 ```
 
 **But Vitto gives you more flexibility:**
+
 ```vento
 {{/* Use any library without Vue wrapper */}}
 <div x-data="{ open: false }">
@@ -508,16 +528,16 @@ Eleventy is a simpler static site generator with multiple template language supp
 ### Comparison
 
 | Feature                   | Vitto                | Eleventy (11ty)        |
-|---------------------------|----------------------|------------------------|
+| ------------------------- | -------------------- | ---------------------- |
 | **Build Tool**            | Vite                 | Custom                 |
 | **Templates**             | Vento                | Nunjucks, Liquid, etc. |
 | **Learning Curve**        | Low                  | Low                    |
 | **Build Speed**           | Very Fast (Vite)     | Fast                   |
 | **JavaScript in Browser** | Optional             | Optional               |
-| **Hot Reload**            | ✅ (Vite HMR)         | ✅                      |
+| **Hot Reload**            | ✅ (Vite HMR)        | ✅                     |
 | **Plugin System**         | Vite plugins         | Eleventy plugins       |
-| **Built-in Search**       | ✅                    | ❌                      |
-| **TypeScript Config**     | ✅ Native             | ⚠️ (Manual)            |
+| **Built-in Search**       | ✅                   | ❌                     |
+| **TypeScript Config**     | ✅ Native            | ⚠️ (Manual)            |
 | **Asset Pipeline**        | Vite (Modern)        | Manual/Plugins         |
 | **Library Integration**   | Easy (bundler + CDN) | Manual                 |
 | **CSS Processing**        | Built-in (Vite)      | Needs setup            |
@@ -525,6 +545,7 @@ Eleventy is a simpler static site generator with multiple template language supp
 ### When to Use Vitto
 
 ✅ **Choose Vitto if:**
+
 - You want Vite's modern dev experience
 - You need built-in search
 - You prefer TypeScript configuration
@@ -535,6 +556,7 @@ Eleventy is a simpler static site generator with multiple template language supp
 - You want simple library integration (HTMX, Alpine.js, etc.)
 
 ❌ **Choose Eleventy if:**
+
 - You need multiple template languages
 - You want maximum flexibility
 - You prefer convention over configuration
@@ -544,64 +566,69 @@ Eleventy is a simpler static site generator with multiple template language supp
 ### Library Integration Comparison
 
 **Eleventy** (Manual setup):
+
 ```javascript
 // .eleventy.js
-module.exports = function(eleventyConfig) {
+module.exports = function (eleventyConfig) {
   // Need to manually copy assets
-  eleventyConfig.addPassthroughCopy('src/js')
-  eleventyConfig.addPassthroughCopy('src/css')
+  eleventyConfig.addPassthroughCopy('src/js');
+  eleventyConfig.addPassthroughCopy('src/css');
 
   // Manual CSS processing
-  eleventyConfig.addPlugin(require('eleventy-plugin-postcss'))
-}
+  eleventyConfig.addPlugin(require('eleventy-plugin-postcss'));
+};
 ```
 
 **Vitto** (Automatic with Vite):
+
 ```ts
 // vite.config.ts - Vite handles everything
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
-  plugins: [vitto({
-    metadata: { siteName: 'My Site', title: 'My Site' }
-  })],
+  plugins: [
+    vitto({
+      metadata: { siteName: 'My Site', title: 'My Site' },
+    }),
+  ],
   // CSS processing is automatic
   // HMR is built-in
   // Modern JS is transpiled automatically
-})
+});
 ```
 
 ```ts
 // src/main.ts - Import libraries like any Vite app
-import 'htmx.org'
-import Alpine from 'alpinejs'
-import './style.css' // Processed automatically
+import 'htmx.org';
+import Alpine from 'alpinejs';
+import './style.css'; // Processed automatically
 
-window.Alpine = Alpine
-Alpine.start()
+window.Alpine = Alpine;
+Alpine.start();
 ```
 
 ## Feature Comparison Matrix
 
-| Feature                 | Vitto   | Next.js | Astro  | Gatsby  | Docusaurus | VitePress | Eleventy |
-|-------------------------|---------|---------|--------|---------|------------|-----------|----------|
-| **SSG**                 | ✅       | ✅       | ✅      | ✅       | ✅          | ✅         | ✅        |
-| **SSR**                 | ❌       | ✅       | ✅      | ❌       | ❌          | ❌         | ❌        |
-| **Build Tool**          | Vite    | Webpack | Vite   | Webpack | Webpack    | Vite      | Custom   |
-| **Learning Curve**      | Easy    | Hard    | Medium | Hard    | Medium     | Easy      | Easy     |
-| **TypeScript**          | ✅       | ✅       | ✅      | ✅       | ✅          | ✅         | ⚠️       |
-| **Built-in Search**     | ✅       | ❌       | ❌      | ❌       | ✅          | ✅         | ❌        |
-| **Zero JS**             | ✅       | ❌       | ✅      | ❌       | ❌          | ✅         | ✅        |
-| **Vite Plugins**        | ✅       | ❌       | ✅      | ❌       | ❌          | ✅         | ❌        |
-| **Easy CSS Framework**  | ✅       | ⚠️      | ✅      | ⚠️      | ⚠️         | ✅         | ⚠️       |
-| **HTMX/Alpine Support** | ✅       | ⚠️      | ✅      | ⚠️      | ⚠️         | ✅         | ✅        |
+| Feature                 | Vitto    | Next.js | Astro  | Gatsby  | Docusaurus | VitePress | Eleventy |
+| ----------------------- | -------- | ------- | ------ | ------- | ---------- | --------- | -------- |
+| **SSG**                 | ✅       | ✅      | ✅     | ✅      | ✅         | ✅        | ✅       |
+| **SSR**                 | ❌       | ✅      | ✅     | ❌      | ❌         | ❌        | ❌       |
+| **Build Tool**          | Vite     | Webpack | Vite   | Webpack | Webpack    | Vite      | Custom   |
+| **Learning Curve**      | Easy     | Hard    | Medium | Hard    | Medium     | Easy      | Easy     |
+| **TypeScript**          | ✅       | ✅      | ✅     | ✅      | ✅         | ✅        | ⚠️       |
+| **Built-in Search**     | ✅       | ❌      | ❌     | ❌      | ✅         | ✅        | ❌       |
+| **Zero JS**             | ✅       | ❌      | ✅     | ❌      | ❌         | ✅        | ✅       |
+| **Vite Plugins**        | ✅       | ❌      | ✅     | ❌      | ❌         | ✅        | ❌       |
+| **Easy CSS Framework**  | ✅       | ⚠️      | ✅     | ⚠️      | ⚠️         | ✅        | ⚠️       |
+| **HTMX/Alpine Support** | ✅       | ⚠️      | ✅     | ⚠️      | ⚠️         | ✅        | ✅       |
 | **Plugin Ecosystem**    | ❌       | Large   | Large  | Large   | Medium     | Medium    | Large    |
-| **Image Optimization**  | Vite    | ✅       | ✅      | ✅       | ✅          | ❌         | Manual   |
-| **MDX Support**         | Hooks   | ✅       | ✅      | ✅       | ✅          | ✅         | ⚠️       |
-| **Hot Reload**          | ✅ (HMR) | ✅       | ✅      | ✅       | ✅          | ✅ (HMR)   | ✅        |
+| **Image Optimization**  | Vite     | ✅      | ✅     | ✅      | ✅         | ❌        | Manual   |
+| **MDX Support**         | Hooks    | ✅      | ✅     | ✅      | ✅         | ✅        | ⚠️       |
+| **Hot Reload**          | ✅ (HMR) | ✅      | ✅     | ✅      | ✅         | ✅ (HMR)  | ✅       |
 
 **Legend:**
+
 - ✅ Built-in support / Easy integration
 - ⚠️ Requires plugins/manual setup
 - ❌ Not supported
@@ -640,35 +667,41 @@ Vitto is perfect for:
 ### Vitto Strengths
 
 ✅ **Vite-Powered**
+
 - Lightning-fast HMR (Hot Module Replacement)
 - Modern build tooling out of the box
 - Optimized production builds
 - Plugin ecosystem access
 
 ✅ **Easy Library Integration**
+
 - Use any library via Vite bundler (npm install)
 - Or use CDN for quick prototyping
 - HTMX, Alpine.js, Tailwind CSS work seamlessly
 - No framework lock-in
 
 ✅ **Simplicity**
+
 - Minimal configuration
 - Easy to understand
 - Quick to set up
 - Template-based approach
 
 ✅ **Built-in Search**
+
 - Pagefind integration included
 - No external services required
 - Works offline
 
 ✅ **Developer Experience**
+
 - TypeScript-first configuration
 - Great error messages
 - Modern tooling (Vite, Vento)
 - Fast feedback loop
 
 ✅ **Flexibility**
+
 - Custom data sources via hooks
 - Template-based approach
 - Direct Vite configuration
@@ -677,39 +710,41 @@ Vitto is perfect for:
 ### Integration Examples
 
 **Using Tailwind CSS:**
+
 ```bash
 npm install -D tailwindcss @tailwindcss/vite
 ```
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
     vitto({
-      metadata: { siteName: 'My Site', title: 'My Site' }
+      metadata: { siteName: 'My Site', title: 'My Site' },
     }),
     tailwindcss(),
   ],
-})
+});
 ```
 
 **Using HTMX + Alpine.js:**
+
 ```bash
 npm install htmx.org alpinejs
 ```
 
 ```ts
 // src/main.ts
-import 'htmx.org'
-import Alpine from 'alpinejs'
-import './style.css'
+import 'htmx.org';
+import Alpine from 'alpinejs';
+import './style.css';
 
-window.Alpine = Alpine
-Alpine.start()
+window.Alpine = Alpine;
+Alpine.start();
 ```
 
 ```vento
@@ -727,6 +762,7 @@ Alpine.start()
 ```
 
 **Or use CDN for quick setup:**
+
 ```vento
 <!DOCTYPE html>
 <html>
@@ -745,18 +781,23 @@ Alpine.start()
 ### When NOT to Use Vitto
 
 ❌ **Complex Web Applications**
+
 - Use Next.js or Remix instead
 
 ❌ **Need Server-Side Rendering**
+
 - Use Next.js, Astro (SSR mode), or Remix
 
 ❌ **Large E-commerce Sites**
+
 - Use Next.js with a CMS
 
 ❌ **Need React/Vue/Svelte Components**
+
 - Use Astro, Next.js, or Gatsby
 
 ❌ **Extensive Plugin Ecosystem Needed**
+
 - Use Gatsby or Eleventy
 
 ## Migration Guides
@@ -764,38 +805,40 @@ Alpine.start()
 ### From Next.js to Vitto
 
 **Before (Next.js):**
+
 ```tsx
 // pages/blog/[slug].tsx
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getPosts()
+  const posts = await getPosts();
   return {
-    paths: posts.map(p => ({ params: { slug: p.slug } })),
-    fallback: false
-  }
-}
+    paths: posts.map((p) => ({ params: { slug: p.slug } })),
+    fallback: false,
+  };
+};
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const post = await getPost(params.slug)
-  return { props: { post } }
-}
+  const post = await getPost(params.slug);
+  return { props: { post } };
+};
 
 export default function Post({ post }) {
-  return <article>{/* ... */}</article>
+  return <article>{/* ... */}</article>;
 }
 ```
 
 **After (Vitto):**
+
 ```ts
 // hooks/posts.ts
 export const postsHook = defineHooks('posts', async () => {
-  return await getPosts()
-})
+  return await getPosts();
+});
 
 export const postHook = defineHooks('post', async (params) => {
-  return await getPost(params.slug)
-})
+  return await getPost(params.slug);
+});
 ```
 
 ```vento
@@ -809,18 +852,21 @@ export const postHook = defineHooks('post', async (params) => {
 vitto({
   metadata: { siteName: 'Blog', title: 'Blog' },
   hooks: { posts: postsHook, post: postHook },
-  dynamicRoutes: [{
-    template: 'post',
-    dataSource: 'posts',
-    getParams: (p) => ({ slug: p.slug }),
-    getPath: (p) => `blog/${p.slug}.html`
-  }]
-})
+  dynamicRoutes: [
+    {
+      template: 'post',
+      dataSource: 'posts',
+      getParams: (p) => ({ slug: p.slug }),
+      getPath: (p) => `blog/${p.slug}.html`,
+    },
+  ],
+});
 ```
 
 ### From Astro to Vitto
 
 **Before (Astro):**
+
 ```astro
 ---
 // src/pages/blog/[slug].astro
@@ -848,6 +894,7 @@ Same as Next.js migration above.
 ### From Gatsby to Vitto
 
 **Before (Gatsby):**
+
 ```javascript
 // gatsby-node.js
 exports.createPages = async ({ graphql, actions }) => {
@@ -855,94 +902,101 @@ exports.createPages = async ({ graphql, actions }) => {
     query {
       allMarkdownRemark {
         edges {
-          node { fields { slug } }
+          node {
+            fields {
+              slug
+            }
+          }
         }
       }
     }
-  `)
+  `);
 
   data.allMarkdownRemark.edges.forEach(({ node }) => {
     actions.createPage({
       path: node.fields.slug,
       component: './src/templates/post.js',
-      context: { slug: node.fields.slug }
-    })
-  })
-}
+      context: { slug: node.fields.slug },
+    });
+  });
+};
 ```
 
 **After (Vitto):**
 Replace GraphQL with simple hooks:
+
 ```ts
 // hooks/posts.ts
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import matter from 'gray-matter'
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import matter from 'gray-matter';
 
 export default defineHooks('posts', async () => {
-  const postsDir = path.join(process.cwd(), 'content/posts')
-  const files = await fs.readdir(postsDir)
+  const postsDir = path.join(process.cwd(), 'content/posts');
+  const files = await fs.readdir(postsDir);
 
   return await Promise.all(
     files
-      .filter(file => file.endsWith('.md'))
-      .map(async file => {
-        const content = await fs.readFile(path.join(postsDir, file), 'utf-8')
-        const { data, content: markdown } = matter(content)
-        return { ...data, slug: file.replace('.md', ''), content: markdown }
+      .filter((file) => file.endsWith('.md'))
+      .map(async (file) => {
+        const content = await fs.readFile(path.join(postsDir, file), 'utf-8');
+        const { data, content: markdown } = matter(content);
+        return { ...data, slug: file.replace('.md', ''), content: markdown };
       })
-  )
-})
+  );
+});
 ```
 
 ### From Eleventy to Vitto
 
 **Before (Eleventy):**
+
 ```javascript
 // .eleventy.js
-module.exports = function(eleventyConfig) {
-  eleventyConfig.addCollection('posts', api =>
-    api.getFilteredByGlob('posts/*.md')
-  )
+module.exports = function (eleventyConfig) {
+  eleventyConfig.addCollection('posts', (api) => api.getFilteredByGlob('posts/*.md'));
 
   // Manual asset handling
-  eleventyConfig.addPassthroughCopy('src/css')
-  eleventyConfig.addPassthroughCopy('src/js')
-}
+  eleventyConfig.addPassthroughCopy('src/css');
+  eleventyConfig.addPassthroughCopy('src/js');
+};
 ```
 
 **After (Vitto):**
+
 ```ts
 // hooks/posts.ts
-import { glob } from 'glob'
-import fs from 'node:fs/promises'
-import matter from 'gray-matter'
+import { glob } from 'glob';
+import fs from 'node:fs/promises';
+import matter from 'gray-matter';
 
 export default defineHooks('posts', async () => {
-  const files = await glob('content/posts/*.md')
-  return await Promise.all(files.map(async file => {
-    const content = await fs.readFile(file, 'utf-8')
-    const { data, content: markdown } = matter(content)
-    return { ...data, content: markdown }
-  }))
-})
+  const files = await glob('content/posts/*.md');
+  return await Promise.all(
+    files.map(async (file) => {
+      const content = await fs.readFile(file, 'utf-8');
+      const { data, content: markdown } = matter(content);
+      return { ...data, content: markdown };
+    })
+  );
+});
 ```
 
 ```ts
 // vite.config.ts - Assets handled automatically by Vite!
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { postsHook } from './hooks/posts'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook } from './hooks/posts';
 
 export default defineConfig({
   plugins: [
     vitto({
       metadata: { siteName: 'My Site', title: 'My Site' },
-      hooks: { posts: postsHook }
-    })
-  ]
+      hooks: { posts: postsHook },
+    }),
+  ],
   // No need to configure CSS/JS - Vite handles it!
-})
+});
 ```
 
 ## Summary

@@ -11,6 +11,7 @@ npm run build
 ```
 
 This creates an optimized static site in the `dist/` directory with:
+
 - Minified HTML, CSS, and JavaScript
 - Optimized assets with cache-busting hashes
 - Generated search index (if enabled)
@@ -131,7 +132,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: true
 
 jobs:
@@ -176,13 +177,13 @@ If deploying to a subdirectory (e.g., `username.github.io/repo-name`), configure
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   base: '/repo-name/', // Your repository name
-  plugins: [vitto()]
-})
+  plugins: [vitto()],
+});
 ```
 
 ### Azure Static Web Apps
@@ -217,10 +218,10 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "/"
-          api_location: ""
-          output_location: "dist"
+          action: 'upload'
+          app_location: '/'
+          api_location: ''
+          output_location: 'dist'
 ```
 
 ### AWS Amplify
@@ -324,11 +325,7 @@ Update `firebase.json`:
 {
   "hosting": {
     "public": "dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
@@ -419,9 +416,9 @@ Access via `import.meta.env`:
 // vite.config.ts
 export default defineConfig({
   define: {
-    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL)
-  }
-})
+    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
+  },
+});
 ```
 
 ### Platform-Specific
@@ -499,11 +496,13 @@ Platforms like Vercel, Netlify, and Cloudflare Pages automatically create previe
 Trigger builds programmatically:
 
 **Netlify**:
+
 ```bash
 curl -X POST -d {} https://api.netlify.com/build_hooks/YOUR_HOOK_ID
 ```
 
 **Vercel**:
+
 ```bash
 curl -X POST https://api.vercel.com/v1/integrations/deploy/YOUR_HOOK_ID
 ```
@@ -515,6 +514,7 @@ curl -X POST https://api.vercel.com/v1/integrations/deploy/YOUR_HOOK_ID
 Add analytics to track visitors:
 
 **Google Analytics**:
+
 ```vento
 <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
 <script>
@@ -526,6 +526,7 @@ Add analytics to track visitors:
 ```
 
 **Plausible Analytics**:
+
 ```vento
 <script defer data-domain="yourdomain.com" src="https://plausible.io/js/script.js"></script>
 ```
@@ -533,11 +534,9 @@ Add analytics to track visitors:
 ### Error Tracking
 
 **Sentry**:
+
 ```html
-<script
-  src="https://browser.sentry-cdn.com/7.x.x/bundle.min.js"
-  crossorigin="anonymous"
-></script>
+<script src="https://browser.sentry-cdn.com/7.x.x/bundle.min.js" crossorigin="anonymous"></script>
 <script>
   Sentry.init({ dsn: 'YOUR_DSN' });
 </script>
@@ -572,10 +571,10 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     vitto({
       minify: mode === 'production',
-      enableSearchIndex: mode === 'production'
-    })
-  ]
-}))
+      enableSearchIndex: mode === 'production',
+    }),
+  ],
+}));
 ```
 
 ### 2. Test Builds Locally
@@ -588,6 +587,7 @@ npm run preview
 ### 3. Monitor Build Times
 
 Keep builds under platform limits:
+
 - Vercel Free: 45 minutes
 - Netlify Free: 300 minutes/month
 - GitHub Pages: No limit

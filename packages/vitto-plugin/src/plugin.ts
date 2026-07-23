@@ -1,23 +1,36 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import { minify as swcMinify } from '@swc/html'
-import { chroma } from 'itty-chroma'
-import { duration } from 'itty-time'
-import * as pagefind from 'pagefind'
-import { Spinner } from 'picospinner'
-import { parseQuery } from 'ufo'
-import vento, { type Options as VentoOptions } from 'ventojs'
-import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js'
-import type { Plugin, ResolvedConfig } from 'vite'
-import { convertUrlPath, findVtoFiles, getViteAssetsFromBundle, normalizePath } from './helper'
-import { createDynamicRoutePatterns, getPageData } from './hooks'
-import { createMetadataCollector } from './metadata'
-import type { OutputStrategy, RenderOptions, VittoOptions } from './options'
-import { DEFAULT_OPTS, MINIFY_OPTIONS, PAGEFIND_OPTIONS } from './options'
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { minify as swcMinify } from '@swc/html';
+import { chroma } from 'itty-chroma';
+import { duration } from 'itty-time';
+import * as pagefind from 'pagefind';
+import { Spinner } from 'picospinner';
+import { parseQuery } from 'ufo';
+import vento, { type Options as VentoOptions } from 'ventojs';
+import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js';
+import type { Plugin, ResolvedConfig } from 'vite';
+
+import {
+  convertOutputPath,
+  convertUrlPath,
+  findVtoFiles,
+  getViteAssetsFromBundle,
+  normalizePath,
+} from './helper';
+import {
+  buildPaginatedPageData,
+  createDynamicRoutePatterns,
+  createPaginatedRoutePatterns,
+  getPageData,
+} from './hooks';
+import { createMetadataCollector } from './metadata';
+import type { RenderOptions, VittoOptions } from './options';
+import { DEFAULT_OPTS, MINIFY_OPTIONS, PAGEFIND_OPTIONS } from './options';
 
 // Global variables to store Vite configuration
-let viteRoot = process.cwd()
-let viteConfig: ResolvedConfig
+let viteRoot = process.cwd();
+let viteConfig: ResolvedConfig;
 
 /**
  * Render a Vento template file to an HTML string.
@@ -31,6 +44,8 @@ let viteConfig: ResolvedConfig
  *
  * @param options - Rendering options including file path, data, and minification settings
  * @param ventoOptionsOverride - Optional Vento engine configuration overrides
+ * @param currentUrl - Optional current URL for template context
+ * @param globalMetadata - Optional global metadata to inject
  * @returns The rendered HTML string
  *
  * @example
@@ -51,26 +66,26 @@ async function renderVentoToHtml(
   // Configure Vento template engine with includes directory
   const ventoOptions: VentoOptions = {
     includes: path.resolve(viteRoot, 'src'),
-    ...(ventoOptionsOverride || {}),
-  }
-  const vnt = vento(ventoOptions)
+    ...ventoOptionsOverride,
+  };
+  const vnt = vento(ventoOptions);
 
   // Apply auto-trim plugin to remove unnecessary whitespace from templates
-  vnt.use(autoTrim({ tags: [...defaultTags] }))
+  vnt.use(autoTrim({ tags: [...defaultTags] }));
 
   // Calculate relative path from includes directory to template file
-  const includesDir = typeof ventoOptions.includes === 'string' ? ventoOptions.includes : ''
-  const relPath = path.relative(includesDir, filePath)
+  const includesDir = typeof ventoOptions.includes === 'string' ? ventoOptions.includes : '';
+  const relPath = path.relative(includesDir, filePath);
 
   // Prepare template context with user data and Vite assets
-  const viteAssets = assets ?? { main: '', css: [] }
+  const viteAssets = assets ?? { main: '', css: [] };
 
   // Create metadata collector
-  const metadataCollector = createMetadataCollector()
+  const metadataCollector = createMetadataCollector();
 
   // Merge global metadata with collector
   if (globalMetadata) {
-    Object.assign(metadataCollector.metadata, globalMetadata)
+    Object.assign(metadataCollector.metadata, globalMetadata);
   }
 
   // Create renderAssets function with closure over isDev and viteAssets
@@ -88,23 +103,23 @@ async function renderVentoToHtml(
     document.body.classList.add('vite-ready'); /* Show content */
     document.getElementById('vite-suspense-styles')?.remove(); /* Remove suspense styles */
   </script>
-      `.trim()
+      `.trim();
     }
 
-    let html = ''
+    let html = '';
     if (viteAssets.main) {
-      html += `<script type="module" src="/${viteAssets.main}"></script>\n`
+      html += `<script type="module" src="/${viteAssets.main}"></script>\n`;
     }
     if (viteAssets.css?.length) {
       for (const href of viteAssets.css) {
-        html += `  <link rel="stylesheet" href="/${href}">\n`
+        html += `  <link rel="stylesheet" href="/${href}">\n`;
       }
     }
-    return html
-  }
+    return html;
+  };
 
   // Normalize currentUrl for consistent comparison
-  const normalizedUrl = normalizePath(currentUrl || '/')
+  const normalizedUrl = normalizePath(currentUrl || '/');
 
   // Inject all context variables into the template
   const context = {
@@ -118,65 +133,33 @@ async function renderVentoToHtml(
     getMetadata: metadataCollector.getMetadata.bind(metadataCollector),
     // Spread metadata with prefix for better clarity
     metadata: metadataCollector.metadata,
-  }
+  };
 
   // Render the template with the prepared context
-  const result = await vnt.run(relPath, context)
-  const htmlContent = result?.content || ''
+  const result = await vnt.run(relPath, context);
+  const htmlContent = result?.content || '';
 
   // Determine if minification should be applied
-  let shouldMinify = false
-  let minifyOpts = MINIFY_OPTIONS
+  let shouldMinify = false;
+  let minifyOpts = MINIFY_OPTIONS;
 
   if (typeof minify === 'object' && minify !== null) {
     // User provided custom minify options
-    shouldMinify = true
-    minifyOpts = { ...MINIFY_OPTIONS, ...minify }
+    shouldMinify = true;
+    minifyOpts = { ...MINIFY_OPTIONS, ...minify };
   } else if (minify === true) {
     // User enabled minification with default options
-    shouldMinify = true
-    minifyOpts = MINIFY_OPTIONS
+    shouldMinify = true;
+    minifyOpts = MINIFY_OPTIONS;
   }
 
   // Minify HTML if enabled
   if (shouldMinify) {
-    const minifiedHtml = await swcMinify(htmlContent, minifyOpts)
-    return minifiedHtml.code
+    const minifiedHtml = await swcMinify(htmlContent, minifyOpts);
+    return minifiedHtml.code;
   }
 
-  return htmlContent
-}
-
-/**
- * Convert output path based on output strategy.
- *
- * @param outputPath - Original output path (e.g., 'about.html', 'blog/1.html')
- * @param strategy - Output strategy ('html' or 'directory')
- * @returns Converted path based on strategy
- *
- * @example
- * // html strategy
- * convertOutputPath('about.html', 'html') // Returns: 'about.html'
- *
- * @example
- * // directory strategy
- * convertOutputPath('about.html', 'directory') // Returns: 'about/index.html'
- * convertOutputPath('blog/1.html', 'directory') // Returns: 'blog/1/index.html'
- */
-function convertOutputPath(outputPath: string, strategy?: OutputStrategy): string {
-  // If strategy is 'html' or undefined, return original path
-  if (strategy !== 'directory') {
-    return outputPath
-  }
-
-  // If already index.html, keep it as is
-  if (outputPath.endsWith('index.html')) {
-    return outputPath
-  }
-
-  // Convert page.html to page/index.html
-  // Convert dir/page.html to dir/page/page.html
-  return outputPath.replace(/\.html$/, '/index.html')
+  return htmlContent;
 }
 
 // Vitto Vite plugin for rendering Vento templates to static HTML.
@@ -194,33 +177,33 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         port: 3000,
         strictPort: false,
         ...config.server, // User config takes precedence
-      }
+      };
 
       // Set default preview configuration (can be overridden by user)
       const preview = {
         port: 3000,
         strictPort: false,
         ...config.preview, // User config takes precedence
-      }
+      };
 
       // Set default build configuration with main.ts as entry point
       const build = {
         ...config.build,
-        rollupOptions: {
-          ...config.build?.rollupOptions,
+        rolldownOptions: {
+          ...config.build?.rolldownOptions,
           // Use src/main.ts as entry point instead of index.html
           input:
-            config.build?.rollupOptions?.input ||
+            config.build?.rolldownOptions?.input ||
             path.resolve(viteRoot || process.cwd(), 'src/main.ts'),
         },
-      }
+      };
 
       return {
         server,
         preview,
         clearScreen: false,
         build,
-      }
+      };
     },
 
     /**
@@ -228,15 +211,15 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      * We need the root directory and build config for resolving paths.
      */
     configResolved(config: ResolvedConfig) {
-      viteRoot = config.root
-      viteConfig = config
+      viteRoot = config.root;
+      viteConfig = config;
     },
 
     /**
      * Log when the build process starts.
      */
     buildStart() {
-      chroma.log('✨ Vitto build started')
+      chroma.log('✨ Vitto build started');
     },
 
     /**
@@ -245,66 +228,70 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      * This hook is called by Vite during the build phase. It:
      * 1. Finds all .vto template files in the pages directory
      * 2. Extracts Vite assets (JS/CSS) from the bundle
-     * 3. Renders regular pages (excluding dynamic route templates)
+     * 3. Renders regular pages (excluding dynamic and paginated route templates)
      * 4. Generates static HTML files for dynamic routes
-     * 5. Emits all HTML files to the bundle (so they appear in build output)
+     * 5. Generates static HTML files for paginated routes
+     * 6. Emits all HTML files to the bundle (so they appear in build output)
      *
      * The emitFile() call is important because it makes Vite aware of these
      * files and includes them in the build output and statistics.
      */
     async generateBundle(_, bundle) {
-      const pagesDir = path.resolve(viteRoot, opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages')
-      const files = await findVtoFiles(pagesDir)
+      const pagesDir = path.resolve(
+        viteRoot,
+        opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'
+      );
+      const files = await findVtoFiles(pagesDir);
 
       // Extract JS and CSS assets from the Vite bundle
-      const viteAssets = opts.assets ?? getViteAssetsFromBundle(bundle)
+      const viteAssets = opts.assets ?? getViteAssetsFromBundle(bundle);
 
       if (!viteAssets.main) {
-        chroma.log('ℹ No main asset found. HTML files may not include JS/CSS.')
+        chroma.log('ℹ No main asset found. HTML files may not include JS/CSS.');
       }
 
       // Get output strategy (default to 'html')
-      const outputStrategy = opts.outputStrategy || DEFAULT_OPTS.outputStrategy || 'html'
+      const outputStrategy = opts.outputStrategy || DEFAULT_OPTS.outputStrategy || 'html';
 
-      // Get list of templates that are used for dynamic routes
-      const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`)
+      // Get list of templates that are used for dynamic or paginated routes
+      const skippedTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`);
 
       // Track emitted files to prevent duplicates
-      const emittedFiles = new Set<string>()
+      const emittedFiles = new Set<string>();
 
-      // Render regular pages (excluding dynamic route templates)
+      // Render regular pages (excluding dynamic and paginated route templates)
       for (const filePath of files) {
-        const fileName = path.basename(filePath)
+        const fileName = path.basename(filePath);
 
-        if (dynamicTemplates.includes(fileName)) {
-          chroma.log(`ℹ Skipping ${fileName} (used for dynamic routes)`)
-          continue
+        if (skippedTemplates.includes(fileName)) {
+          chroma.log(`ℹ Skipping ${fileName} (used for dynamic or paginated routes)`);
+          continue;
         }
 
         // Fetch data for this page via hooks
-        const data = await getPageData(filePath, opts)
+        const data = await getPageData(filePath, opts);
 
         // Calculate output path relative to pages directory
-        const relPath = path.relative(pagesDir, filePath)
-        let outName = relPath.replace(/\.vto$/, '.html')
+        const relPath = path.relative(pagesDir, filePath);
+        let outName = relPath.replace(/\.vto$/, '.html');
 
         // Special handling for 404 page with pretty URLs
-        const is404Page = fileName === '404.vto'
+        const is404Page = fileName === '404.vto';
 
         // Apply output strategy
-        outName = convertOutputPath(outName, outputStrategy)
+        outName = convertOutputPath(outName, outputStrategy);
 
         // Skip if already emitted
         if (emittedFiles.has(outName)) {
-          chroma.log(`⚠ Skipping duplicate: ${outName}`)
-          continue
+          chroma.log(`⚠ Skipping duplicate: ${outName}`);
+          continue;
         }
 
         // Calculate URL path for currentPath injection
         const urlPath = convertUrlPath(
           `/${outName.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
           outputStrategy
-        )
+        );
 
         // Render template to HTML
         const html = await renderVentoToHtml(
@@ -318,17 +305,17 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           opts.ventoOptions,
           urlPath,
           opts.metadata
-        )
+        );
 
         // Emit HTML file to Vite bundle
         this.emitFile({
           type: 'asset',
           fileName: outName,
           source: html,
-        })
+        });
 
         // Track emitted file
-        emittedFiles.add(outName)
+        emittedFiles.add(outName);
 
         // For 404 page with pretty URLs, also generate 404.html for compatibility
         if (is404Page && outputStrategy === 'directory' && !emittedFiles.has('404.html')) {
@@ -336,71 +323,71 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
             type: 'asset',
             fileName: '404.html',
             source: html,
-          })
-          emittedFiles.add('404.html')
+          });
+          emittedFiles.add('404.html');
         }
       }
 
       // Generate static HTML files for dynamic routes
-      const dynamicRouteConfigs = opts.dynamicRoutes || []
+      const dynamicRouteConfigs = (opts.dynamicRoutes || []).filter((r) => !r.pageSize);
       for (const config of dynamicRouteConfigs) {
-        const templatePath = path.resolve(pagesDir, `${config.template}.vto`)
+        const templatePath = path.resolve(pagesDir, `${config.template}.vto`);
 
         // Verify template file exists
         if (!fs.existsSync(templatePath)) {
-          chroma.log(`Template not found: ${templatePath}`)
-          continue
+          chroma.log(`Template not found: ${templatePath}`);
+          continue;
         }
 
         // Verify data source hook exists
-        const dataHook = opts.hooks?.[config.dataSource]
+        const dataHook = opts.hooks?.[config.dataSource];
         if (!dataHook) {
-          chroma.log(`Data source hook not found: ${config.dataSource}`)
-          continue
+          chroma.log(`Data source hook not found: ${config.dataSource}`);
+          continue;
         }
 
         // Fetch all items from the data source
-        const hookResult = await dataHook({})
-        const dataItems = Array.isArray(hookResult) ? hookResult : hookResult[config.dataSource]
+        const hookResult = await dataHook({});
+        const dataItems = Array.isArray(hookResult) ? hookResult : hookResult[config.dataSource];
 
         if (!Array.isArray(dataItems)) {
-          chroma.log(`Data source hook ${config.dataSource} did not return an array`)
-          continue
+          chroma.log(`Data source hook ${config.dataSource} did not return an array`);
+          continue;
         }
 
-        const totalItems = dataItems.length
-        const spinner = new Spinner(`Generating ${totalItems} pages from ${config.template}.vto`)
-        spinner.start()
+        const totalItems = dataItems.length;
+        const spinner = new Spinner(`Generating ${totalItems} pages from ${config.template}.vto`);
+        spinner.start();
 
-        const startTime = Date.now()
-        let processedCount = 0
+        const startTime = Date.now();
+        let processedCount = 0;
 
         // Generate a static HTML file for each item
         for (const item of dataItems) {
           try {
             // Extract route parameters for this item
-            const params = config.getParams(item)
+            const params = config.getParams(item);
 
             // Fetch page-specific data (will transform to singular form)
-            const pageData = await getPageData(templatePath, opts, params)
+            const pageData = await getPageData(templatePath, opts, params);
 
             // Get original path from config
-            let outPath = config.getPath(item)
+            let outPath = config.getPath(item);
 
             // Apply output strategy
-            outPath = convertOutputPath(outPath, outputStrategy)
+            outPath = convertOutputPath(outPath, outputStrategy);
 
             // Skip if already emitted
             if (emittedFiles.has(outPath)) {
-              chroma.log(`⚠ Skipping duplicate: ${outPath}`)
-              continue
+              chroma.log(`⚠ Skipping duplicate: ${outPath}`);
+              continue;
             }
 
             // Calculate URL path
             const urlPath = convertUrlPath(
               `/${outPath.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
               outputStrategy
-            )
+            );
 
             // Render template with this item's data
             const html = await renderVentoToHtml(
@@ -414,37 +401,157 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               opts.ventoOptions,
               urlPath,
               opts.metadata
-            )
+            );
 
             // Emit HTML file to Vite bundle
             this.emitFile({
               type: 'asset',
               fileName: outPath,
               source: html,
-            })
+            });
 
             // Track emitted file
-            emittedFiles.add(outPath)
+            emittedFiles.add(outPath);
 
             // Update progress
-            processedCount++
-            const elapsed = duration(Date.now() - startTime, { parts: 2 })
-            const percentage = Math.round((processedCount / totalItems) * 100)
+            processedCount++;
+            const elapsed = duration(Date.now() - startTime, { parts: 2 });
+            const percentage = Math.round((processedCount / totalItems) * 100);
             spinner.setText(
               `Generated ${processedCount}/${totalItems} pages (${percentage}%) - ${elapsed} elapsed`
-            )
+            );
           } catch (error) {
-            chroma.log(`ⅹ Error generating page for item:`, item, error)
+            chroma.log(`ⅹ Error generating page for item:`, item, error);
           }
         }
 
         // Stop spinner and show summary
-        spinner.stop()
-        const totalTime = duration(Date.now() - startTime, { parts: 2 })
-        const avgTime = duration((Date.now() - startTime) / totalItems, { parts: 2 })
+        spinner.stop();
+        const totalTime = duration(Date.now() - startTime, { parts: 2 });
+        const avgTime = duration((Date.now() - startTime) / totalItems, { parts: 2 });
         chroma.log(
           `✨ Generated ${totalItems} pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
-        )
+        );
+      }
+
+      // Generate static HTML files for paginated routes
+      for (const config of (opts.dynamicRoutes || []).filter((r) => r.pageSize)) {
+        const templatePath = path.resolve(pagesDir, `${config.template}.vto`);
+
+        // Verify template file exists
+        if (!fs.existsSync(templatePath)) {
+          chroma.log(`Template not found: ${templatePath}`);
+          continue;
+        }
+
+        // Verify data source hook exists
+        const dataHook = opts.hooks?.[config.dataSource];
+        if (!dataHook) {
+          chroma.log(`Data source hook not found: ${config.dataSource}`);
+          continue;
+        }
+
+        // Fetch all items from the data source
+        const allItemsResult = await dataHook({});
+        const allItems = Array.isArray(allItemsResult)
+          ? allItemsResult
+          : allItemsResult[config.dataSource];
+
+        if (!Array.isArray(allItems)) {
+          chroma.log(
+            `Data source hook ${config.dataSource} did not return an array for paginated routes`
+          );
+          continue;
+        }
+
+        const totalItems = allItems.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / config.pageSize!));
+        const spinner = new Spinner(
+          `Generating ${totalPages} paginated pages from ${config.template}.vto`
+        );
+        spinner.start();
+
+        const startTime = Date.now();
+        let processedCount = 0;
+
+        // Generate a static HTML file for each page
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          try {
+            const params = config.getParams(pageNum);
+
+            // Fetch page-specific data via hook
+            const pageData = await getPageData(templatePath, opts, params);
+
+            // Build paginated context with URL helpers
+            const mergedData = buildPaginatedPageData(
+              allItems,
+              config,
+              pageNum,
+              pageData,
+              outputStrategy
+            );
+
+            // Get output path from getPath
+            let outPath = config.getPath(pageNum);
+
+            // Apply output strategy
+            outPath = convertOutputPath(outPath, outputStrategy);
+
+            // Skip if already emitted
+            if (emittedFiles.has(outPath)) {
+              chroma.log(`⚠ Skipping duplicate: ${outPath}`);
+              continue;
+            }
+
+            // Calculate URL path
+            const urlPath = convertUrlPath(
+              `/${outPath.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
+              outputStrategy
+            );
+
+            // Render template with this page's data
+            const html = await renderVentoToHtml(
+              {
+                filePath: templatePath,
+                data: mergedData,
+                isDev: false,
+                assets: viteAssets,
+                minify: opts.minify ?? false,
+              },
+              opts.ventoOptions,
+              urlPath,
+              opts.metadata
+            );
+
+            // Emit HTML file to Vite bundle
+            this.emitFile({
+              type: 'asset',
+              fileName: outPath,
+              source: html,
+            });
+
+            // Track emitted file
+            emittedFiles.add(outPath);
+
+            // Update progress
+            processedCount++;
+            const elapsed = duration(Date.now() - startTime, { parts: 2 });
+            const percentage = Math.round((processedCount / totalPages) * 100);
+            spinner.setText(
+              `Generated ${processedCount}/${totalPages} pages (${percentage}%) - ${elapsed} elapsed`
+            );
+          } catch (error) {
+            chroma.log(`ⅹ Error generating page ${pageNum}:`, error);
+          }
+        }
+
+        // Stop spinner and show summary
+        spinner.stop();
+        const totalTime = duration(Date.now() - startTime, { parts: 2 });
+        const avgTime = duration((Date.now() - startTime) / totalPages, { parts: 2 });
+        chroma.log(
+          `✨ Generated ${totalPages} paginated pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
+        );
       }
     },
 
@@ -459,62 +566,62 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
     async closeBundle() {
       // Skip Pagefind index generation if disabled
       if (opts.enableSearchIndex === false) {
-        chroma.log('ℹ Pagefind search indexing is disabled')
-        return
+        chroma.log('ℹ Pagefind search indexing is disabled');
+        return;
       }
 
       try {
         // Get the output directory from Vite config (defaults to 'dist')
-        const outDir = path.resolve(viteRoot, viteConfig.build.outDir || 'dist')
-        const pagefindDir = path.join(outDir, '_pagefind')
+        const outDir = path.resolve(viteRoot, (viteConfig.build.outDir as string) || 'dist');
+        const pagefindDir = path.join(outDir, '_pagefind');
 
         // Verify output directory exists
         if (!fs.existsSync(outDir)) {
-          chroma.log(`⚠ Output directory not found: ${outDir}`)
-          chroma.log('⚠ Skipping Pagefind index generation')
-          return
+          chroma.log(`⚠ Output directory not found: ${outDir}`);
+          chroma.log('⚠ Skipping Pagefind index generation');
+          return;
         }
 
-        chroma.log('✨ Generating Pagefind search index...')
-        const spinner = new Spinner('Generating search index with Pagefind')
-        spinner.start()
-        const startTime = Date.now()
+        chroma.log('✨ Generating Pagefind search index...');
+        const spinner = new Spinner('Generating search index with Pagefind');
+        spinner.start();
+        const startTime = Date.now();
 
         // Create a Pagefind search index with merged configuration
         // Merge default options with user-provided options
         const { index, errors } = await pagefind.createIndex({
           ...PAGEFIND_OPTIONS,
-          ...(opts.pagefindOptions || {}),
-        })
+          ...opts.pagefindOptions,
+        });
 
         if (!index) {
-          spinner.stop()
-          chroma.log('✗ Failed to create Pagefind index')
+          spinner.stop();
+          chroma.log('✗ Failed to create Pagefind index');
           if (errors && errors.length > 0) {
             for (const error of errors) {
-              chroma.log(`  - ${error}`)
+              chroma.log(`  - ${error}`);
             }
           }
-          return
+          return;
         }
 
         // Index all HTML files in the output directory
         const { page_count } = await index.addDirectory({
           glob: '**/*.{html}',
           path: outDir,
-        })
+        });
 
         // Write the index to disk
         await index.writeFiles({
           outputPath: pagefindDir,
-        })
+        });
 
-        spinner.stop()
-        const elapsed = duration(Date.now() - startTime, { parts: 2 })
-        chroma.log(`✨ Indexed ${page_count} pages in ${elapsed}`)
-        chroma.log(`✨ Search index written to: ${path.relative(viteRoot, pagefindDir)}`)
+        spinner.stop();
+        const elapsed = duration(Date.now() - startTime, { parts: 2 });
+        chroma.log(`✨ Indexed ${page_count} pages in ${elapsed}`);
+        chroma.log(`✨ Search index written to: ${path.relative(viteRoot, pagefindDir)}`);
       } catch (error) {
-        chroma.log('✗ Error generating Pagefind index:', error)
+        chroma.log('✗ Error generating Pagefind index:', error);
       }
     },
 
@@ -523,25 +630,27 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      *
      * This middleware intercepts HTTP requests and:
      * 1. Checks if the URL matches a dynamic route pattern
-     * 2. Checks if the URL maps to a static .vto template
-     * 3. Blocks direct access to templates used in dynamic routes
-     * 4. Renders the appropriate template with data from hooks
-     * 5. Returns 404 for non-existent pages
+     * 2. Checks if the URL matches a paginated route pattern
+     * 3. Checks if the URL maps to a static .vto template
+     * 4. Blocks direct access to templates used in dynamic or paginated routes
+     * 5. Renders the appropriate template with data from hooks
+     * 6. Returns 404 for non-existent pages
      *
      * The middleware runs on every GET request in development mode,
      * providing hot reloading and dynamic route handling.
      */
     configureServer(server) {
       // Pre-calculate dynamic route patterns for efficient matching
-      const dynamicRoutePatterns = createDynamicRoutePatterns(opts)
+      const dynamicRoutePatterns = createDynamicRoutePatterns(opts);
+      const paginatedRoutePatterns = createPaginatedRoutePatterns(opts);
 
       server.middlewares.use(async (req, res, next) => {
         // Only handle GET requests
-        if (req.method !== 'GET') return next()
+        if (req.method !== 'GET') return next();
 
         // Parse URL into pathname and query string
-        const [pathname, search = ''] = req.url?.split('?') ?? ['/']
-        const url = pathname || '/'
+        const [pathname, search = ''] = req.url?.split('?') ?? ['/'];
+        const url = normalizePath(pathname || '/');
 
         // Skip requests for static files, Vite internal routes, etc.
         if (
@@ -551,112 +660,174 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           url.startsWith('/node_modules/') ||
           url.startsWith('/assets/')
         ) {
-          return next()
+          return next();
         }
 
         const pagesDir = path.resolve(
           viteRoot,
           opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'
-        )
+        );
+
+        // Check if URL matches any paginated route pattern
+        for (const route of paginatedRoutePatterns) {
+          const match = url.match(route.pattern);
+          if (match) {
+            // Extract the page number
+            const pageNum = parseInt(match[1] || '1', 10);
+            const templatePath = path.resolve(pagesDir, `${route.template}.vto`);
+
+            if (fs.existsSync(templatePath)) {
+              // Find the paginated route config
+              const paginatedConfig = (opts.dynamicRoutes || []).find(
+                (c) => c.template === route.template && !!c.pageSize
+              );
+              if (!paginatedConfig) continue;
+
+              // Parse query parameters
+              const query = parseQuery(`?${search}`);
+
+              // Combine query params with page number
+              const params = {
+                ...query,
+                ...paginatedConfig.getParams(pageNum),
+              };
+
+              // Fetch data for this specific page
+              const pageData = await getPageData(templatePath, opts, params);
+
+              const dataSource = paginatedConfig.dataSource;
+
+              // Fetch all items from data source
+              const allItemsResult = await opts.hooks?.[dataSource]?.({});
+              const allItems = Array.isArray(allItemsResult)
+                ? allItemsResult
+                : allItemsResult?.[dataSource];
+
+              // Build paginated page data with URL helpers
+              const paginationData = buildPaginatedPageData(
+                allItems || [],
+                paginatedConfig,
+                pageNum,
+                pageData,
+                'html'
+              );
+
+              const html = await renderVentoToHtml(
+                {
+                  filePath: templatePath,
+                  data: paginationData,
+                  isDev: true,
+                  assets: opts.assets,
+                  minify: opts.minify ?? false,
+                },
+                opts.ventoOptions,
+                url,
+                opts.metadata
+              );
+              res.setHeader('Content-Type', 'text/html');
+              res.end(html);
+              return;
+            }
+          }
+        }
 
         // Check if URL matches any dynamic route pattern
         for (const route of dynamicRoutePatterns) {
-          const match = url.match(route.pattern)
+          const match = url.match(route.pattern);
           if (match) {
             // Extract the dynamic segment (e.g., post ID or slug)
-            const [, slug] = match
-            const templatePath = path.resolve(pagesDir, `${route.template}.vto`)
+            const [, slug] = match;
+            const templatePath = path.resolve(pagesDir, `${route.template}.vto`);
 
             if (fs.existsSync(templatePath)) {
               // Parse query parameters
-              const query = parseQuery(`?${search}`)
+              const query = parseQuery(`?${search}`);
 
               // Combine query params with route params
               const params = {
                 ...query,
                 id: slug,
                 slug: slug,
-              }
+              };
 
               // Fetch data for this specific item
-              const data = await getPageData(templatePath, opts, params)
+              const data = await getPageData(templatePath, opts, params);
 
               // Render template with item data
               const html = await renderVentoToHtml(
                 {
                   filePath: templatePath,
                   data,
-
-                  assets: opts.assets ?? undefined,
+                  isDev: true,
+                  assets: opts.assets,
                   minify: opts.minify ?? false,
                 },
                 opts.ventoOptions,
                 url,
                 opts.metadata
-              )
-
-              res.setHeader('Content-Type', 'text/html')
-              res.end(html)
-              return
+              );
+              res.setHeader('Content-Type', 'text/html');
+              res.end(html);
+              return;
             }
           }
         }
 
         // Handle regular static routes (not dynamic)
-        const pageUrl = url === '/' ? '/index' : url
-        let vtoPath = path.resolve(`${pagesDir + pageUrl}.vto`)
+        const pageUrl = url === '/' ? '/index' : url;
+        let vtoPath = path.resolve(`${pagesDir + pageUrl}.vto`);
 
         // Try index.vto if direct path doesn't exist (e.g., /about -> /about/index.vto)
         if (!fs.existsSync(vtoPath)) {
-          vtoPath = path.resolve(`${pagesDir + pageUrl}/index.vto`)
+          vtoPath = path.resolve(`${pagesDir + pageUrl}/index.vto`);
         }
 
         if (fs.existsSync(vtoPath)) {
-          const query = parseQuery(`?${search}`)
-          const data = await getPageData(vtoPath, opts, query)
+          const query = parseQuery(`?${search}`);
+          const data = await getPageData(vtoPath, opts, query);
 
           const html = await renderVentoToHtml(
             {
               filePath: vtoPath,
               data,
               isDev: true,
-              assets: opts.assets ?? undefined,
+              assets: opts.assets,
               minify: opts.minify ?? false,
             },
             opts.ventoOptions,
             url,
             opts.metadata
-          )
+          );
 
-          res.setHeader('Content-Type', 'text/html')
-          res.end(html)
-          return
+          res.setHeader('Content-Type', 'text/html');
+          res.end(html);
+          return;
         }
 
         // No matching template found, return 404
-        const notFoundPath = path.resolve(pagesDir, '404.vto')
+        const notFoundPath = path.resolve(pagesDir, '404.vto');
         if (fs.existsSync(notFoundPath)) {
-          const data = await getPageData(notFoundPath, opts)
+          const data = await getPageData(notFoundPath, opts);
           const html = await renderVentoToHtml(
             {
               filePath: notFoundPath,
               data,
               isDev: true,
-              assets: opts.assets ?? undefined,
+              assets: opts.assets,
               minify: opts.minify ?? false,
             },
             opts.ventoOptions,
             undefined,
             opts.metadata
-          )
-          res.statusCode = 404
-          res.setHeader('Content-Type', 'text/html')
-          res.end(html)
-          return
+          );
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'text/html');
+          res.end(html);
+          return;
         }
 
-        next()
-      })
+        next();
+      });
 
       // Watch for changes in source files and trigger full page reload
       server.watcher.add([
@@ -666,7 +837,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         path.resolve(viteRoot, 'src/**/*.js'),
         path.resolve(viteRoot, 'src/**/*.css'),
         path.resolve(viteRoot, 'src/**/*.json'),
-      ])
+      ]);
 
       // Trigger full reload when watched files change
       server.watcher.on('change', (file) => {
@@ -675,9 +846,9 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           file.endsWith('.html') ||
           file.startsWith(path.resolve(viteRoot, 'src/'))
         ) {
-          server.ws.send({ type: 'full-reload' })
+          server.ws.send({ type: 'full-reload' });
         }
-      })
+      });
     },
-  }
+  };
 }

@@ -1,9 +1,10 @@
-import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import postsHook from './src/hooks/posts'
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
-const isProduction = process.env.NODE_ENV === 'production'
+import postsHook from './src/hooks/posts';
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   plugins: [
@@ -16,7 +17,6 @@ export default defineConfig({
         title: 'Vitto - Static Site Generator Powered by Vite & Vento',
         description: `A minimal static site generator built with Vite and the Vento templating engine.`,
         keywords: ['vento', 'ssg', 'vite', 'plugin', 'generator', 'static', 'website', 'jamstack'],
-        // Custom metadata fields
         author: 'Aris Ripandi',
         social: {
           github: 'https://github.com/riipandi/vitto',
@@ -24,15 +24,22 @@ export default defineConfig({
         },
       },
       hooks: {
-        blog: postsHook, // For blog.vto - list of posts
-        posts: postsHook, // Data source for dynamic routes
+        posts: postsHook, // Data source for dynamic routes and pagination
+        post: postsHook, // Data source for single post page
       },
       dynamicRoutes: [
         {
           template: 'post',
           dataSource: 'posts',
-          getParams: (post) => ({ id: post.id }),
-          getPath: (post) => `blog/${post.id}.html`,
+          getParams: (post) => ({ slug: post.slug }),
+          getPath: (post) => `blog/${post.slug}.html`,
+        },
+        {
+          template: 'blog',
+          dataSource: 'posts',
+          pageSize: 5,
+          getParams: (pageNum) => ({ _page: pageNum }),
+          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
         },
       ],
     }),
@@ -45,4 +52,4 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: true,
   },
-})
+});

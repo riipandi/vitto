@@ -1,56 +1,30 @@
 {
     "name": "vitto",
     "version": "0.0.0",
-    "type": "module",
     "description": "A minimal static site generator built with Vite and the Vento templating engine.",
-    "author": "Aris Ripandi <aris@duck.com>",
-    "license": "MIT",
+    "keywords": [
+        "generator",
+        "hmr",
+        "jamstack",
+        "pagefind",
+        "ssg",
+        "static",
+        "vento",
+        "vite",
+        "website"
+    ],
     "homepage": "https://github.com/riipandi/vitto",
-    "funding": "https://github.com/riipandi/vitto?sponsor=1",
+    "bugs": {
+        "url": "https://github.com/riipandi/vitto/issues"
+    },
+    "license": "MIT",
+    "author": "Aris Ripandi <aris@duck.com>",
     "repository": {
         "type": "git",
         "url": "https://github.com/riipandi/vitto",
         "directory": "packages/vitto-plugin"
     },
-    "bugs": {
-        "url": "https://github.com/riipandi/vitto/issues"
-    },
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": "./dist/index.js"
-    },
-    "scripts": {
-        "dev": "tsdown --watch",
-        "build": "tsc && tsdown",
-        "prepublishOnly": "NODE_ENV=production tsdown",
-        "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
-        "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
-        "cleanup": "pnpm dlx del-cli dist node_modules .turbo",
-        "lint": "biome lint . --write",
-        "check": "biome check . --write",
-        "typecheck": "tsc --noEmit"
-    },
-    "peerDependencies": {
-        "vite": "^7.1.10"
-    },
-    "dependencies": {
-        "@swc/html": "^1.13.20",
-        "itty-chroma": "^1.0.6",
-        "itty-time": "^2.0.2",
-        "pagefind": "^1.4.0",
-        "picospinner": "^3.0.0",
-        "ufo": "^1.6.1",
-        "ventojs": "^2.2.0"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "^2.2.6",
-        "@types/node": "^24.8.1",
-        "tsdown": "^0.15.8",
-        "typescript": "^5.9.3",
-        "vite": "^7.1.10"
-    },
+    "funding": "https://github.com/riipandi/vitto?sponsor=1",
     "files": [
         "dist/**/*",
         "!tests/**/*",
@@ -60,21 +34,49 @@
         "LICENSE",
         "README.md"
     ],
+    "type": "module",
+    "main": "./dist/index.mjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.mts",
+    "exports": {
+        ".": "./dist/index.mjs"
+    },
     "publishConfig": {
         "access": "public"
     },
-    "keywords": [
-        "vite",
-        "vento",
-        "ssg",
-        "hmr",
-        "pagefind",
-        "generator",
-        "static",
-        "website",
-        "jamstack"
-    ],
+    "scripts": {
+        "dev": "tsdown --watch",
+        "build": "tsc && tsdown",
+        "prepublishOnly": "NODE_ENV=production tsdown",
+        "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
+        "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
+        "cleanup": "pnpm dlx del-cli dist node_modules .turbo",
+        "lint": "oxlint --fix",
+        "check": "oxlint --fix && oxfmt --write",
+        "format": "oxfmt --write",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@swc/html": "^1.15.46",
+        "itty-chroma": "^1.0.6",
+        "itty-time": "^2.0.2",
+        "pagefind": "^1.5.2",
+        "picospinner": "^3.0.0",
+        "ufo": "^1.6.4",
+        "ventojs": "^2.4.0"
+    },
+    "devDependencies": {
+        "@types/node": "^26.1.1",
+        "oxfmt": "0.60.0",
+        "oxlint": "^1.75.0",
+        "tsdown": "^0.22.13",
+        "typescript": "^7.0.2",
+        "vite": "^8.1.5"
+    },
+    "peerDependencies": {
+        "vite": "^8.1.5"
+    },
     "engines": {
-        "node": "^20.19.0 || >=22.12.0"
+        "node": "^22.23.1 || >=24.18.0"
     }
 }

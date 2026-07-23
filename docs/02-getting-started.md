@@ -88,8 +88,8 @@ yarn add --dev vitto
 Create or update your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
@@ -99,10 +99,10 @@ export default defineConfig({
       metadata: {
         siteName: 'Vitto',
         title: 'Vitto - Static Site Generator Powered by Vite & Vento',
-      }
-    })
+      },
+    }),
   ],
-})
+});
 ```
 
 ### 3. Create Project Structure

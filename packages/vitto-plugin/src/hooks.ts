@@ -1,5 +1,7 @@
-import path from 'node:path'
-import type { VittoOptions } from './options'
+import path from 'node:path';
+
+import { buildPaginatedContext } from './helper';
+import type { DynamicRouteConfig, OutputStrategy, VittoOptions } from './options';
 
 /**
  * Define a hook for injecting dynamic data into page templates.
@@ -29,11 +31,11 @@ export function defineHooks<T = any, P = any>(
   handler: (params?: P) => Promise<T> | T
 ) {
   return async (params?: P) => {
-    const result = await Promise.resolve(handler(params))
+    const result = await Promise.resolve(handler(params));
     // Wrap result in an object with the hook name as key
     // e.g., { posts: [...] } or { products: [...] }
-    return { [name]: result }
-  }
+    return { [name]: result };
+  };
 }
 
 /**
@@ -53,49 +55,50 @@ export function defineHooks<T = any, P = any>(
  * const data = await getPageData('src/pages/blog.vto', opts)
  * // Returns: { posts: [{...}, {...}] }
  *
+ * @example
  * // For post.vto with params
  * const data = await getPageData('src/pages/post.vto', opts, { id: '1' })
  * // Returns: { post: {...} }
  */
 export async function getPageData(filePath?: string, opts?: VittoOptions, params?: any) {
-  const hooks: Record<string, any> = opts?.hooks || {}
-  const pageName = filePath ? path.basename(filePath, '.vto') : ''
+  const hooks: Record<string, any> = opts?.hooks || {};
+  const pageName = filePath ? path.basename(filePath, '.vto') : '';
 
   // Check if this template is used for dynamic routes
-  const dynamicRoute = (opts?.dynamicRoutes || []).find((route) => route.template === pageName)
+  const dynamicRoute = (opts?.dynamicRoutes || []).find((route) => route.template === pageName);
 
   if (dynamicRoute) {
-    const hookName = dynamicRoute.dataSource
+    const hookName = dynamicRoute.dataSource;
     if (hooks[hookName]) {
       // Execute the data source hook with provided params
-      const result = await hooks[hookName](params || {})
+      const result = await hooks[hookName](params || {});
 
       // Extract the actual data from the hook result
       // Hook returns { posts: [...] } or { posts: {...} }
-      const hookData = result[hookName]
+      const hookData = result[hookName];
 
       // If data is an array, it's for listing pages (e.g., blog index)
       // Keep the plural form: { posts: [...] }
       if (Array.isArray(hookData)) {
-        return { [hookName]: hookData }
+        return { [hookName]: hookData };
       }
 
       // If data is a single object, it's for detail pages (e.g., single post)
       // Transform to singular form using template name: { post: {...} }
       // This makes it more intuitive in templates ({{ post.title }} vs {{ posts.title }})
-      return { [dynamicRoute.template]: hookData }
+      return { [dynamicRoute.template]: hookData };
     }
   }
 
   // For regular pages (not dynamic routes), execute the matching hook if it exists
   // The hook name must match the page filename (e.g., blog.vto → blog hook)
   if (hooks[pageName]) {
-    return await hooks[pageName](params || {})
+    return await hooks[pageName](params || {});
   }
 
   // Return empty object if no hook is registered for this page
   // This allows templates to work without hooks (static content only)
-  return {}
+  return {};
 }
 
 /**
@@ -122,32 +125,116 @@ export async function getPageData(filePath?: string, opts?: VittoOptions, params
  */
 export function createDynamicRoutePatterns(opts: VittoOptions) {
   const routes: Array<{
-    pattern: RegExp
-    basePath: string
-    template: string
-  }> = []
+    pattern: RegExp;
+    basePath: string;
+    template: string;
+  }> = [];
 
   for (const config of opts.dynamicRoutes || []) {
+    // Skip paginated routes — they use createPaginatedRoutePatterns
+    if (config.pageSize) continue;
+
     // Extract base path by calling getPath with dummy data
     // e.g., `blog/${post.id}.html` with { id: ':id' } returns 'blog/:id.html'
-    const samplePath = config.getPath({ id: ':id', slug: ':slug' })
-    const pathWithoutHtml = samplePath.replace(/\.html$/, '')
+    const samplePath = config.getPath({ id: ':id', slug: ':slug' });
+    const pathWithoutHtml = samplePath.replace(/\.html$/, '');
 
     // Split path and extract base (everything before the dynamic segment)
     // e.g., 'blog/:id' -> ['blog', ':id'] -> basePath: 'blog'
-    const parts = pathWithoutHtml.split('/')
-    const basePath = parts.slice(0, -1).join('/')
+    const parts = pathWithoutHtml.split('/');
+    const basePath = parts.slice(0, -1).join('/');
 
     // Create regex pattern to match URLs like /blog/123 or /blog/my-slug
     // The captured group ([^/]+) will contain the dynamic segment value
-    const pattern = new RegExp(`^/${basePath}/([^/]+)$`)
+    const pattern = new RegExp(`^/${basePath}/([^/]+)$`);
 
     routes.push({
       pattern,
       basePath,
       template: config.template,
-    })
+    });
   }
 
-  return routes
+  return routes;
+}
+
+/**
+ * Create URL patterns for paginated dynamic routes.
+ *
+ * Matches URLs like /blog, /blog/2, /blog/3, etc. for paginated listings.
+ * A route is considered paginated when `pageSize` > 0.
+ *
+ * @param opts - Vitto plugin options containing dynamic route configurations
+ * @returns Array of route patterns with regex, base path, and template name
+ */
+export function createPaginatedRoutePatterns(opts: VittoOptions) {
+  const routes: Array<{
+    pattern: RegExp;
+    basePath: string;
+    template: string;
+    config: DynamicRouteConfig;
+  }> = [];
+
+  for (const config of opts.dynamicRoutes || []) {
+    if (!config.pageSize) continue;
+
+    const page1Path = config.getPath(1);
+    const pathWithoutHtml = page1Path.replace(/\.html$/, '');
+    const parts = pathWithoutHtml.split('/');
+    const fileName = parts.pop() || '';
+    const dir = parts.join('/');
+    const basePath = dir ? `/${dir}/${fileName}` : `/${fileName}`;
+
+    // Match base path (page 1) and subpath pages (page 2+)
+    // e.g., /blog, /blog/2, /blog/3
+    const pattern = new RegExp(`^${basePath}(?:/(\\d+))?$`);
+
+    routes.push({
+      pattern,
+      basePath,
+      template: config.template,
+      config,
+    });
+  }
+
+  return routes;
+}
+
+/**
+ * Build paginated page context from pre-fetched items.
+ *
+ * Generates a PaginatedData object with URL helpers and merges it into
+ * the existing page data. Use this for both build-time and dev-mode
+ * paginated routes to keep the data shape consistent.
+ *
+ * @param allItems - Full array of items from the data source hook
+ * @param paginatedConfig - Dynamic route config with pageSize
+ * @param pageNum - Current page number (1-based)
+ * @param pageData - Existing page data from getPageData
+ * @param outputStrategy - Output strategy for URL generation
+ * @returns Merged page data with paginated items and URL helpers
+ */
+export function buildPaginatedPageData<T>(
+  allItems: T[],
+  paginatedConfig: DynamicRouteConfig,
+  pageNum: number,
+  pageData: Record<string, any>,
+  outputStrategy: OutputStrategy
+): Record<string, any> {
+  const dataSource = paginatedConfig.dataSource;
+  const hookData = pageData[dataSource];
+
+  const paginated = buildPaginatedContext(allItems, {
+    pageNum,
+    pageSize: paginatedConfig.pageSize!,
+    totalItems: allItems.length,
+    outputStrategy,
+    getPath: paginatedConfig.getPath,
+  });
+
+  return {
+    ...pageData,
+    [dataSource]:
+      hookData && !Array.isArray(hookData) ? { ...hookData, items: paginated.items } : paginated,
+  };
 }

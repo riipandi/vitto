@@ -1,0 +1,26 @@
+{{ layout "layouts/site.vto" }}
+
+{{ setMetadata('title', post.title || 'Post') }}
+
+<div class="w-full max-w-[700px] mx-auto py-8 px-4">
+  <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 no-underline mb-6 transition-colors">
+    &larr; Back to blog
+  </a>
+
+  <article>
+    <header class="mb-8">
+      <span class="inline-block text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-full mb-3">Post #{{ post.id }}</span>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white leading-tight">{{ post.title }}</h1>
+    </header>
+
+    <div class="prose prose-gray dark:prose-invert max-w-none">
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">{{ post.body }}</p>
+    </div>
+  </article>
+
+  <div class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700">
+    <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 no-underline font-medium transition-colors">
+      &larr; Back to all posts
+    </a>
+  </div>
+</div>

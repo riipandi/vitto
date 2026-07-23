@@ -20,7 +20,7 @@ Create a hook that provides the data for your pages:
 `hooks/posts.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
+import { defineHooks } from 'vitto';
 
 export const postsHook = defineHooks('posts', async () => {
   // Fetch data from API, database, or local files
@@ -30,27 +30,27 @@ export const postsHook = defineHooks('posts', async () => {
       slug: 'first-post',
       title: 'My First Post',
       content: '<p>Hello world!</p>',
-      date: '2024-01-01'
+      date: '2024-01-01',
     },
     {
       id: 2,
       slug: 'second-post',
       title: 'My Second Post',
       content: '<p>Another post!</p>',
-      date: '2024-01-02'
-    }
-  ]
-})
+      date: '2024-01-02',
+    },
+  ];
+});
 
 // Hook for individual post (receives params)
 export const postHook = defineHooks('post', async (params) => {
-  if (!params?.slug) return null
+  if (!params?.slug) return null;
 
-  const posts = await postsHook()
-  return posts.find(p => p.slug === params.slug)
-})
+  const posts = await postsHook();
+  return posts.find((p) => p.slug === params.slug);
+});
 
-export default postsHook
+export default postsHook;
 ```
 
 ### 2. Create a Template
@@ -86,36 +86,38 @@ Create a template that will be used for all generated pages:
 In your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { postsHook, postHook } from './hooks/posts'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook, postHook } from './hooks/posts';
 
 export default defineConfig({
   plugins: [
     vitto({
       metadata: {
         siteName: 'My Blog',
-        title: 'My Blog'
+        title: 'My Blog',
       },
       hooks: {
         posts: postsHook,
-        post: postHook
+        post: postHook,
       },
       dynamicRoutes: [
         {
-          template: 'post',           // Template name (without .vto)
-          dataSource: 'posts',        // Hook name
-          getParams: (post) => ({     // Extract params for the template
-            slug: post.slug
+          template: 'post', // Template name (without .vto)
+          dataSource: 'posts', // Hook name
+          getParams: (post) => ({
+            // Extract params for the template
+            slug: post.slug,
           }),
-          getPath: (post) => {        // Define output path
-            return `blog/${post.slug}.html`
-          }
-        }
-      ]
-    })
-  ]
-})
+          getPath: (post) => {
+            // Define output path
+            return `blog/${post.slug}.html`;
+          },
+        },
+      ],
+    }),
+  ],
+});
 ```
 
 ## Configuration Options
@@ -129,7 +131,7 @@ The name of the template file (without `.vto` extension) in your `pagesDir`.
 
 ```ts
 {
-  template: 'post'  // Uses src/pages/post.vto
+  template: 'post'; // Uses src/pages/post.vto
 }
 ```
 
@@ -142,7 +144,7 @@ The name of the hook that provides the data array.
 
 ```ts
 {
-  dataSource: 'posts'  // Uses hooks/posts.ts
+  dataSource: 'posts'; // Uses hooks/posts.ts
 }
 ```
 
@@ -156,8 +158,8 @@ Function that extracts parameters from each data item. These params are passed t
 ```ts
 {
   getParams: (post) => ({
-    slug: post.slug
-  })
+    slug: post.slug,
+  });
 }
 ```
 
@@ -170,7 +172,7 @@ Function that determines the output file path for each page.
 
 ```ts
 {
-  getPath: (post) => `blog/${post.slug}.html`
+  getPath: (post) => `blog/${post.slug}.html`;
 }
 ```
 
@@ -185,24 +187,24 @@ Here's a complete example for a blog with dynamic posts:
 `hooks/posts.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import matter from 'gray-matter'
-import { marked } from 'marked'
+import { defineHooks } from 'vitto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import matter from 'gray-matter';
+import { marked } from 'marked';
 
 // Hook for listing all posts
 export const postsHook = defineHooks('posts', async () => {
-  const postsDir = path.join(process.cwd(), 'content/posts')
-  const files = await fs.readdir(postsDir)
+  const postsDir = path.join(process.cwd(), 'content/posts');
+  const files = await fs.readdir(postsDir);
 
   const posts = await Promise.all(
     files
-      .filter(file => file.endsWith('.md'))
+      .filter((file) => file.endsWith('.md'))
       .map(async (file) => {
-        const filePath = path.join(postsDir, file)
-        const content = await fs.readFile(filePath, 'utf-8')
-        const { data, content: markdown } = matter(content)
+        const filePath = path.join(postsDir, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const { data, content: markdown } = matter(content);
 
         return {
           slug: file.replace('.md', ''),
@@ -211,29 +213,27 @@ export const postsHook = defineHooks('posts', async () => {
           date: data.date,
           author: data.author,
           tags: data.tags || [],
-          markdown
-        }
+          markdown,
+        };
       })
-  )
+  );
 
   // Sort by date, newest first
-  return posts.sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
-})
+  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+});
 
 // Hook for individual post (with params)
 export const postHook = defineHooks('post', async (params) => {
-  if (!params?.slug) return null
+  if (!params?.slug) return null;
 
-  const filePath = path.join(process.cwd(), 'content/posts', `${params.slug}.md`)
+  const filePath = path.join(process.cwd(), 'content/posts', `${params.slug}.md`);
 
   try {
-    const content = await fs.readFile(filePath, 'utf-8')
-    const { data, content: markdown } = matter(content)
+    const content = await fs.readFile(filePath, 'utf-8');
+    const { data, content: markdown } = matter(content);
 
     // Convert markdown to HTML
-    const html = await marked(markdown)
+    const html = await marked(markdown);
 
     return {
       slug: params.slug,
@@ -242,15 +242,15 @@ export const postHook = defineHooks('post', async (params) => {
       date: data.date,
       author: data.author,
       tags: data.tags || [],
-      content: html
-    }
+      content: html,
+    };
   } catch (error) {
-    console.error(`Failed to load post: ${params.slug}`, error)
-    return null
+    console.error(`Failed to load post: ${params.slug}`, error);
+    return null;
   }
-})
+});
 
-export default postsHook
+export default postsHook;
 ```
 
 ### Template
@@ -305,9 +305,9 @@ export default postsHook
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
-import { postsHook, postHook } from './hooks/posts'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook, postHook } from './hooks/posts';
 
 export default defineConfig({
   plugins: [
@@ -316,25 +316,25 @@ export default defineConfig({
         siteName: 'My Blog',
         title: 'My Blog',
         description: 'A blog about web development',
-        author: 'Your Name'
+        author: 'Your Name',
       },
       hooks: {
         posts: postsHook,
-        post: postHook
+        post: postHook,
       },
       dynamicRoutes: [
         {
           template: 'post',
           dataSource: 'posts',
           getParams: (post) => ({
-            slug: post.slug
+            slug: post.slug,
           }),
-          getPath: (post) => `blog/${post.slug}.html`
-        }
-      ]
-    })
-  ]
-})
+          getPath: (post) => `blog/${post.slug}.html`,
+        },
+      ],
+    }),
+  ],
+});
 ```
 
 ## Advanced Patterns
@@ -344,15 +344,15 @@ export default defineConfig({
 You can define multiple dynamic route configurations:
 
 ```ts
-import { defineConfig } from 'vite'
-import vitto from 'vitto'
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
 
 export default defineConfig({
   plugins: [
     vitto({
       metadata: {
         siteName: 'My Site',
-        title: 'My Site'
+        title: 'My Site',
       },
       dynamicRoutes: [
         // Blog posts
@@ -360,26 +360,26 @@ export default defineConfig({
           template: 'post',
           dataSource: 'posts',
           getParams: (post) => ({ slug: post.slug }),
-          getPath: (post) => `blog/${post.slug}.html`
+          getPath: (post) => `blog/${post.slug}.html`,
         },
         // Products
         {
           template: 'product',
           dataSource: 'products',
           getParams: (product) => ({ id: product.id }),
-          getPath: (product) => `products/${product.slug}.html`
+          getPath: (product) => `products/${product.slug}.html`,
         },
         // Documentation pages
         {
           template: 'doc',
           dataSource: 'docs',
           getParams: (doc) => ({ path: doc.path }),
-          getPath: (doc) => `docs/${doc.path}.html`
-        }
-      ]
-    })
-  ]
-})
+          getPath: (doc) => `docs/${doc.path}.html`,
+        },
+      ],
+    }),
+  ],
+});
 ```
 
 ### Nested Routes
@@ -404,50 +404,99 @@ This generates URLs like: `/blog/2024/01/my-post.html`
 
 ### Pagination
 
-Generate paginated list pages:
-
-`hooks/posts-paginated.ts`:
+Generate paginated list pages. The hook returns **all items**; the plugin slices them per page automatically.
 
 ```ts
-import { defineHooks } from 'vitto'
+// hooks/posts.ts
+import { defineHooks, paginate } from 'vitto';
 
-const POSTS_PER_PAGE = 10
-
-export const paginatedPostsHook = defineHooks('paginatedPosts', async () => {
-  const allPosts = await postsHook() // Your function to fetch all posts
-  const pages = []
-
-  for (let i = 0; i < allPosts.length; i += POSTS_PER_PAGE) {
-    const pageNumber = Math.floor(i / POSTS_PER_PAGE) + 1
-    const posts = allPosts.slice(i, i + POSTS_PER_PAGE)
-
-    pages.push({
-      pageNumber,
-      posts,
-      hasNext: i + POSTS_PER_PAGE < allPosts.length,
-      hasPrev: pageNumber > 1,
-      totalPages: Math.ceil(allPosts.length / POSTS_PER_PAGE)
-    })
-  }
-
-  return pages
-})
-
-export default paginatedPostsHook
+export const postsHook = defineHooks('posts', async () => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const allPosts = await res.json();
+  return allPosts;
+});
 ```
 
 ```ts
-{
-  template: 'blog-page',
-  dataSource: 'paginatedPosts',
-  getParams: (page) => ({ pageNumber: page.pageNumber }),
-  getPath: (page) => {
-    return page.pageNumber === 1
-      ? 'blog.html'
-      : `blog/page-${page.pageNumber}.html`
-  }
-}
+// vite.config.ts
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook } from './hooks/posts';
+
+export default defineConfig({
+  plugins: [
+    vitto({
+      hooks: {
+        posts: postsHook,
+      },
+      dynamicRoutes: [
+        {
+          template: 'blog',
+          dataSource: 'posts',
+          pageSize: 10,
+          getParams: (pageNum) => ({ _page: pageNum }),
+          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+        },
+      ],
+    }),
+  ],
+});
 ```
+
+In `blog.vto`:
+
+```vento
+{{ layout "layouts/site.vto" }}
+
+{{ if posts && posts.items && posts.items.length > 0 }}
+  <ul>
+    {{ for post of posts.items }}
+      <li>{{ post.title }}</li>
+    {{ /for }}
+  </ul>
+
+  <nav>
+    {{ if posts.hasPrev }}<a href="{{ posts.prevUrl }}">Previous</a>{{ /if }}
+    <span>Page {{ posts.page }} of {{ posts.totalPages }}</span>
+    {{ if posts.hasNext }}<a href="{{ posts.nextUrl }}">Next</a>{{ /if }}
+  </nav>
+{{ else }}
+  <p>No posts available yet</p>
+{{ /if }}
+```
+
+The template receives `posts.items`, `posts.page`, `posts.totalPages`, `posts.prevUrl`, `posts.nextUrl`, `posts.firstUrl`, and `posts.lastUrl`.
+
+Generate paginated list pages with the `paginate()` helper:
+
+`vite.config.ts`: register a `posts` hook that returns all items, then configure `dynamicRoutes`:
+
+```ts
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook } from './hooks/posts';
+
+export default defineConfig({
+  plugins: [
+    vitto({
+      hooks: {
+        posts: postsHook,
+      },
+      dynamicRoutes: [
+        {
+          template: 'blog',
+          dataSource: 'posts',
+          pageSize: 5,
+          getParams: (pageNum) => ({ _page: pageNum }),
+          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+        },
+      ],
+    }),
+  ],
+});
+```
+
+The hook returns **all items**; the plugin slices them per page and injects `posts.items`, `posts.page`, `posts.totalPages`, `posts.prevUrl`, `posts.nextUrl`, `posts.firstUrl`, and `posts.lastUrl` into the template.
 
 ### Tag/Category Pages
 
@@ -456,38 +505,38 @@ Generate pages for each tag or category:
 `hooks/tags.ts`:
 
 ```ts
-import { defineHooks } from 'vitto'
-import { postsHook } from './posts'
+import { defineHooks } from 'vitto';
+import { postsHook } from './posts';
 
 export const tagsHook = defineHooks('tags', async () => {
-  const posts = await postsHook()
-  const tagMap = new Map()
+  const posts = await postsHook();
+  const tagMap = new Map();
 
-  posts.forEach(post => {
-    post.tags?.forEach(tag => {
+  posts.forEach((post) => {
+    post.tags?.forEach((tag) => {
       if (!tagMap.has(tag)) {
-        tagMap.set(tag, [])
+        tagMap.set(tag, []);
       }
-      tagMap.get(tag).push(post)
-    })
-  })
+      tagMap.get(tag).push(post);
+    });
+  });
 
   return Array.from(tagMap.entries()).map(([tag, posts]) => ({
     tag,
     slug: tag.toLowerCase().replace(/\s+/g, '-'),
     posts,
-    count: posts.length
-  }))
-})
+    count: posts.length,
+  }));
+});
 
 export const tagHook = defineHooks('tag', async (params) => {
-  if (!params?.slug) return null
+  if (!params?.slug) return null;
 
-  const tags = await tagsHook()
-  return tags.find(t => t.slug === params.slug)
-})
+  const tags = await tagsHook();
+  return tags.find((t) => t.slug === params.slug);
+});
 
-export default tagsHook
+export default tagsHook;
 ```
 
 ```ts
@@ -505,10 +554,10 @@ export default tagsHook
 
 ```ts
 // Good
-getParams: (post) => ({ slug: post.slug, id: post.id })
+getParams: (post) => ({ slug: post.slug, id: post.id });
 
 // Avoid
-getParams: (post) => ({ p: post.slug })
+getParams: (post) => ({ p: post.slug });
 ```
 
 ### 2. Validate Data in Hooks
@@ -516,17 +565,17 @@ getParams: (post) => ({ p: post.slug })
 ```ts
 export const postHook = defineHooks('post', async (params) => {
   if (!params?.slug) {
-    throw new Error('Slug parameter is required')
+    throw new Error('Slug parameter is required');
   }
 
-  const post = await fetchPost(params.slug)
+  const post = await fetchPost(params.slug);
 
   if (!post) {
-    throw new Error(`Post not found: ${params.slug}`)
+    throw new Error(`Post not found: ${params.slug}`);
   }
 
-  return post
-})
+  return post;
+});
 ```
 
 ### 3. Handle Errors Gracefully
@@ -534,51 +583,55 @@ export const postHook = defineHooks('post', async (params) => {
 ```ts
 export const postsHook = defineHooks('posts', async () => {
   try {
-    return await fetchPosts()
+    return await fetchPosts();
   } catch (error) {
-    console.error('Failed to fetch posts:', error)
-    return [] // Return empty array as fallback
+    console.error('Failed to fetch posts:', error);
+    return []; // Return empty array as fallback
   }
-})
+});
 ```
 
 ### 4. Cache Expensive Operations
 
 ```ts
-let cachedPosts = null
+let cachedPosts = null;
 
 export const postsHook = defineHooks('posts', async () => {
   if (cachedPosts) {
-    return cachedPosts
+    return cachedPosts;
   }
 
-  cachedPosts = await fetchPosts()
-  return cachedPosts
-})
+  cachedPosts = await fetchPosts();
+  return cachedPosts;
+});
 ```
 
 ### 5. Use Consistent URL Structures
 
 ```ts
 // Good - consistent structure
-getPath: (post) => `blog/${post.slug}.html`
-getPath: (product) => `products/${product.slug}.html`
+getPath: (post) => `blog/${post.slug}.html`;
+getPath: (product) => `products/${product.slug}.html`;
 
 // Avoid - inconsistent
-getPath: (post) => `${post.slug}.html`
-getPath: (product) => `p/${product.id}.html`
+getPath: (post) => `${post.slug}.html`;
+getPath: (product) => `p/${product.id}.html`;
 ```
 
 ### 6. Export Hooks Properly
 
 ```ts
 // Good - export both named and default
-export const postsHook = defineHooks('posts', async () => { /* ... */ })
-export const postHook = defineHooks('post', async (params) => { /* ... */ })
-export default postsHook
+export const postsHook = defineHooks('posts', async () => {
+  /* ... */
+});
+export const postHook = defineHooks('post', async (params) => {
+  /* ... */
+});
+export default postsHook;
 
 // Then import in config
-import { postsHook, postHook } from './hooks/posts'
+import { postsHook, postHook } from './hooks/posts';
 ```
 
 ## Troubleshooting
@@ -586,6 +639,7 @@ import { postsHook, postHook } from './hooks/posts'
 ### Pages Not Generated
 
 Check that:
+
 1. Your hook returns an array of items
 2. `template` matches your template filename (without `.vto`)
 3. `dataSource` matches your hook name
@@ -595,6 +649,7 @@ Check that:
 ### Data Not Available in Template
 
 Ensure:
+
 1. Hook is properly defined and registered
 2. Parameters are correctly extracted in `getParams`
 3. Hook accepts and uses the params correctly
@@ -603,6 +658,7 @@ Ensure:
 ### Build Errors
 
 Common issues:
+
 - Missing template file
 - Hook returning `null` or `undefined`
 - Invalid characters in generated file paths

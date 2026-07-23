@@ -1,12 +1,12 @@
-import { styleText } from 'node:util'
+import { styleText } from 'node:util';
 
-type ColorFunction = (text: string) => string
+type ColorFunction = (text: string) => string;
 
-export type TemplateVariant = {
-  name: string
-  display: string
-  color: ColorFunction
-  customCommand?: string
+export interface TemplateVariant {
+  name: string;
+  display: string;
+  color: ColorFunction;
+  customCommand?: string;
 }
 
 const frameworkVariants: TemplateVariant[] = [
@@ -30,6 +30,11 @@ const frameworkVariants: TemplateVariant[] = [
     display: 'Tailwind CSS',
     color: (text: string) => styleText('cyan', text),
   },
-]
+  {
+    name: 'blog',
+    display: 'Blog (Tailwind + Pagination)',
+    color: (text: string) => styleText('green', text),
+  },
+];
 
-export { frameworkVariants }
+export { frameworkVariants };

@@ -227,8 +227,8 @@ We aim for high test coverage:
 ```ts
 // Good
 interface HookData {
-  title: string
-  items: string[]
+  title: string;
+  items: string[];
 }
 
 function processData(data: HookData): void {
@@ -243,7 +243,7 @@ function processData(data: any) {
 
 ### Formatting and Linting
 
-We use Biome for formatting and linting:
+We use Oxlint for linting and Oxfmt for formatting:
 
 ```bash
 # Check code
@@ -269,7 +269,7 @@ pnpm format
 
 export const DEFAULT_CONFIG = {
   // constants
-}
+};
 
 export interface MyComponentOptions {
   // interface
@@ -290,7 +290,7 @@ export function createComponent() {
 - Write clear inline comments for complex logic
 - Explain "why", not "what"
 
-```ts
+````ts
 /**
  * Creates a hook function for data injection.
  *
@@ -311,7 +311,7 @@ export function defineHooks<T, P>(
 ): HookFunction<T, P> {
   // Implementation
 }
-```
+````
 
 ## Submitting Changes
 
@@ -335,15 +335,18 @@ export function defineHooks<T, P>(
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Checklist
+
 - [ ] Tests pass locally
 - [ ] Type checking passes
 - [ ] Code linted and formatted
@@ -352,6 +355,7 @@ Brief description of changes
 - [ ] Self-review completed
 
 ## Related Issues
+
 Closes #123
 ```
 
@@ -387,6 +391,7 @@ Closes #123
 Clear description of the bug
 
 **To Reproduce**
+
 1. Create file `example.vto`
 2. Add content: ...
 3. Run `pnpm build`
@@ -399,6 +404,7 @@ Should build successfully
 Error: ...
 
 **Environment**
+
 - OS: macOS 14.0
 - Node: 22.0.0
 - PNPM: 10.18.3
@@ -415,7 +421,7 @@ https://github.com/username/vitto-bug-reproduction
 - Alternative solutions considered
 - Examples of how it would be used
 
-```markdown
+````markdown
 **Is your feature request related to a problem?**
 I'm frustrated when...
 
@@ -426,11 +432,13 @@ Add a new option `customFilter` that...
 Considered using... but it doesn't work because...
 
 **Example Usage**
+
 ```ts
 vitto({
-  customFilter: (value) => value.toUpperCase()
-})
+  customFilter: (value) => value.toUpperCase(),
+});
 ```
+````
 
 ## Documentation
 
@@ -469,6 +477,7 @@ We use [Semantic Versioning](https://semver.org/):
 ### Publishing Steps
 
 1. **Ensure all checks pass**:
+
    ```bash
    pnpm typecheck
    pnpm lint
@@ -476,32 +485,38 @@ We use [Semantic Versioning](https://semver.org/):
    ```
 
 2. **Update changelog**:
+
    ```bash
    # Edit CHANGELOG.md in each package
    # Add release notes under new version
    ```
 
 3. **Update dependencies**:
+
    ```bash
    pnpm update-deps
    ```
 
 4. **Build all packages**:
+
    ```bash
    pnpm build
    ```
 
 5. **Dry run publish** (test before actual publish):
+
    ```bash
    pnpm publish:dry
    ```
 
 6. **Publish to npm**:
+
    ```bash
    pnpm publish:npm
    ```
 
 7. **Push tags**:
+
    ```bash
    git push --follow-tags
    ```
@@ -582,7 +597,8 @@ Thank you for contributing to Vitto! 🎉
 - [Vite](https://vitejs.dev/) - Build tool
 - [Vento](https://vento.js.org/) - Template engine
 - [Pagefind](https://pagefind.app/) - Static search
-- [Biome](https://biomejs.dev/) - Linter and formatter
+- [Oxlint](https://oxc.rs/docs/guide/usage/linter/) - Linter
+- [Oxfmt](https://oxc.rs/docs/guide/usage/formatter/) - Formatter
 - [Turborepo](https://turbo.build/repo) - Monorepo build system
 
 ### Useful Commands
@@ -596,7 +612,7 @@ pnpm build            # Build all packages
 
 # Code Quality
 pnpm lint             # Lint all packages
-pnpm check            # Check code with Biome
+pnpm check            # Lint and format with fixes
 pnpm format           # Format code
 pnpm typecheck        # Type check all packages
 

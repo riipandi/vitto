@@ -1,6 +1,6 @@
 {
     "recommendations": [
-        "biomejs.biome",
+        "oxc.oxc-vscode",
         "bradlc.vscode-tailwindcss",
         "darkriszty.markdown-table-prettify",
         "EditorConfig.EditorConfig",

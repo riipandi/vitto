@@ -170,7 +170,7 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: v${{ steps.version.outputs.version }}
-          generate_release_notes: true  # Automatically generate release notes from PRs and commits
+          generate_release_notes: true # Automatically generate release notes from PRs and commits
           make_latest: ${{ steps.release_type.outputs.is_stable == 'true' }}
           body: |
             **Published to npm:**

@@ -1,46 +1,63 @@
-import type { Options as MinifyOptions } from '@swc/html'
-import type { PagefindServiceConfig } from 'pagefind'
-import type { Options as VentoOptions } from 'ventojs'
+import type { Options as MinifyOptions } from '@swc/html';
+import type { PagefindServiceConfig } from 'pagefind';
+import type { Options as VentoOptions } from 'ventojs';
 
 /**
  * Options for rendering a Vento template to HTML.
  */
 export interface RenderOptions {
   /** Path to the .vto template file */
-  filePath: string
+  filePath: string;
   /** Data to be injected into the template context */
-  data?: Record<string, unknown>
+  data?: Record<string, unknown>;
   /** Whether running in development mode */
-  isDev?: boolean
+  isDev?: boolean;
   /** Vite-generated assets (JS and CSS files) */
-  assets?: { main: string; css: string[] }
+  assets?: { main: string; css: string[] };
   /** Whether to minify the output HTML */
-  minify?: boolean | MinifyOptions
+  minify?: boolean | MinifyOptions;
 }
 
 /**
  * Configuration for dynamic route generation.
  *
- * Dynamic routes allow you to generate multiple static pages from a single template
- * based on data fetched from a hook. This is useful for blog posts, products, etc.
+ * Dynamic routes allow you to generate multiple static HTML pages from a single template.
+ * This is useful for content like blog posts, product catalogs, documentation pages, etc.
+ *
+ * **Standard mode** (no pageSize): one page per data item.
+ * - `getParams(item)` receives each item from the data source.
+ * - `getPath(item)` receives each item.
+ *
+ * **Paginated mode** (pageSize > 0): one page per page number.
+ * - `getParams(pageNum)` receives the 1-based page number.
+ * - `getPath(pageNum)` receives the 1-based page number.
  *
  * @example
- * // Generate blog/1.html, blog/2.html, etc. from post.vto template
+ * // Standard: generate blog/1.html, blog/2.html per post
  * {
  *   template: 'post',
  *   dataSource: 'posts',
  *   getParams: (post) => ({ id: post.id }),
- *   getPath: (post) => `blog/${post.id}.html`
+ *   getPath: (post) => `blog/${post.slug}.html`
+ * }
+ *
+ * @example
+ * // Paginated: generate blog.html, blog/2.html per page
+ * {
+ *   template: 'blog',
+ *   dataSource: 'posts',
+ *   pageSize: 10,
+ *   getParams: (pageNum) => ({ _page: pageNum }),
+ *   getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
  * }
  */
 export interface DynamicRouteConfig {
   /**
    * Template file name (without .vto extension) to use for generation.
-   * This template will be used to render each dynamic page.
    *
    * @example 'post'
    */
-  template: string
+  template: string;
 
   /**
    * Hook name to fetch data for generating pages.
@@ -48,29 +65,38 @@ export interface DynamicRouteConfig {
    *
    * @example 'posts'
    */
-  dataSource: string
+  dataSource: string;
 
   /**
-   * Function to extract route params from each data item.
-   * These params will be passed to the page hook when rendering.
+   * Number of items per page. When set (> 0), the route is paginated:
+   * `getParams` and `getPath` receive a 1-based page number instead of an item.
+   * When omitted or 0, standard mode: one page per item.
    *
-   * @param item - A single item from the data source array
-   * @returns Object containing params to pass to the page hook
-   *
-   * @example (post) => ({ id: post.id, slug: post.slug })
+   * @example 10
    */
-  getParams: (item: any) => Record<string, any>
+  pageSize?: number;
 
   /**
-   * Function to generate output file path from data item.
-   * This determines where the generated HTML file will be saved.
+   * Function to extract route parameters.
    *
-   * @param item - A single item from the data source array
-   * @returns Output path relative to build output directory
+   * - **Standard mode**: receives each item from the data source.
+   * - **Paginated mode** (pageSize > 0): receives the 1-based page number.
    *
-   * @example (post) => `blog/${post.id}.html`
+   * @example (post) => ({ id: post.id, slug: post.slug }) // standard
+   * @example (pageNum) => ({ _page: pageNum })              // paginated
    */
-  getPath: (item: any) => string
+  getParams: (itemOrPageNum: any) => Record<string, any>;
+
+  /**
+   * Function to generate output file path.
+   *
+   * - **Standard mode**: receives each item from the data source.
+   * - **Paginated mode** (pageSize > 0): receives the 1-based page number.
+   *
+   * @example (post) => `blog/${post.slug}.html`                     // standard
+   * @example (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html` // paginated
+   */
+  getPath: (itemOrPageNum: any) => string;
 }
 
 /**
@@ -78,7 +104,7 @@ export interface DynamicRouteConfig {
  * - 'html': Generate files as page.html (e.g., about.html)
  * - 'directory': Generate files as page/index.html for clean URLs (e.g., about/index.html)
  */
-export type OutputStrategy = 'html' | 'directory'
+export type OutputStrategy = 'html' | 'directory';
 
 /**
  * Metadata interface for page templates.
@@ -87,27 +113,27 @@ export interface Metadata {
   /**
    * Site name.
    */
-  siteName: string
+  siteName: string;
 
   /**
    * Site title.
    */
-  title: string
+  title: string;
 
   /**
    * Site description.
    */
-  description?: string
+  description?: string;
 
   /**
    * Site keywords.
    */
-  keywords?: string[] | string
+  keywords?: string[] | string;
 
   /**
    * Additional metadata fields.
    */
-  [key: string]: any
+  [key: string]: any;
 }
 
 /**
@@ -117,42 +143,42 @@ export interface VittoOptions {
   /**
    * Site metadata to inject into all page templates.
    */
-  metadata: Metadata
+  metadata: Metadata;
 
   /**
    * Directory containing page templates.
    * @default 'src/pages'
    */
-  pagesDir?: string
+  pagesDir?: string;
 
   /**
    * Directory containing layout templates.
    * @default 'src/layouts'
    */
-  layoutsDir?: string
+  layoutsDir?: string;
 
   /**
    * Directory containing partial templates.
    * @default 'src/partials'
    */
-  partialsDir?: string
+  partialsDir?: string;
 
   /**
    * Minify HTML output. If true, uses default minify options.
    * If object, merges with default minify options.
    * @default false
    */
-  minify?: boolean | Partial<MinifyOptions>
+  minify?: boolean | Partial<MinifyOptions>;
 
   /**
    * Override Vite assets (main JS and CSS) for template injection.
    */
-  assets?: { main: string; css: string[] }
+  assets?: { main: string; css: string[] };
 
   /**
    * Options to pass to Vento template engine.
    */
-  ventoOptions?: Partial<VentoOptions>
+  ventoOptions?: Partial<VentoOptions>;
 
   /**
    * Manual hook registration for injecting dynamic data into page templates.
@@ -181,31 +207,42 @@ export interface VittoOptions {
    * - Handler can be sync or async
    * - Returned data is automatically injected into template context
    */
-  hooks?: Record<string, (params?: any) => Promise<any>>
+  hooks?: Record<string, (params?: any) => Promise<any>>;
 
   /**
    * Configuration for dynamic route generation.
    *
    * Dynamic routes allow you to generate multiple static HTML pages from a single template.
-   * This is useful for content like blog posts, products, documentation pages, etc.
+   * Each route config can be **standard** (one page per item) or **paginated** (one page per
+   * page number, when `pageSize` is set). See {@link DynamicRouteConfig} for details.
    *
-   * During development, these routes are handled dynamically (e.g., /blog/1, /blog/2).
-   * During build, static HTML files are generated for each item (e.g., blog/1.html, blog/2.html).
+   * During development, these routes are handled dynamically (e.g., /blog/1, /blog/my-post).
+   * During build, static HTML files are generated for each page.
    *
    * @example
+   * // Standard mode: one page per item
    * dynamicRoutes: [
    *   {
-   *     template: 'post',              // Use post.vto template
-   *     dataSource: 'posts',           // Fetch data from 'posts' hook
-   *     getParams: (post) => ({        // Extract params for each post
-   *       id: post.id,
-   *       slug: post.slug
-   *     }),
-   *     getPath: (post) => `blog/${post.id}.html`  // Output to blog/1.html, blog/2.html, etc.
+   *     template: 'post',
+   *     dataSource: 'posts',
+   *     getParams: (post) => ({ id: post.id }),
+   *     getPath: (post) => `blog/${post.id}.html`
+   *   }
+   * ]
+   *
+   * @example
+   * // Paginated mode: one page per page number
+   * dynamicRoutes: [
+   *   {
+   *     template: 'blog',
+   *     dataSource: 'posts',
+   *     pageSize: 10,
+   *     getParams: (pageNum) => ({ _page: pageNum }),
+   *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
    *   }
    * ]
    */
-  dynamicRoutes?: DynamicRouteConfig[]
+  dynamicRoutes?: DynamicRouteConfig[];
 
   /**
    * Enable automatic search index generation using Pagefind after build.
@@ -227,35 +264,16 @@ export interface VittoOptions {
    * // Disable search indexing
    * enableSearchIndex: false
    *
-   * @example
-   * // Use Pagefind UI in your templates
-   * // 1. Add search container
-   * <div id="search"></div>
-   *
-   * // 2. Load Pagefind UI (in your layout or page)
-   * <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
-   * <script src="/_pagefind/pagefind-ui.js"></script>
-   * <script>
-   *   window.addEventListener('DOMContentLoaded', () => {
-   *     new PagefindUI({
-   *       element: "#search",
-   *       showSubResults: true,
-   *       showImages: false
-   *     });
-   *   });
-   * </script>
-   *
    * @remarks
    * - Requires all HTML files to be written before indexing
    * - Index generation happens automatically after `vite build`
    * - Output directory is determined from Vite's `build.outDir` config
    * - Pagefind is optimized for static sites and runs entirely in the browser
    * - No server-side search backend required
-   * - Supports multilingual content and custom filtering
    *
    * @see {@link https://pagefind.app/ | Pagefind Documentation}
    */
-  enableSearchIndex?: boolean
+  enableSearchIndex?: boolean;
 
   /**
    * Configuration options for Pagefind search indexing.
@@ -266,24 +284,14 @@ export interface VittoOptions {
    * @default PAGEFIND_OPTIONS
    *
    * @example
-   * // Basic configuration
    * pagefindOptions: {
    *   rootSelector: 'main',
    *   verbose: true
    * }
    *
-   * @example
-   * // Advanced configuration with multilingual support
-   * pagefindOptions: {
-   *   rootSelector: 'html',
-   *   forceLanguage: 'en',
-   *   verbose: true,
-   *   excludeSelectors: ['.no-index', 'nav', 'footer']
-   * }
-   *
    * @see {@link https://pagefind.app/docs/config-options/ | Pagefind Configuration Options}
    */
-  pagefindOptions?: Partial<PagefindServiceConfig>
+  pagefindOptions?: Partial<PagefindServiceConfig>;
 
   /**
    * Output strategy for generated HTML files.
@@ -301,7 +309,7 @@ export interface VittoOptions {
    * // Pretty URLs (about/index.html, blog/1/index.html)
    * outputStrategy: 'directory'
    */
-  outputStrategy?: OutputStrategy
+  outputStrategy?: OutputStrategy;
 }
 
 export const PAGEFIND_OPTIONS: PagefindServiceConfig = {
@@ -309,7 +317,7 @@ export const PAGEFIND_OPTIONS: PagefindServiceConfig = {
   writePlayground: false,
   keepIndexUrl: true,
   verbose: false,
-}
+};
 
 /**
  * Default options for Vitto plugin.
@@ -328,7 +336,7 @@ export const DEFAULT_OPTS: VittoOptions = {
     siteName: 'Vitto',
     title: 'Vitto Site',
   },
-}
+};
 
 // Configuration for HTML minifier
 export const MINIFY_OPTIONS: MinifyOptions = {
@@ -346,5 +354,5 @@ export const MINIFY_OPTIONS: MinifyOptions = {
   selfClosingVoidElements: false,
   sortAttributes: true,
   sortSpaceSeparatedAttributeValues: true,
-  tagOmission: true,
-} as const
+  tagOmission: false,
+} as const;
