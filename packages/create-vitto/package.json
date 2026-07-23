@@ -54,7 +54,7 @@
         "build": "tsdown",
         "dev": "pnpm build &>/dev/null && NODE_ENV=development node ./bin/create-vitto.mjs",
         "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
-        "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
+        "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks --provenance",
         "cleanup": "pnpm dlx del-cli dist node_modules .turbo",
         "prepublishOnly": "NODE_ENV=production tsdown",
         "lint": "oxlint --fix",
