@@ -59,7 +59,7 @@ Vitto stands out by leveraging Vite's powerful ecosystem, allowing you to:
 - **Build Fast**: Lightning-fast builds with Vite's optimized pipeline
 - **Stay Simple**: Template-based approach without framework complexity
 
-See how Vitto compares to other static site generators in our [comparison guide](./docs/14-comparison.md).
+See how Vitto compares to other static site generators in our [comparison guide](https://vitto.pages.dev/docs/reference/comparison).
 
 ## Quick Start
 
@@ -150,33 +150,7 @@ export default defineConfig({
 
 ## Documentation
 
-For comprehensive documentation, visit our [docs folder](./docs) or check out these guides:
-
-### Getting Started
-
-- [Introduction](./docs/01-introduction.md) - What is Vitto and why use it
-- [Getting Started](./docs/02-getting-started.md) - Installation and basic setup
-- [Configuration](./docs/03-configuration.md) - Configure Vitto for your project
-
-### Core Concepts
-
-- [Templates](./docs/04-templating.md) - Working with Vento templates
-- [Dynamic Routes](./docs/05-dynamic-routes.md) - Generate pages from data
-- [Hooks System](./docs/06-hooks.md) - Data injection and processing
-
-### Advanced Features
-
-- [Search Integration](./docs/07-search.md) - Set up Pagefind search
-- [Deployment](./docs/08-deployment.md) - Deploy to various platforms
-- [Performance](./docs/09-performance.md) - Optimize your site
-
-### Reference
-
-- [Examples](./docs/10-examples.md) - Real-world examples and use cases
-- [Troubleshooting](./docs/11-troubleshooting.md) - Common issues and solutions
-- [API Reference](./docs/12-api-reference.md) - Complete API documentation
-- [Contributing](./docs/13-contributing.md) - Contribute to Vitto
-- [Comparison](./docs/14-comparison.md) - Compare with other SSGs
+For comprehensive documentation, visit [documentation page](https://vitto.pages.dev/docs).
 
 ## Community
 
@@ -187,7 +161,7 @@ For comprehensive documentation, visit our [docs folder](./docs) or check out th
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](./docs/13-contributing.md) for details.
+We welcome contributions! Please see our [Contributing Guide](https://vitto.pages.dev/docs/guides/contributing) for details.
 
 ## License
 
