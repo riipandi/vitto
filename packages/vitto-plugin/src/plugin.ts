@@ -673,48 +673,6 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           opts.pagesDir || DEFAULT_OPTS.pagesDir || 'src/pages'
         );
 
-        // Check if URL matches any dynamic route pattern
-        for (const route of dynamicRoutePatterns) {
-          const match = url.match(route.pattern);
-          if (match) {
-            // Extract the dynamic segment (e.g., post ID or slug)
-            const [, slug] = match;
-            const templatePath = path.resolve(pagesDir, `${route.template}.vto`);
-
-            if (fs.existsSync(templatePath)) {
-              // Parse query parameters
-              const query = parseQuery(`?${search}`);
-
-              // Combine query params with route params
-              const params = {
-                ...query,
-                id: slug,
-                slug: slug,
-              };
-
-              // Fetch data for this specific item
-              const data = await getPageData(templatePath, opts, params);
-
-              // Render template with item data
-              const html = await renderVentoToHtml(
-                {
-                  filePath: templatePath,
-                  data,
-                  isDev: true,
-                  assets: opts.assets,
-                  minify: opts.minify ?? false,
-                },
-                opts.ventoOptions,
-                url,
-                opts.metadata
-              );
-              res.setHeader('Content-Type', 'text/html');
-              res.end(html);
-              return;
-            }
-          }
-        }
-
         // Check if URL matches any paginated route pattern
         for (const route of paginatedRoutePatterns) {
           const match = url.match(route.pattern);
@@ -763,6 +721,48 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                 {
                   filePath: templatePath,
                   data: paginationData,
+                  isDev: true,
+                  assets: opts.assets,
+                  minify: opts.minify ?? false,
+                },
+                opts.ventoOptions,
+                url,
+                opts.metadata
+              );
+              res.setHeader('Content-Type', 'text/html');
+              res.end(html);
+              return;
+            }
+          }
+        }
+
+        // Check if URL matches any dynamic route pattern
+        for (const route of dynamicRoutePatterns) {
+          const match = url.match(route.pattern);
+          if (match) {
+            // Extract the dynamic segment (e.g., post ID or slug)
+            const [, slug] = match;
+            const templatePath = path.resolve(pagesDir, `${route.template}.vto`);
+
+            if (fs.existsSync(templatePath)) {
+              // Parse query parameters
+              const query = parseQuery(`?${search}`);
+
+              // Combine query params with route params
+              const params = {
+                ...query,
+                id: slug,
+                slug: slug,
+              };
+
+              // Fetch data for this specific item
+              const data = await getPageData(templatePath, opts, params);
+
+              // Render template with item data
+              const html = await renderVentoToHtml(
+                {
+                  filePath: templatePath,
+                  data,
                   isDev: true,
                   assets: opts.assets,
                   minify: opts.minify ?? false,

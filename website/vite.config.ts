@@ -41,7 +41,7 @@ export default defineConfig({
           dataSource: 'posts',
           pageSize: 5,
           getParams: (pageNum) => ({ _page: pageNum }),
-          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`),
+          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
         },
       ],
     }),

@@ -90,7 +90,7 @@ export interface DynamicRouteConfig {
  *     dataSource: 'posts',
  *     pageSize: 10,
  *     getParams: (pageNum) => ({ _page: pageNum }),
- *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`
+ *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
  *   }
  * ]
  */
@@ -136,7 +136,7 @@ export interface PaginatedRouteConfig {
    * @param pageNum - The 1-based page number to generate
    * @returns Output path relative to build output directory
    *
-   * @example (pageNum) => pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`
+   *   @example (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
    */
   getPath: (pageNum: number) => string;
 }
@@ -292,7 +292,7 @@ export interface VittoOptions {
    *     dataSource: 'posts',
    *     pageSize: 10,
    *     getParams: (pageNum) => ({ _page: pageNum }),
-   *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`
+   *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
    *   }
    * ]
    */

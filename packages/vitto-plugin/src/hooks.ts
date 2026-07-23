@@ -178,9 +178,9 @@ export function createPaginatedRoutePatterns(opts: VittoOptions) {
     const dir = parts.join('/');
     const basePath = dir ? `/${dir}/${fileName}` : `/${fileName}`;
 
-    // Match base path (page 1) and suffixed paths (page 2+)
-    // e.g., /blog, /blog-2, /blog-3
-    const pattern = new RegExp(`^${basePath}(?:-(\\d+))?$`);
+    // Match base path (page 1) and subpath pages (page 2+)
+    // e.g., /blog, /blog/2, /blog/3
+    const pattern = new RegExp(`^${basePath}(?:/(\\d+))?$`);
 
     routes.push({
       pattern,
