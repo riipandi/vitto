@@ -6,7 +6,7 @@
 
 <p align="left">
     <a href="https://vite.dev">
-        <img src="https://img.shields.io/badge/Vite-v8.1-bd34fe.svg?logo=Vite&logoColor=yellow" alt="Vite">
+        <img src="https://img.shields.io/badge/Vite-v8-bd34fe.svg?logo=Vite&logoColor=yellow" alt="Vite">
     </a>
     <a href="https://github.com/riipandi/vitto/releases">
         <img src="https://img.shields.io/github/v/release/riipandi/vitto?logo=npm&logoColor=white" alt="Release">

@@ -215,12 +215,8 @@ export function buildPaginatedPageData<T>(
 ): Record<string, any> {
   const dataSource = paginatedConfig.dataSource;
   const hookData = pageData[dataSource];
-  const pageItems = allItems.slice(
-    (pageNum - 1) * paginatedConfig.pageSize,
-    pageNum * paginatedConfig.pageSize
-  );
 
-  const paginated = buildPaginatedContext(pageItems, {
+  const paginated = buildPaginatedContext(allItems, {
     pageNum,
     pageSize: paginatedConfig.pageSize,
     totalItems: allItems.length,
