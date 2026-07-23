@@ -1,8 +1,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import Shiki from '@shikijs/markdown-it';
+import langBash from '@shikijs/langs/bash';
+import langCss from '@shikijs/langs/css';
+import langHtml from '@shikijs/langs/html';
+import langJavascript from '@shikijs/langs/javascript';
+import langJson from '@shikijs/langs/json';
+import langMarkdown from '@shikijs/langs/markdown';
+import langTypescript from '@shikijs/langs/typescript';
+import langYaml from '@shikijs/langs/yaml';
+import { fromHighlighter } from '@shikijs/markdown-it/core';
+import githubDark from '@shikijs/themes/github-dark';
+// Pre-import only the themes and languages we need (fine-grained bundle)
+import githubLight from '@shikijs/themes/github-light';
 import MarkdownIt from 'markdown-it';
+import { createHighlighterCoreSync } from 'shiki/core';
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 import { defineHooks } from 'vitto';
 
 interface DocItem {
@@ -52,31 +65,47 @@ export const SECTIONS: { id: string; label: string; slugs: string[] }[] = [
   },
 ];
 
-// markdown-it + Shiki singleton — cache the promise to avoid race conditions
-let mdPromise: Promise<MarkdownIt> | null = null;
+// Create highlighter synchronously with pre-loaded themes/langs
+const highlighter = createHighlighterCoreSync({
+  themes: [githubLight, githubDark],
+  langs: [
+    langJavascript,
+    langTypescript,
+    langBash,
+    langJson,
+    langHtml,
+    langCss,
+    langYaml,
+    langMarkdown,
+  ],
+  engine: createJavaScriptRegexEngine(),
+});
 
-function getMd(): Promise<MarkdownIt> {
-  if (!mdPromise) {
-    mdPromise = (async () => {
-      const md = MarkdownIt({ html: true, linkify: true, typographer: true });
-      md.use(
-        await Shiki({
-          themes: {
-            light: 'github-light',
-            dark: 'github-dark',
-          },
-          langAlias: {
-            vento: 'html',
-          },
-        })
-      );
-      return md;
-    })();
+// Create markdown-it with Shiki — fully synchronous
+const md = MarkdownIt({ html: true, linkify: true, typographer: true });
+
+md.use(
+  fromHighlighter(highlighter, {
+    themes: {
+      light: 'github-light',
+      dark: 'github-dark',
+    },
+  })
+);
+
+// Override fence renderer to gracefully handle unknown languages (e.g. vento, toml)
+const defaultFence = md.renderer.rules.fence!.bind(md.renderer.rules);
+md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  try {
+    return defaultFence(tokens, idx, options, env, self);
+  } catch {
+    const token = tokens[idx];
+    const escaped = md.utils.escapeHtml(token.content);
+    return `<pre class="shiki shiki-themes github-light github-dark" style="background-color:#fff;color:#24292e;--shiki-dark-bg:#1a1814;--shiki-dark:#e8e8e3" tabindex="0"><code>${escaped}</code></pre>`;
   }
-  return mdPromise;
-}
+};
 
-async function parseDocFile(filePath: string): Promise<DocItem | null> {
+function parseDocFile(filePath: string): DocItem | null {
   try {
     const raw = fs.readFileSync(filePath, 'utf-8');
     const fileName = path.basename(filePath, '.md');
@@ -89,8 +118,7 @@ async function parseDocFile(filePath: string): Promise<DocItem | null> {
     const descMatch = raw.replace(/^#.+$/m, '').match(/\n\n(.+?)(?:\n\n|$)/);
     const description = descMatch?.[1]?.trim() || '';
 
-    // Convert markdown to HTML with Shiki highlighting
-    const md = await getMd();
+    // Convert markdown to HTML with Shiki highlighting (synchronous)
     const content = md.render(raw);
 
     // Extract order number from filename
@@ -116,27 +144,25 @@ async function parseDocFile(filePath: string): Promise<DocItem | null> {
   }
 }
 
-async function getAllDocs(): Promise<DocItem[]> {
+function getAllDocs(): DocItem[] {
   if (!fs.existsSync(DOCS_DIR)) return [];
 
   const files = fs.readdirSync(DOCS_DIR).filter((f) => f.endsWith('.md'));
-  const docs = (await Promise.all(files.map((f) => parseDocFile(path.join(DOCS_DIR, f))))).filter(
-    Boolean
-  ) as DocItem[];
+  const docs = files.map((f) => parseDocFile(path.join(DOCS_DIR, f))).filter(Boolean) as DocItem[];
 
   // Sort by order
   docs.sort((a, b) => a.order - b.order);
   return docs;
 }
 
-async function getDocBySlug(slug: string): Promise<DocItem | null> {
+function getDocBySlug(slug: string): DocItem | null {
   const filePath = path.join(DOCS_DIR, `${slug}.md`);
   if (!fs.existsSync(filePath)) return null;
   return parseDocFile(filePath);
 }
 
-async function getSections(): Promise<DocSection[]> {
-  const allDocs = await getAllDocs();
+function getSections(): DocSection[] {
+  const allDocs = getAllDocs();
   return SECTIONS.map((s) => ({
     id: s.id,
     label: s.label,
@@ -152,14 +178,14 @@ async function getSections(): Promise<DocSection[]> {
 // Hook for dynamic routes — returns array of docs
 export default defineHooks('docs', async (params?: { slug?: string }) => {
   if (params?.slug) {
-    const doc = await getDocBySlug(params.slug);
+    const doc = getDocBySlug(params.slug);
     if (!doc) return null;
-    return { ...doc, sections: await getSections() };
+    return { ...doc, sections: getSections() };
   }
   return getAllDocs();
 });
 
 // Hook for docs index page — returns sections with docs
 export const docsIndex = defineHooks('docsIndex', async () => {
-  return { sections: await getSections() };
+  return { sections: getSections() };
 });
