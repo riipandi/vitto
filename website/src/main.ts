@@ -1,11 +1,15 @@
+import '@pagefind/component-ui';
+import '@pagefind/component-ui/css';
 import './styles/global.css';
 
 // ----------------------------------------------------------------------------
 // Dark mode toggle (called from onclick in templates)
 // ----------------------------------------------------------------------------
 function toggleDarkMode() {
-  document.documentElement.classList.toggle('dark');
-  const isDark = document.documentElement.classList.contains('dark');
+  const html = document.documentElement;
+  html.classList.toggle('dark');
+  const isDark = html.classList.contains('dark');
+  html.setAttribute('data-pf-theme', isDark ? 'dark' : 'light');
   localStorage.setItem('darkMode', String(isDark));
 }
 
@@ -72,9 +76,7 @@ function initMobileMenu() {
   btn.addEventListener('click', toggle);
   overlay?.addEventListener('click', close);
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !menu!.classList.contains('hidden')) close();
-  });
+  menu.querySelector('pagefind-modal-trigger')?.addEventListener('click', close);
 }
 
 // ----------------------------------------------------------------------------

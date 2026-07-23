@@ -17,6 +17,7 @@
         "typecheck": "tsc -b --noEmit"
     },
     "dependencies": {
+        "@pagefind/component-ui": "^1.5.2",
         "@shikijs/langs": "^4.0.0",
         "@shikijs/markdown-it": "^4.0.0",
         "@shikijs/themes": "^4.0.0",

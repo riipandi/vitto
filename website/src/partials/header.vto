@@ -19,16 +19,18 @@
           class="{{currentPath?.startsWith('/docs') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white'}} px-3 py-2 rounded-lg text-sm font-medium transition-colors">
           Docs
         </a>
-        <a href="/blog"
-          class="{{currentPath?.startsWith('/blog') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white'}} px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-          Blog
+        <a href="/changelog"
+          class="{{currentPath?.startsWith('/changelog') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white'}} px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+          Changelog
         </a>
         <a href="/about"
           class="{{currentPath === '/about' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white'}} px-3 py-2 rounded-lg text-sm font-medium transition-colors">
           About
         </a>
-
         <div class="w-px h-5 bg-sand-200 dark:bg-sand-700 mx-2"></div>
+        <pagefind-modal-trigger compact hide-shortcut class="search-trigger"
+          aria-label="Search">
+        </pagefind-modal-trigger>
 
         <!-- GitHub -->
         <a href="https://github.com/riipandi/vitto" target="_blank" rel="noopener noreferrer"
@@ -56,36 +58,47 @@
   </nav>
 </header>
 
-<!-- Mobile overlay -->
-<div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden" aria-hidden="true"></div>
-
 <!-- Mobile menu -->
 <div id="mobile-menu" class="hidden fixed top-16 left-0 right-0 bottom-0 z-50 md:hidden bg-sand-50/95 dark:bg-sand-900/95 backdrop-blur-xl">
-  <div class="flex flex-col items-center justify-center h-full px-6">
-    <nav class="space-y-2 w-full max-w-xs">
+  <div class="flex flex-col h-full px-6 py-8">
+
+    <!-- Search -->
+    <div class="pb-6 mb-6 flex justify-center">
+      <pagefind-modal-trigger compact hide-shortcut class="search-trigger"
+          aria-label="Search">
+      </pagefind-modal-trigger>
+    </div>
+
+    <!-- Nav links -->
+    <nav class="space-y-1 w-full max-w-xs mx-auto">
       <a href="/"
-        class="{{currentPath === '/' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-3 rounded-xl text-lg font-medium text-center transition-colors">
+        class="{{currentPath === '/' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-2.5 rounded-lg text-base font-medium transition-colors">
         Home
       </a>
       <a href="/docs"
-        class="{{currentPath?.startsWith('/docs') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-3 rounded-xl text-lg font-medium text-center transition-colors">
+        class="{{currentPath?.startsWith('/docs') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-2.5 rounded-lg text-base font-medium transition-colors">
         Docs
       </a>
-      <a href="/blog"
-        class="{{currentPath?.startsWith('/blog') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-3 rounded-xl text-lg font-medium text-center transition-colors">
-        Blog
+      <a href="/changelog"
+        class="{{currentPath?.startsWith('/changelog') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-2.5 rounded-lg text-base font-medium transition-colors">
+        Changelog
       </a>
       <a href="/about"
-        class="{{currentPath === '/about' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-3 rounded-xl text-lg font-medium text-center transition-colors">
+        class="{{currentPath === '/about' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-700 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-4 py-2.5 rounded-lg text-base font-medium transition-colors">
         About
       </a>
-      <div class="pt-4 flex justify-center">
-        <a href="https://github.com/riipandi/vitto" target="_blank" rel="noopener noreferrer"
-          class="text-sand-500 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white inline-flex items-center gap-2 text-sm">
-          <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/github.svg" class="w-4 h-4 dark:invert" alt="GitHub">
-          GitHub
-        </a>
-      </div>
     </nav>
+
+    <!-- Spacer -->
+    <div class="flex-1"></div>
+
+    <!-- GitHub link -->
+    <div class="pt-6 mt-6 border-t border-sand-200/60 dark:border-sand-700/60">
+      <a href="https://github.com/riipandi/vitto" target="_blank" rel="noopener noreferrer"
+        class="flex items-center justify-center gap-2 text-sm text-sand-500 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white transition-colors">
+        <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/github.svg" class="w-4 h-4 dark:invert" alt="">
+        GitHub
+      </a>
+    </div>
   </div>
 </div>

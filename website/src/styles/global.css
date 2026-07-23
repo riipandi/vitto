@@ -64,6 +64,97 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Pagefind Modal — CSS variables for sand/amber theme
+   --------------------------------------------------------------------------- */
+:root {
+  --pf-border-radius: 12px;
+  --pf-font: inherit;
+  --pf-input-height: 44px;
+  --pf-input-font-size: 16px;
+  --pf-result-title-font-size: 14px;
+  --pf-result-excerpt-font-size: 13px;
+  --pf-summary-font-size: 12px;
+  --pf-modal-max-width: 600px;
+  --pf-modal-backdrop: rgba(26, 24, 20, 0.5);
+  --pf-background: #faf9f6;
+  --pf-text: #1a1814;
+  --pf-text-secondary: #6b6354;
+  --pf-text-muted: #8f8572;
+  --pf-border: #e8e4d9;
+  --pf-border-focus: #fbbf24;
+  --pf-hover: #f3f1eb;
+  --pf-skeleton: #e8e4d9;
+  --pf-skeleton-shine: #f3f1eb;
+  --pf-mark: #d97706;
+  --pf-outline-focus: #fbbf24;
+  --pf-outline-offset: 2px;
+  --pf-shadow-sm: 0 2px 8px rgba(26, 24, 20, 0.06);
+  --pf-shadow-md: 0 4px 12px rgba(26, 24, 20, 0.1);
+  --pf-shadow-lg: 0 16px 48px rgba(26, 24, 20, 0.2);
+  --pf-scroll-shadow: rgba(26, 24, 20, 0.08);
+  --pf-icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b6354' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+}
+
+:root.dark,
+html.dark {
+  --pf-background: #1a1814;
+  --pf-text: #e8e4d9;
+  --pf-text-secondary: #b0a894;
+  --pf-text-muted: #8f8572;
+  --pf-border: #2d2a22;
+  --pf-border-focus: #fbbf24;
+  --pf-hover: #2d2a22;
+  --pf-skeleton: #2d2a22;
+  --pf-skeleton-shine: #4a4539;
+  --pf-mark: #fbbf24;
+  --pf-outline-focus: #fbbf24;
+  --pf-modal-backdrop: rgba(0, 0, 0, 0.6);
+  --pf-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --pf-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --pf-scroll-shadow: rgba(0, 0, 0, 0.3);
+  --pf-icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238f8572' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+}
+
+/* Search trigger — matches GitHub icon styling */
+.search-trigger {
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px;
+  border-radius: 0;
+  color: #8f8572;
+  transition: color 0.15s ease;
+}
+.search-trigger:hover {
+  color: #ffffff;
+  background-color: transparent;
+}
+
+:root.dark .search-trigger,
+html.dark .search-trigger {
+  color: #b0a894;
+}
+:root.dark .search-trigger:hover,
+html.dark .search-trigger:hover {
+  color: #fff;
+}
+
+/* Mobile search trigger override */
+#mobile-menu .search-trigger {
+  color: #b0a894;
+}
+.search-trigger:hover {
+  background: #f3f1eb;
+}
+:root.dark .search-trigger:hover,
+html.dark .search-trigger:hover {
+  background: #2d2a22;
+}
+
+/* ---------------------------------------------------------------------------
    Utilities
    --------------------------------------------------------------------------- */
 
