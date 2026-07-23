@@ -31,8 +31,8 @@ export default defineConfig({
         {
           template: 'post',
           dataSource: 'posts',
-          getParams: (post) => ({ id: post.id }),
-          getPath: (post) => `blog/${post.id}.html`,
+          getParams: (post) => ({ slug: post.slug }),
+          getPath: (post) => `blog/${post.slug}.html`,
         },
       ],
       paginatedRoutes: [

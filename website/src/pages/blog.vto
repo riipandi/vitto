@@ -24,12 +24,12 @@
         {{ for post of posts.items }}
           <li class="border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
             <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              <a href="/blog/{{ post.id }}">{{ post.title }}</a>
+              <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
             </h3>
             <p class="mb-4 text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
               {{ post.body }}
             </p>
-            <a href="/blog/{{ post.id }}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">
+            <a href="/blog/{{ post.slug }}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">
               Read more
               <span class="transition-transform group-hover:translate-x-1">→</span>
             </a>
