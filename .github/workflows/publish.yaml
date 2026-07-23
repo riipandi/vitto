@@ -57,12 +57,12 @@ jobs:
       packages: write # Required to publish packages to GitHub Packages
     environment: publish-npm
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup Node.js runtime
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
@@ -70,11 +70,12 @@ jobs:
           package-manager-cache: false
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: ${{ inputs.pnpmVersion }}
-          run_install: |
-            - args: [--global, npm@latest]
+          run_install: false
+          standalone: true
+          cache: true
 
       - name: Check SDK versions
         shell: bash
