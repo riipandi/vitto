@@ -404,6 +404,69 @@ This generates URLs like: `/blog/2024/01/my-post.html`
 
 ### Pagination
 
+Generate paginated list pages. The hook returns **all items**; the plugin slices them per page automatically.
+
+```ts
+// hooks/posts.ts
+import { defineHooks, paginate } from 'vitto';
+
+export const postsHook = defineHooks('posts', async () => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const allPosts = await res.json();
+  return allPosts;
+});
+```
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook } from './hooks/posts';
+
+export default defineConfig({
+  plugins: [
+    vitto({
+      hooks: {
+        posts: postsHook,
+      },
+      paginatedRoutes: [
+        {
+          template: 'blog',
+          dataSource: 'posts',
+          pageSize: 10,
+          getParams: (pageNum) => ({ _page: pageNum }),
+          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`),
+        },
+      ],
+    }),
+  ],
+});
+```
+
+In `blog.vto`:
+
+```vento
+{{ layout "layouts/site.vto" }}
+
+{{ if posts && posts.items && posts.items.length > 0 }}
+  <ul>
+    {{ for post of posts.items }}
+      <li>{{ post.title }}</li>
+    {{ /for }}
+  </ul>
+
+  <nav>
+    {{ if posts.hasPrev }}<a href="{{ posts.prevUrl }}">Previous</a>{{ /if }}
+    <span>Page {{ posts.page }} of {{ posts.totalPages }}</span>
+    {{ if posts.hasNext }}<a href="{{ posts.nextUrl }}">Next</a>{{ /if }}
+  </nav>
+{{ else }}
+  <p>No posts available yet</p>
+{{ /if }}
+```
+
+The template receives `posts.items`, `posts.page`, `posts.totalPages`, `posts.prevUrl`, `posts.nextUrl`, `posts.firstUrl`, and `posts.lastUrl`.
+
 Generate paginated list pages:
 
 `hooks/posts-paginated.ts`:

@@ -74,6 +74,74 @@ export interface DynamicRouteConfig {
 }
 
 /**
+ * Configuration for paginated route generation.
+ *
+ * Paginated routes allow you to generate multiple static HTML pages from a single
+ * paginated template. This is useful for blog listings, product catalogs, and any
+ * content page where you need pagination.
+ *
+ * During development, these routes are handled dynamically (e.g., /blog/2, /blog/3).
+ * During build, static HTML files are generated for each page.
+ *
+ * @example
+ * paginatedRoutes: [
+ *   {
+ *     template: 'blog',
+ *     dataSource: 'posts',
+ *     pageSize: 10,
+ *     getParams: (pageNum) => ({ _page: pageNum }),
+ *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`
+ *   }
+ * ]
+ */
+export interface PaginatedRouteConfig {
+  /**
+   * Template file name (without .vto extension) to use for generation.
+   *
+   * @example 'blog'
+   */
+  template: string;
+
+  /**
+   * Hook name to fetch all items for pagination.
+   * Must match a key in the `hooks` option.
+   * The hook should return an array of items (or an object with the hook name as key).
+   *
+   * @example 'posts'
+   */
+  dataSource: string;
+
+  /**
+   * Number of items to display per page.
+   *
+   * @example 10
+   */
+  pageSize: number;
+
+  /**
+   * Function to generate route parameters for each page request.
+   * These params will be passed to the hook when generating each page.
+   *
+   * @param pageNum - The 1-based page number to generate
+   * @returns Object containing params to pass to the hook
+   *
+   * @example (pageNum) => ({ _page: pageNum, _limit: 10 })
+   */
+  getParams: (pageNum: number) => Record<string, any>;
+
+  /**
+   * Function to generate output file path for each page.
+   * This determines where the generated HTML file will be saved.
+   *
+   * @param pageNum - The 1-based page number to generate
+   * @returns Output path relative to build output directory
+   *
+   * @example (pageNum) => pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`
+   */
+  getPath: (pageNum: number) => string;
+}
+
+/**
  * Output strategy for generated HTML files.
  * - 'html': Generate files as page.html (e.g., about.html)
  * - 'directory': Generate files as page/index.html for clean URLs (e.g., about/index.html)
@@ -208,6 +276,29 @@ export interface VittoOptions {
   dynamicRoutes?: DynamicRouteConfig[];
 
   /**
+   * Configuration for paginated route generation.
+   *
+   * Paginated routes allow you to generate multiple static HTML pages from a single
+   * paginated template. This is useful for blog listings, product catalogs, and any
+   * content page where you need pagination.
+   *
+   * During development, these routes are handled dynamically (e.g., /blog/2, /blog/3).
+   * During build, static HTML files are generated for each page.
+   *
+   * @example
+   * paginatedRoutes: [
+   *   {
+   *     template: 'blog',
+   *     dataSource: 'posts',
+   *     pageSize: 10,
+   *     getParams: (pageNum) => ({ _page: pageNum }),
+   *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog-${pageNum}.html`
+   *   }
+   * ]
+   */
+  paginatedRoutes?: PaginatedRouteConfig[];
+
+  /**
    * Enable automatic search index generation using Pagefind after build.
    *
    * When enabled, Pagefind will index all generated HTML files in the output directory
@@ -227,31 +318,12 @@ export interface VittoOptions {
    * // Disable search indexing
    * enableSearchIndex: false
    *
-   * @example
-   * // Use Pagefind UI in your templates
-   * // 1. Add search container
-   * <div id="search"></div>
-   *
-   * // 2. Load Pagefind UI (in your layout or page)
-   * <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
-   * <script src="/_pagefind/pagefind-ui.js"></script>
-   * <script>
-   *   window.addEventListener('DOMContentLoaded', () => {
-   *     new PagefindUI({
-   *       element: "#search",
-   *       showSubResults: true,
-   *       showImages: false
-   *     });
-   *   });
-   * </script>
-   *
    * @remarks
    * - Requires all HTML files to be written before indexing
    * - Index generation happens automatically after `vite build`
    * - Output directory is determined from Vite's `build.outDir` config
    * - Pagefind is optimized for static sites and runs entirely in the browser
    * - No server-side search backend required
-   * - Supports multilingual content and custom filtering
    *
    * @see {@link https://pagefind.app/ | Pagefind Documentation}
    */
@@ -266,19 +338,9 @@ export interface VittoOptions {
    * @default PAGEFIND_OPTIONS
    *
    * @example
-   * // Basic configuration
    * pagefindOptions: {
    *   rootSelector: 'main',
    *   verbose: true
-   * }
-   *
-   * @example
-   * // Advanced configuration with multilingual support
-   * pagefindOptions: {
-   *   rootSelector: 'html',
-   *   forceLanguage: 'en',
-   *   verbose: true,
-   *   excludeSelectors: ['.no-index', 'nav', 'footer']
    * }
    *
    * @see {@link https://pagefind.app/docs/config-options/ | Pagefind Configuration Options}
@@ -321,6 +383,7 @@ export const DEFAULT_OPTS: VittoOptions = {
   minify: false,
   assets: undefined,
   dynamicRoutes: [],
+  paginatedRoutes: [],
   enableSearchIndex: true,
   pagefindOptions: PAGEFIND_OPTIONS,
   outputStrategy: 'html',

@@ -7,7 +7,7 @@
 Quickly scaffold your first [Vitto](https://www.npmjs.com/package/vitto) project.
 
 **Compatibility Note:**
-Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+, 22.12+.
+Vitto requires [Node.js](https://nodejs.org/en/) version 20.19+.
 
 ## Usage
 

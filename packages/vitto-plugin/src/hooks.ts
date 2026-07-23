@@ -1,6 +1,7 @@
 import path from 'node:path';
 
-import type { VittoOptions } from './options';
+import { buildPaginatedContext } from './helper';
+import type { OutputStrategy, PaginatedRouteConfig, VittoOptions } from './options';
 
 /**
  * Define a hook for injecting dynamic data into page templates.
@@ -54,6 +55,7 @@ export function defineHooks<T = any, P = any>(
  * const data = await getPageData('src/pages/blog.vto', opts)
  * // Returns: { posts: [{...}, {...}] }
  *
+ * @example
  * // For post.vto with params
  * const data = await getPageData('src/pages/post.vto', opts, { id: '1' })
  * // Returns: { post: {...} }
@@ -151,4 +153,84 @@ export function createDynamicRoutePatterns(opts: VittoOptions) {
   }
 
   return routes;
+}
+
+/**
+ * Create URL patterns for paginated routes based on plugin configuration.
+ *
+ * Matches URLs like /blog/2, /blog/3, etc. for paginated listings.
+ *
+ * @param opts - Vitto plugin options containing paginated route configurations
+ * @returns Array of route patterns with regex, base path, and template name
+ */
+export function createPaginatedRoutePatterns(opts: VittoOptions) {
+  const routes: Array<{
+    pattern: RegExp;
+    basePath: string;
+    template: string;
+  }> = [];
+
+  for (const config of opts.paginatedRoutes || []) {
+    const page1Path = config.getPath(1);
+    const pathWithoutHtml = page1Path.replace(/\.html$/, '');
+    const parts = pathWithoutHtml.split('/');
+    const fileName = parts.pop() || '';
+    const dir = parts.join('/');
+    const basePath = dir ? `/${dir}/${fileName}` : `/${fileName}`;
+
+    // Match base path (page 1) and suffixed paths (page 2+)
+    // e.g., /blog, /blog-2, /blog-3
+    const pattern = new RegExp(`^${basePath}(?:-(\\d+))?$`);
+
+    routes.push({
+      pattern,
+      basePath,
+      template: config.template,
+    });
+  }
+
+  return routes;
+}
+
+/**
+ * Build paginated page context from pre-fetched items.
+ *
+ * Generates a PaginatedData object with URL helpers and merges it into
+ * the existing page data. Use this for both build-time and dev-mode
+ * paginated routes to keep the data shape consistent.
+ *
+ * @param allItems - Full array of items from the data source hook
+ * @param paginatedConfig - Paginated route configuration
+ * @param pageNum - Current page number (1-based)
+ * @param pageData - Existing page data from getPageData
+ * @param outputStrategy - Output strategy for URL generation
+ * @returns Merged page data with paginated items and URL helpers
+ */
+export function buildPaginatedPageData<T>(
+  allItems: T[],
+  paginatedConfig: PaginatedRouteConfig,
+  pageNum: number,
+  pageData: Record<string, any>,
+  outputStrategy: OutputStrategy
+): Record<string, any> {
+  const dataSource = paginatedConfig.dataSource;
+  const hookData = pageData[dataSource];
+  const pageItems = allItems.slice(
+    (pageNum - 1) * paginatedConfig.pageSize,
+    pageNum * paginatedConfig.pageSize
+  );
+
+  const paginated = buildPaginatedContext(pageItems, {
+    pageNum,
+    pageSize: paginatedConfig.pageSize,
+    totalItems: allItems.length,
+    outputStrategy,
+    getPath: paginatedConfig.getPath,
+  });
+
+  return {
+    ...pageData,
+    [dataSource]:
+      hookData && !Array.isArray(hookData) ? { ...hookData, items: paginated.items } : paginated,
+  };
 }

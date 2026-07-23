@@ -11,10 +11,21 @@ import vento, { type Options as VentoOptions } from 'ventojs';
 import autoTrim, { defaultTags } from 'ventojs/plugins/auto_trim.js';
 import type { Plugin, ResolvedConfig } from 'vite';
 
-import { convertUrlPath, findVtoFiles, getViteAssetsFromBundle, normalizePath } from './helper';
-import { createDynamicRoutePatterns, getPageData } from './hooks';
+import {
+  convertOutputPath,
+  convertUrlPath,
+  findVtoFiles,
+  getViteAssetsFromBundle,
+  normalizePath,
+} from './helper';
+import {
+  buildPaginatedPageData,
+  createDynamicRoutePatterns,
+  createPaginatedRoutePatterns,
+  getPageData,
+} from './hooks';
 import { createMetadataCollector } from './metadata';
-import type { OutputStrategy, RenderOptions, VittoOptions } from './options';
+import type { RenderOptions, VittoOptions } from './options';
 import { DEFAULT_OPTS, MINIFY_OPTIONS, PAGEFIND_OPTIONS } from './options';
 
 // Global variables to store Vite configuration
@@ -33,6 +44,8 @@ let viteConfig: ResolvedConfig;
  *
  * @param options - Rendering options including file path, data, and minification settings
  * @param ventoOptionsOverride - Optional Vento engine configuration overrides
+ * @param currentUrl - Optional current URL for template context
+ * @param globalMetadata - Optional global metadata to inject
  * @returns The rendered HTML string
  *
  * @example
@@ -149,38 +162,6 @@ async function renderVentoToHtml(
   return htmlContent;
 }
 
-/**
- * Convert output path based on output strategy.
- *
- * @param outputPath - Original output path (e.g., 'about.html', 'blog/1.html')
- * @param strategy - Output strategy ('html' or 'directory')
- * @returns Converted path based on strategy
- *
- * @example
- * // html strategy
- * convertOutputPath('about.html', 'html') // Returns: 'about.html'
- *
- * @example
- * // directory strategy
- * convertOutputPath('about.html', 'directory') // Returns: 'about/index.html'
- * convertOutputPath('blog/1.html', 'directory') // Returns: 'blog/1/index.html'
- */
-function convertOutputPath(outputPath: string, strategy?: OutputStrategy): string {
-  // If strategy is 'html' or undefined, return original path
-  if (strategy !== 'directory') {
-    return outputPath;
-  }
-
-  // If already index.html, keep it as is
-  if (outputPath.endsWith('index.html')) {
-    return outputPath;
-  }
-
-  // Convert page.html to page/index.html
-  // Convert dir/page.html to dir/page/page.html
-  return outputPath.replace(/\.html$/, '/index.html');
-}
-
 // Vitto Vite plugin for rendering Vento templates to static HTML.
 export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
   return {
@@ -247,9 +228,10 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      * This hook is called by Vite during the build phase. It:
      * 1. Finds all .vto template files in the pages directory
      * 2. Extracts Vite assets (JS/CSS) from the bundle
-     * 3. Renders regular pages (excluding dynamic route templates)
+     * 3. Renders regular pages (excluding dynamic and paginated route templates)
      * 4. Generates static HTML files for dynamic routes
-     * 5. Emits all HTML files to the bundle (so they appear in build output)
+     * 5. Generates static HTML files for paginated routes
+     * 6. Emits all HTML files to the bundle (so they appear in build output)
      *
      * The emitFile() call is important because it makes Vite aware of these
      * files and includes them in the build output and statistics.
@@ -271,18 +253,22 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       // Get output strategy (default to 'html')
       const outputStrategy = opts.outputStrategy || DEFAULT_OPTS.outputStrategy || 'html';
 
-      // Get list of templates that are used for dynamic routes
+      // Get list of templates that are used for dynamic or paginated routes
       const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`);
+      const paginatedTemplates = (opts.paginatedRoutes || []).map(
+        (config) => `${config.template}.vto`
+      );
+      const skippedTemplates = [...dynamicTemplates, ...paginatedTemplates];
 
       // Track emitted files to prevent duplicates
       const emittedFiles = new Set<string>();
 
-      // Render regular pages (excluding dynamic route templates)
+      // Render regular pages (excluding dynamic and paginated route templates)
       for (const filePath of files) {
         const fileName = path.basename(filePath);
 
-        if (dynamicTemplates.includes(fileName)) {
-          chroma.log(`ℹ Skipping ${fileName} (used for dynamic routes)`);
+        if (skippedTemplates.includes(fileName)) {
+          chroma.log(`ℹ Skipping ${fileName} (used for dynamic or paginated routes)`);
           continue;
         }
 
@@ -451,6 +437,127 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
           `✨ Generated ${totalItems} pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
         );
       }
+
+      // Generate static HTML files for paginated routes
+      const paginatedRouteConfigs = opts.paginatedRoutes || [];
+      for (const config of paginatedRouteConfigs) {
+        const templatePath = path.resolve(pagesDir, `${config.template}.vto`);
+
+        // Verify template file exists
+        if (!fs.existsSync(templatePath)) {
+          chroma.log(`Template not found: ${templatePath}`);
+          continue;
+        }
+
+        // Verify data source hook exists
+        const dataHook = opts.hooks?.[config.dataSource];
+        if (!dataHook) {
+          chroma.log(`Data source hook not found: ${config.dataSource}`);
+          continue;
+        }
+
+        // Fetch all items from the data source
+        const allItemsResult = await dataHook({});
+        const allItems = Array.isArray(allItemsResult)
+          ? allItemsResult
+          : allItemsResult[config.dataSource];
+
+        if (!Array.isArray(allItems)) {
+          chroma.log(
+            `Data source hook ${config.dataSource} did not return an array for paginated routes`
+          );
+          continue;
+        }
+
+        const totalItems = allItems.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / config.pageSize));
+        const spinner = new Spinner(
+          `Generating ${totalPages} paginated pages from ${config.template}.vto`
+        );
+        spinner.start();
+
+        const startTime = Date.now();
+        let processedCount = 0;
+
+        // Generate a static HTML file for each page
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          try {
+            const params = config.getParams(pageNum);
+
+            // Fetch page-specific data via hook
+            const pageData = await getPageData(templatePath, opts, params);
+
+            // Build paginated context with URL helpers
+            const mergedData = buildPaginatedPageData(
+              allItems,
+              config,
+              pageNum,
+              pageData,
+              outputStrategy
+            );
+
+            // Get output path from getPath
+            let outPath = config.getPath(pageNum);
+
+            // Apply output strategy
+            outPath = convertOutputPath(outPath, outputStrategy);
+
+            // Skip if already emitted
+            if (emittedFiles.has(outPath)) {
+              chroma.log(`⚠ Skipping duplicate: ${outPath}`);
+              continue;
+            }
+
+            // Calculate URL path
+            const urlPath = convertUrlPath(
+              `/${outPath.replace(/\/index\.html$/, '').replace(/\.html$/, '')}`,
+              outputStrategy
+            );
+
+            // Render template with this page's data
+            const html = await renderVentoToHtml(
+              {
+                filePath: templatePath,
+                data: mergedData,
+                isDev: false,
+                assets: viteAssets,
+                minify: opts.minify ?? false,
+              },
+              opts.ventoOptions,
+              urlPath,
+              opts.metadata
+            );
+
+            // Emit HTML file to Vite bundle
+            this.emitFile({
+              type: 'asset',
+              fileName: outPath,
+              source: html,
+            });
+
+            // Track emitted file
+            emittedFiles.add(outPath);
+
+            // Update progress
+            processedCount++;
+            const elapsed = duration(Date.now() - startTime, { parts: 2 });
+            const percentage = Math.round((processedCount / totalPages) * 100);
+            spinner.setText(
+              `Generated ${processedCount}/${totalPages} pages (${percentage}%) - ${elapsed} elapsed`
+            );
+          } catch (error) {
+            chroma.log(`ⅹ Error generating page ${pageNum}:`, error);
+          }
+        }
+
+        // Stop spinner and show summary
+        spinner.stop();
+        const totalTime = duration(Date.now() - startTime, { parts: 2 });
+        const avgTime = duration((Date.now() - startTime) / totalPages, { parts: 2 });
+        chroma.log(
+          `✨ Generated ${totalPages} paginated pages from ${config.template}.vto in ${totalTime} (avg ${avgTime}/page)`
+        );
+      }
     },
 
     /**
@@ -470,7 +577,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
       try {
         // Get the output directory from Vite config (defaults to 'dist')
-        const outDir = path.resolve(viteRoot, viteConfig.build.outDir || 'dist');
+        const outDir = path.resolve(viteRoot, (viteConfig.build.outDir as string) || 'dist');
         const pagefindDir = path.join(outDir, '_pagefind');
 
         // Verify output directory exists
@@ -528,10 +635,11 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
      *
      * This middleware intercepts HTTP requests and:
      * 1. Checks if the URL matches a dynamic route pattern
-     * 2. Checks if the URL maps to a static .vto template
-     * 3. Blocks direct access to templates used in dynamic routes
-     * 4. Renders the appropriate template with data from hooks
-     * 5. Returns 404 for non-existent pages
+     * 2. Checks if the URL matches a paginated route pattern
+     * 3. Checks if the URL maps to a static .vto template
+     * 4. Blocks direct access to templates used in dynamic or paginated routes
+     * 5. Renders the appropriate template with data from hooks
+     * 6. Returns 404 for non-existent pages
      *
      * The middleware runs on every GET request in development mode,
      * providing hot reloading and dynamic route handling.
@@ -539,6 +647,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
     configureServer(server) {
       // Pre-calculate dynamic route patterns for efficient matching
       const dynamicRoutePatterns = createDynamicRoutePatterns(opts);
+      const paginatedRoutePatterns = createPaginatedRoutePatterns(opts);
 
       server.middlewares.use(async (req, res, next) => {
         // Only handle GET requests
@@ -546,7 +655,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
         // Parse URL into pathname and query string
         const [pathname, search = ''] = req.url?.split('?') ?? ['/'];
-        const url = pathname || '/';
+        const url = normalizePath(pathname || '/');
 
         // Skip requests for static files, Vite internal routes, etc.
         if (
@@ -592,7 +701,70 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
                   filePath: templatePath,
                   data,
                   isDev: true,
-                  assets: opts.assets ?? undefined,
+                  assets: opts.assets,
+                  minify: opts.minify ?? false,
+                },
+                opts.ventoOptions,
+                url,
+                opts.metadata
+              );
+              res.setHeader('Content-Type', 'text/html');
+              res.end(html);
+              return;
+            }
+          }
+        }
+
+        // Check if URL matches any paginated route pattern
+        for (const route of paginatedRoutePatterns) {
+          const match = url.match(route.pattern);
+          if (match) {
+            // Extract the page number
+            const pageNum = parseInt(match[1] || '1', 10);
+            const templatePath = path.resolve(pagesDir, `${route.template}.vto`);
+
+            if (fs.existsSync(templatePath)) {
+              // Find the paginated route config
+              const paginatedConfig = (opts.paginatedRoutes || []).find(
+                (c) => c.template === route.template
+              );
+              if (!paginatedConfig) continue;
+
+              // Parse query parameters
+              const query = parseQuery(`?${search}`);
+
+              // Combine query params with page number
+              const params = {
+                ...query,
+                ...paginatedConfig.getParams(pageNum),
+              };
+
+              // Fetch data for this specific page
+              const pageData = await getPageData(templatePath, opts, params);
+
+              const dataSource = paginatedConfig.dataSource;
+
+              // Fetch all items from data source
+              const allItemsResult = await opts.hooks?.[dataSource]?.({});
+              const allItems = Array.isArray(allItemsResult)
+                ? allItemsResult
+                : allItemsResult?.[dataSource];
+
+              // Build paginated page data with URL helpers
+              const paginationData = buildPaginatedPageData(
+                allItems || [],
+                paginatedConfig,
+                pageNum,
+                pageData,
+                'html'
+              );
+
+              const html = await renderVentoToHtml(
+                {
+                  filePath: templatePath,
+                  data: paginationData,
+                  isDev: true,
+                  assets: opts.assets,
                   minify: opts.minify ?? false,
                 },
                 opts.ventoOptions,
@@ -624,7 +796,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               filePath: vtoPath,
               data,
               isDev: true,
-              assets: opts.assets ?? undefined,
+              assets: opts.assets,
               minify: opts.minify ?? false,
             },
             opts.ventoOptions,
@@ -646,7 +818,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
               filePath: notFoundPath,
               data,
               isDev: true,
-              assets: opts.assets ?? undefined,
+              assets: opts.assets,
               minify: opts.minify ?? false,
             },
             opts.ventoOptions,
