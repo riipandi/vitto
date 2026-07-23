@@ -5,4 +5,5 @@ export default defineConfig({
   minify: process.env.NODE_ENV === 'production',
   ignoreWatch: ['.turbo'],
   target: 'node20',
+  logLevel: 'error',
 });
