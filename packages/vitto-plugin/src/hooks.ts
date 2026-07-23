@@ -144,9 +144,9 @@ export function createDynamicRoutePatterns(opts: VittoOptions) {
     const parts = pathWithoutHtml.split('/');
     const basePath = parts.slice(0, -1).join('/');
 
-    // Create regex pattern to match URLs like /blog/123 or /blog/my-slug
-    // The captured group ([^/]+) will contain the dynamic segment value
-    const pattern = new RegExp(`^/${basePath}/([^/]+)$`);
+    // Create regex pattern to match URLs like /blog/123 or /docs/getting-started/introduction
+    // The captured group captures the full slug including paths
+    const pattern = new RegExp(`^/${basePath}/(.+)$`);
 
     routes.push({
       pattern,

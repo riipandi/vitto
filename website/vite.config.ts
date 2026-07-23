@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import vitto from 'vitto';
 
+import docsHook from './src/hooks/docs';
 import postsHook from './src/hooks/posts';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -15,7 +16,8 @@ export default defineConfig({
       metadata: {
         siteName: 'Vitto',
         title: 'Vitto - Static Site Generator Powered by Vite & Vento',
-        description: `A minimal static site generator built with Vite and the Vento templating engine.`,
+        description:
+          'A minimal static site generator built with Vite and the Vento templating engine. Fast, flexible, and zero-config.',
         keywords: ['vento', 'ssg', 'vite', 'plugin', 'generator', 'static', 'website', 'jamstack'],
         author: 'Aris Ripandi',
         social: {
@@ -24,22 +26,30 @@ export default defineConfig({
         },
       },
       hooks: {
-        posts: postsHook, // Data source for dynamic routes and pagination
-        post: postsHook, // Data source for single post page
+        docs: docsHook,
+        doc: docsHook,
+        posts: postsHook,
+        post: postsHook,
       },
       dynamicRoutes: [
         {
+          template: 'doc',
+          dataSource: 'docs',
+          getParams: (doc: any) => ({ slug: doc.slug }),
+          getPath: (doc: any) => `docs/${doc.slug}.html`,
+        },
+        {
           template: 'post',
           dataSource: 'posts',
-          getParams: (post) => ({ slug: post.slug }),
-          getPath: (post) => `blog/${post.slug}.html`,
+          getParams: (post: any) => ({ slug: post.slug }),
+          getPath: (post: any) => `blog/${post.slug}.html`,
         },
         {
           template: 'blog',
           dataSource: 'posts',
           pageSize: 5,
-          getParams: (pageNum) => ({ _page: pageNum }),
-          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+          getParams: (pageNum: number) => ({ _page: pageNum }),
+          getPath: (pageNum: number) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
         },
       ],
     }),

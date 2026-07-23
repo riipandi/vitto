@@ -8,27 +8,26 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.ico">
 
+<!-- Theme color -->
+<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1814" media="(prefers-color-scheme: dark)">
+
+<!-- Inter font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<!-- Prevent dark mode FOUC: apply class before first paint -->
+<script>
+  (function() {
+    const stored = localStorage.getItem('darkMode');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = stored === 'true' || (stored === null && prefersDark);
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.setAttribute('data-pf-theme', isDark ? 'dark' : 'light');
+  })();
+</script>
+
 {{ set pageTitle = metadata.title ? `${metadata.title} - ${metadata.siteName}` : metadata.siteName }}
 <title>{{ pageTitle |> safe }}</title>
-
-{{ if !isDev }}
-<!-- Pagefind Search -->
-<link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="/_pagefind/pagefind-ui.js"></script>
-<script>
-  window.addEventListener('DOMContentLoaded', (event) => {
-    const searchElement = document.querySelector("#search");
-    if (searchElement) {
-      new PagefindUI({
-        element: "#search",
-        showSubResults: true,
-        showImages: false,
-        excerptLength: 15,
-        processResult: function(result) {
-          return result;
-        }
-      });
-    }
-  });
-</script>
-{{ /if }}

@@ -1,86 +1,139 @@
+import '@pagefind/component-ui';
+import '@pagefind/component-ui/css';
 import './styles/global.css';
 
+// Dark mode toggle + system theme sync
 // ----------------------------------------------------------------------------
-// Dark mode toggle functionality
-// ----------------------------------------------------------------------------
+function setTheme(isDark: boolean) {
+  const html = document.documentElement;
+  html.classList.toggle('dark', isDark);
+  html.setAttribute('data-pf-theme', isDark ? 'dark' : 'light');
+}
+
 function toggleDarkMode() {
-  document.documentElement.classList.toggle('dark');
-  const isDark = document.documentElement.classList.contains('dark');
+  const isDark = document.documentElement.classList.toggle('dark');
+  document.documentElement.setAttribute('data-pf-theme', isDark ? 'dark' : 'light');
   localStorage.setItem('darkMode', String(isDark));
 }
 
-// Initialize dark mode from localStorage
-if (localStorage.getItem('darkMode') === 'true') {
-  document.documentElement.classList.add('dark');
+function listenSystemTheme() {
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener('change', (e) => {
+    // Only follow system when user never explicitly toggled
+    if (localStorage.getItem('darkMode') !== null) return;
+    setTheme(e.matches);
+  });
 }
 
-// Expose toggleDarkMode to global scope for onclick handlers
 declare global {
   interface Window {
     toggleDarkMode: () => void;
+    copyCommand: (el: HTMLElement, text: string) => void;
   }
 }
 window.toggleDarkMode = toggleDarkMode;
 
 // ----------------------------------------------------------------------------
-// Mobile menu toggle functionality
+// Intersection Observer — reveal on scroll
 // ----------------------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+function initReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  els.forEach((el) => observer.observe(el));
+}
+
+// ----------------------------------------------------------------------------
+// Mobile menu
+// ----------------------------------------------------------------------------
+function initMobileMenu() {
+  const btn = document.getElementById('mobile-menu-button');
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('mobile-menu-overlay');
   const menuIcon = document.getElementById('menu-icon');
   const closeIcon = document.getElementById('close-icon');
 
-  function toggleMenu() {
-    const isExpanded = mobileMenuButton?.getAttribute('aria-expanded') === 'true';
+  if (!btn || !menu) return;
 
-    // Toggle menu visibility
-    mobileMenu?.classList.toggle('hidden');
-    mobileMenuOverlay?.classList.toggle('hidden');
+  function open() {
+    const header = document.querySelector('header');
+    header?.classList.add('menu-open');
+    menu!.classList.remove('hidden');
+    overlay?.classList.remove('hidden');
+    menuIcon?.classList.add('hidden');
+    closeIcon?.classList.remove('hidden');
+    btn!.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
 
-    // Toggle icons
-    menuIcon?.classList.toggle('hidden');
-    closeIcon?.classList.toggle('hidden');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        menu!.classList.add('open');
+      });
+    });
+  }
 
-    // Update aria-expanded
-    mobileMenuButton?.setAttribute('aria-expanded', String(!isExpanded));
-
-    // Prevent body scroll when menu is open
-    if (!isExpanded) {
-      document.body.style.overflow = 'hidden';
-    } else {
+  function close() {
+    const header = document.querySelector('header');
+    header?.classList.remove('menu-open');
+    menu!.classList.remove('open');
+    setTimeout(() => {
+      menu!.classList.add('hidden');
+      overlay?.classList.add('hidden');
+      menuIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+      btn!.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
-    }
+    }, 250);
   }
 
-  function closeMenu() {
-    mobileMenu?.classList.add('hidden');
-    mobileMenuOverlay?.classList.add('hidden');
-    menuIcon?.classList.remove('hidden');
-    closeIcon?.classList.add('hidden');
-    mobileMenuButton?.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    if (expanded) close();
+    else open();
+  });
+  overlay?.addEventListener('click', close);
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  menu.querySelector('pagefind-modal-trigger')?.addEventListener('click', close);
+}
+
+// ----------------------------------------------------------------------------
+// Copy command
+// ----------------------------------------------------------------------------
+async function copyCommand(el: HTMLElement, text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const original = el.innerHTML;
+    el.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    el.classList.add('text-green-500');
+    setTimeout(() => {
+      el.innerHTML = original;
+      el.classList.remove('text-green-500');
+    }, 1500);
+  } catch {
+    // Fallback
   }
+}
+window.copyCommand = copyCommand;
 
-  if (mobileMenuButton && mobileMenu) {
-    // Toggle menu on button click
-    mobileMenuButton.addEventListener('click', toggleMenu);
-
-    // Close menu when clicking overlay
-    mobileMenuOverlay?.addEventListener('click', closeMenu);
-
-    // Close menu when clicking a link
-    const menuLinks = mobileMenu.querySelectorAll('a');
-    menuLinks.forEach((link) => {
-      link.addEventListener('click', closeMenu);
-    });
-
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
-        closeMenu();
-      }
-    });
-  }
+// ----------------------------------------------------------------------------
+// Init
+// ----------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  initReveal();
+  initMobileMenu();
+  listenSystemTheme();
 });

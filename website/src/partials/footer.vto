@@ -1,33 +1,64 @@
-<footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+<footer class="border-t border-sand-200/60 dark:border-sand-800/60 bg-sand-50 dark:bg-sand-900">
+  <div class="max-w-6xl w-full mx-auto px-5 sm:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-10">
       <!-- Brand -->
-      <div class="flex items-center gap-2">
-        <div class="size-7 bg-blue-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-bold text-xs">V</span>
-        </div>
-        <span class="text-sm font-medium text-gray-900 dark:text-white">
-          {{ metadata.siteName }}
-        </span>
+      <div class="md:col-span-2">
+        <a href="/" class="flex items-center gap-2.5 mb-3 md:mb-4">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+            <span class="text-white font-bold text-xs">V</span>
+          </div>
+          <span class="text-base font-bold tracking-tight text-sand-900 dark:text-white">Vitto</span>
+        </a>
+        <p class="text-sm text-sand-500 dark:text-sand-400 leading-relaxed">
+          Shipping fast Jamstack sites shouldn't be complicated. You already use Vite, Vitto is the
+          missing piece. This site proudly made with Vitto.
+        </p>
       </div>
 
-      <!-- Links -->
-      <nav class="flex items-center gap-6 md:gap-8 text-sm">
-        <a href="/legal/privacy" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-          Privacy Policy
-        </a>
-        <a href="https://github.com/riipandi/vitto" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" target="_blank" rel="noopener noreferrer">
-          Source Code
-        </a>
-        <a href="https://x.com/intent/follow?screen_name=riipandi" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" target="_blank" rel="noopener noreferrer">
-          Follow Me
-        </a>
-      </nav>
+      <!-- Learn -->
+      <div>
+        <h4 class="text-sm font-semibold text-sand-900 dark:text-white mb-3 md:mb-4">Learn</h4>
+        <ul class="space-y-2.5 text-sm">
+          <li><a href="/docs/getting-started/installation" class="text-sand-500 dark:text-sand-400
+          hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Installation</a></li>
+          <li><a href="/docs/core/templating" class="text-sand-500 dark:text-sand-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Templating</a></li>
+          <li><a href="/docs/features/deployment" class="text-sand-500 dark:text-sand-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Deployment</a></li>
+        </ul>
+      </div>
 
-      <!-- Copyright -->
-      <p class="text-gray-500 dark:text-gray-400 text-xs">
-        &copy; {{ currentYear || new Date().getFullYear() }} {{ metadata.author }}
+
+      <!-- Explore -->
+      <div>
+        <h4 class="text-sm font-semibold text-sand-900 dark:text-white mb-3 md:mb-4">Explore</h4>
+        <ul class="space-y-2.5 text-sm">
+                  <li><a href="/blog" class="text-sand-500 dark:text-sand-400
+          hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Our Blog</a></li>
+          <li><a href="/docs/reference/comparison" class="text-sand-500 dark:text-sand-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Comparison</a></li>
+          <li><a href="/docs/guides/example" target="_blank" rel="noopener noreferrer"
+          class="text-sand-500 dark:text-sand-400 hover:text-amber-600 dark:hover:text-amber-400
+          transition-colors">Example</a></li>
+      </div>
+
+
+      <!-- Follow -->
+      <div>
+        <h4 class="text-sm font-semibold text-sand-900 dark:text-white mb-3 md:mb-4">Follow</h4>
+        <ul class="space-y-2.5 text-sm">
+          <li><a href="/changelog" class="text-sand-500 dark:text-sand-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Changelog</a></li>
+          <li><a href="https://github.com/riipandi/vitto/discussions" target="_blank" rel="noopener noreferrer" class="text-sand-500 dark:text-sand-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Discussions</a></li>
+          <li><a href="https://x.com/intent/follow?screen_name=riipandi" target="_blank" rel="noopener noreferrer" class="text-sand-500 dark:text-sand-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Follow on X</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-sand-200/60 dark:border-sand-800/60 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p class="text-xs text-sand-400 dark:text-sand-500">
+        By {{ metadata.author }}. MIT License.
       </p>
+      <div class="flex items-center gap-5 text-xs">
+        <a href="/legal/privacy" class="text-sand-400 dark:text-sand-500 hover:text-sand-600 dark:hover:text-sand-300 transition-colors">Privacy</a>
+        <a href="https://github.com/riipandi/vitto/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="text-sand-400 dark:text-sand-500 hover:text-sand-600 dark:hover:text-sand-300 transition-colors">License</a>
+      </div>
     </div>
   </div>
 </footer>

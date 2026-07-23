@@ -17,10 +17,17 @@
         "typecheck": "tsc -b --noEmit"
     },
     "dependencies": {
+        "@pagefind/component-ui": "^1.5.2",
+        "@shikijs/langs": "^4.0.0",
+        "@shikijs/markdown-it": "^4.0.0",
+        "@shikijs/themes": "^4.0.0",
+        "markdown-it": "^14.0.0",
+        "shiki": "^4.0.0",
         "ufo": "^1.6.4"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.3.3",
+        "@types/markdown-it": "^14.1.2",
         "@types/node": "^26.1.1",
         "oxfmt": "0.60.0",
         "oxlint": "^1.75.0",

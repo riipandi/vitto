@@ -1,30 +1,295 @@
 {{ layout "layouts/site.vto" }}
 
-{{ setMetadata('title', 'Homepage') }}
+{{ setMetadata('title', 'Fast Static Sites with Vite & Vento') }}
+{{ setMetadata('description', 'A static site generator built with Vite and the Vento templating engine. Fast, flexible, and minimal config.') }}
 
-<div class="-z-10 fixed inset-0">
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-white dark:from-gray-950 dark:to-black"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-500/5 via-transparent to-transparent dark:from-orange-500/10">
+<!-- Hero -->
+<section class="relative overflow-hidden">
+  <!-- Background -->
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50 to-sand-100/50 dark:from-sand-900 dark:to-sand-900"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-amber-200/20 via-violet-200/10 to-transparent dark:from-amber-500/10 dark:via-violet-500/5 dark:to-transparent rounded-full blur-3xl"></div>
+    <!-- Dot pattern -->
+    <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 24px 24px;"></div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 pt-24 pb-28 md:pt-36 md:pb-40 text-center">
+    <!-- Badge -->
+    <div class="slide-up inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-medium mb-8">
+      <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+      Powered by Vite v8
     </div>
-</div>
 
-<div class="flex flex-col items-center justify-center space-y-12 w-full bg-white dark:bg-gray-900">
-  <div class="flex items-center space-x-6 gap-6 md:gap-10 w-full max-w-xl mx-auto justify-center">
-    <img src="/vite.svg" class="size-18" alt="Vite logo">
-    <img src="/favicon.svg" class="size-18" alt="Vento logo">
+    <!-- Headline -->
+    <h1 class="slide-up-delay-1 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-sand-900 dark:text-white leading-[1.08]">
+      Static sites,
+      <br>
+      <span class="bg-gradient-to-r from-amber-500 via-amber-400 to-violet-500 bg-clip-text text-transparent">
+        beautifully simple.
+      </span>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="slide-up-delay-2 mt-6 text-lg md:text-xl text-sand-500 dark:text-sand-400 max-w-xl mx-auto leading-relaxed">
+      A static site generator powered by Vite and Vento. <br class="hidden sm:block" />
+      Fast builds, minimal config, deploy anywhere.
+    </p>
+
+    <!-- CTA row: button + code snippet -->
+    <div class="slide-up-delay-3 mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="/docs/getting-started/installation"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-sand-900 dark:bg-white text-white dark:text-sand-900 font-semibold text-sm hover:bg-sand-800 dark:hover:bg-sand-100 transition-colors shadow-lg shadow-sand-900/10 dark:shadow-white/10">
+        Get Started
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <div class="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-sand-100 dark:bg-sand-800 text-sand-700 dark:text-sand-300 text-sm font-mono border border-sand-200/60 dark:border-sand-700/60">
+        <span>pnpm create vitto@latest</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-sand-400 dark:text-sand-500 cursor-pointer hover:text-amber-500 transition-colors" onclick="copyCommand(this, 'npm create vitto@latest')"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+      </div>
+    </div>
   </div>
-  <ol class="max-w-xl space-y-4 text-center font-medium font-sans text-gray-700 tracking-wide dark:text-gray-300 w-full">
-    <li>
-      Get started by editing
-      <code class="ml-2 inline-block rounded-sm bg-gradient-to-r from-gray-200/80 to-gray-100/80 px-2 py-0.5 font-medium text-gray-900 text-sm tracking-normal dark:from-gray-800 dark:to-gray-900 dark:text-gray-100">
-        src/pages/index.vto
-      </code>
-    </li>
-    <li>Save and see your changes instantly.</li>
-  </ol>
-  <div class="-mt-1 flex flex-wrap justify-center gap-4">
-    <a target="_blank" rel="noopener noreferrer" href="https://deploy.workers.cloudflare.com/?url=https://github.com/riipandi/vitto/tree/main/starter">
-      <img src="https://deploy.workers.cloudflare.com/button" class="h-9 w-auto transition-transform duration-300 ease-in-out hover:scale-105" alt="Deploy to Cloudflare Workers">
-    </a>
+
+</section>
+
+<!-- Features -->
+<section class="py-20 md:py-28 bg-sand-100/30 dark:bg-sand-800/15">
+  <div class="w-full max-w-6xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-16">
+      <p class="text-sm font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-3">Features</p>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white">
+        Everything you need, nothing you don't.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Feature 1 -->
+      <div class="reveal group p-6 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-lg hover:shadow-amber-500/5">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-600 dark:text-amber-400"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-sand-900 dark:text-white mb-2">Lightning Fast</h3>
+        <p class="text-sm text-sand-500 dark:text-sand-400 leading-relaxed">Powered by Vite's HMR and optimized build pipeline. Edit, save, see instantly.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="reveal group p-6 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-lg hover:shadow-amber-500/5">
+        <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-violet-600 dark:text-violet-400"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-sand-900 dark:text-white mb-2">Vento Templates</h3>
+        <p class="text-sm text-sand-500 dark:text-sand-400 leading-relaxed">Simple, expressive templating with Vento. Partials, layouts, and data injection.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="reveal group p-6 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-lg hover:shadow-amber-500/5">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-600 dark:text-amber-400"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-sand-900 dark:text-white mb-2">Built-in Search</h3>
+        <p class="text-sm text-sand-500 dark:text-sand-400 leading-relaxed">Integrated Pagefind for fast, static search. Zero server required.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="reveal group p-6 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-lg hover:shadow-amber-500/5">
+        <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-violet-600 dark:text-violet-400"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-sand-900 dark:text-white mb-2">Dynamic Routes</h3>
+        <p class="text-sm text-sand-500 dark:text-sand-400 leading-relaxed">Generate pages from any data source. CMS, APIs, markdown, or local files.</p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="reveal group p-6 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-lg hover:shadow-amber-500/5">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-600 dark:text-amber-400"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.611 1.611a2.404 2.404 0 0 1-1.705.707 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.29c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.237c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.404 2.404 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.315 8.685a.98.98 0 0 1 .837-.276c.47.07.802.48.968.925a2.501 2.501 0 1 0 3.214-3.214c-.446-.166-.855-.497-.925-.968a.979.979 0 0 1 .276-.837l1.611-1.611A2.404 2.404 0 0 1 12 2c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.237c-.464.18-.894.527-.967 1.02Z"/></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-sand-900 dark:text-white mb-2">Vite Ecosystem</h3>
+        <p class="text-sm text-sand-500 dark:text-sand-400 leading-relaxed">Full access to Vite plugins. Tailwind, UnoCSS, PostCSS, and more.</p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="reveal group p-6 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-lg hover:shadow-amber-500/5">
+        <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-violet-600 dark:text-violet-400"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-sand-900 dark:text-white mb-2">Minimal Config</h3>
+        <p class="text-sm text-sand-500 dark:text-sand-400 leading-relaxed">Works out of the box. Sensible defaults that just work. Customize when you need to.</p>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- Code Example -->
+<section class="py-20 md:py-28 bg-sand-100/50 dark:bg-sand-800/30">
+  <div class="max-w-5xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-12">
+      <p class="text-sm font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-3">Quick Start</p>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white">
+        Up and running in seconds.
+      </h2>
+    </div>
+
+    <div class="reveal grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Install -->
+      <div class="rounded-2xl bg-white dark:bg-sand-800/80 border border-sand-200/60 dark:border-sand-700/40 p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-3 h-3 rounded-full bg-red-400"></div>
+          <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+          <div class="w-3 h-3 rounded-full bg-green-400"></div>
+          <span class="ml-2 text-xs text-sand-400 dark:text-sand-500 font-mono">terminal</span>
+        </div>
+        <pre class="text-sm font-mono text-sand-700 dark:text-sand-300 leading-relaxed overflow-x-auto"><code><span class="text-sand-400 dark:text-sand-500"># Create a new project</span>
+<span class="text-amber-600 dark:text-amber-400">npm</span> create vitto@latest my-site
+
+<span class="text-sand-400 dark:text-sand-500"># Start dev server</span>
+<span class="text-amber-600 dark:text-amber-400">cd</span> my-site
+<span class="text-amber-600 dark:text-amber-400">npm</span> run dev</code></pre>
+      </div>
+
+      <!-- Config -->
+      <div class="rounded-2xl bg-white dark:bg-sand-800/80 border border-sand-200/60 dark:border-sand-700/40 p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-3 h-3 rounded-full bg-red-400"></div>
+          <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+          <div class="w-3 h-3 rounded-full bg-green-400"></div>
+          <span class="ml-2 text-xs text-sand-400 dark:text-sand-500 font-mono">vite.config.ts</span>
+        </div>
+        <pre class="text-sm font-mono text-sand-700 dark:text-sand-300 leading-relaxed overflow-x-auto"><code><span class="text-violet-600 dark:text-violet-400">import</span> { defineConfig } <span class="text-violet-600 dark:text-violet-400">from</span> <span class="text-amber-600 dark:text-amber-400">'vite'</span>
+<span class="text-violet-600 dark:text-violet-400">import</span> vitto <span class="text-violet-600 dark:text-violet-400">from</span> <span class="text-amber-600 dark:text-amber-400">'vitto'</span>
+
+<span class="text-violet-600 dark:text-violet-400">export default</span> defineConfig({
+  plugins: [
+    vitto({
+      metadata: {
+        siteName: <span class="text-amber-600 dark:text-amber-400">'My Site'</span>,
+      },
+    }),
+  ],
+})</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Templates -->
+<section class="py-20 md:py-28 bg-sand-100/30 dark:bg-sand-800/15">
+  <div class="max-w-5xl mx-auto px-5 sm:px-8">
+    <div class="text-center mb-12">
+      <p class="text-sm font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-3">Templates</p>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white">
+        Start with the right foundation.
+      </h2>
+      <p class="mt-4 text-sand-500 dark:text-sand-400 max-w-xl mx-auto">
+        Choose from pre-built templates or start from scratch.
+      </p>
+    </div>
+
+    <div class="reveal grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="group p-5 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-semibold text-sand-900 dark:text-white">Basic</h4>
+          <code class="text-xs font-mono text-sand-400 dark:text-sand-500 bg-sand-100 dark:bg-sand-800 px-2 py-1 rounded-md">--template basic</code>
+        </div>
+        <p class="text-sm text-sand-500 dark:text-sand-400">Minimal Vitto setup. Clean slate, maximum flexibility.</p>
+      </div>
+
+      <div class="group p-5 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-semibold text-sand-900 dark:text-white">Tailwind CSS</h4>
+          <code class="text-xs font-mono text-sand-400 dark:text-sand-500 bg-sand-100 dark:bg-sand-800 px-2 py-1 rounded-md">--template tailwindcss</code>
+        </div>
+        <p class="text-sm text-sand-500 dark:text-sand-400">Tailwind CSS pre-configured. Utility-first styling ready to go.</p>
+      </div>
+
+      <div class="group p-5 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-semibold text-sand-900 dark:text-white">Alpine.js</h4>
+          <code class="text-xs font-mono text-sand-400 dark:text-sand-500 bg-sand-100 dark:bg-sand-800 px-2 py-1 rounded-md">--template alpinejs</code>
+        </div>
+        <p class="text-sm text-sand-500 dark:text-sand-400">Alpine.js integration. Interactive components without the bloat.</p>
+      </div>
+
+      <div class="group p-5 rounded-2xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-semibold text-sand-900 dark:text-white">htmx</h4>
+          <code class="text-xs font-mono text-sand-400 dark:text-sand-500 bg-sand-100 dark:bg-sand-800 px-2 py-1 rounded-md">--template htmx</code>
+        </div>
+        <p class="text-sm text-sand-500 dark:text-sand-400">htmx integration. Hypermedia-driven interactions made easy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Deployment -->
+<section class="py-20 md:py-28 bg-sand-100/50 dark:bg-sand-800/30">
+  <div class="max-w-5xl mx-auto px-5 sm:px-8">
+    <div class="reveal flex flex-col md:flex-row items-center justify-between gap-8 p-8 md:p-10 rounded-3xl bg-white dark:bg-sand-800/80 border border-sand-200/60 dark:border-sand-700/40">
+      <div class="text-center md:text-left">
+        <p class="text-sm font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-2">Deploy</p>
+        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-sand-900 dark:text-white mb-3">
+          Ship to Cloudflare in one click.
+        </h2>
+        <p class="text-sand-500 dark:text-sand-400 max-w-md">
+          Vitto is optimized for Cloudflare Pages. Deploy your starter project instantly with zero configuration.
+        </p>
+      </div>
+      <div class="shrink-0">
+        <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/riipandi/vitto/tree/main/starter"
+          target="_blank" rel="noopener noreferrer">
+          <img src="https://deploy.workers.cloudflare.com/button" class="h-12 w-auto opacity-90 hover:opacity-100 transition-opacity" alt="Deploy to Cloudflare Workers">
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- CTA -->
+<section class="py-20 md:py-28 bg-sand-100/30 dark:bg-sand-800/15">
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 text-center">
+    <div class="reveal">
+      <!-- Gradient accent -->
+      <div class="relative inline-block mb-8">
+        <div class="absolute inset-0 bg-gradient-to-r from-amber-400 via-amber-500 to-violet-500 rounded-full blur-2xl opacity-20 dark:opacity-15 scale-150"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="relative w-12 h-12 text-sand-400 dark:text-sand-500"><path d="M12 2v4"/><path d="m6.34 6.34 2.83 2.83"/><path d="M2 12h4"/><path d="m6.34 17.66 2.83-2.83"/><path d="M12 18v4"/><path d="m17.66 17.66-2.83-2.83"/><path d="M18 12h4"/><path d="m17.66 6.34-2.83 2.83"/></svg>
+      </div>
+
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-sand-900 dark:text-white mb-4">
+        Start building today.
+      </h2>
+      <p class="text-lg text-sand-500 dark:text-sand-400 mb-10 max-w-lg mx-auto leading-relaxed">
+        Join the growing community of developers shipping fast, beautiful static sites with Vitto.
+      </p>
+
+      <!-- Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/docs/getting-started/installation"
+          class="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-sand-900 dark:bg-white text-white dark:text-sand-900 font-semibold text-sm hover:bg-sand-800 dark:hover:bg-sand-100 transition-all shadow-lg shadow-sand-900/10 dark:shadow-white/10 hover:shadow-xl hover:shadow-sand-900/15 dark:hover:shadow-white/15">
+          Get Started
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 transition-transform group-hover:translate-x-0.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="https://github.com/riipandi/vitto" target="_blank" rel="noopener noreferrer"
+          class="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-sand-100 dark:bg-sand-800 text-sand-700 dark:text-sand-300 font-medium text-sm hover:bg-sand-200 dark:hover:bg-sand-700 transition-all border border-sand-200/60 dark:border-sand-700/60 hover:border-sand-300 dark:hover:border-sand-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          View on GitHub
+        </a>
+      </div>
+
+      <!-- Trust signals -->
+      <div class="mt-10 flex items-center justify-center gap-6 text-xs text-sand-400 dark:text-sand-500">
+        <span class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+          MIT License
+        </span>
+        <span class="w-1 h-1 rounded-full bg-sand-300 dark:bg-sand-600"></span>
+        <span class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          TypeScript
+        </span>
+        <span class="w-1 h-1 rounded-full bg-sand-300 dark:bg-sand-600"></span>
+        <span class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Vite v8
+        </span>
+      </div>
+    </div>
+  </div>
+</section>

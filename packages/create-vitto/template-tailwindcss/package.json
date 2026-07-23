@@ -20,6 +20,6 @@
         "tailwindcss": "^4.3.3",
         "typescript": "^7.0.2",
         "vite": "^8.1.5",
-        "vitto": "^0.1.2"
+        "vitto": "^0.2.0"
     }
 }
