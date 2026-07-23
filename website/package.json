@@ -18,11 +18,11 @@
     },
     "dependencies": {
         "@pagefind/component-ui": "^1.5.2",
-        "@shikijs/langs": "^4.0.0",
-        "@shikijs/markdown-it": "^4.0.0",
-        "@shikijs/themes": "^4.0.0",
-        "markdown-it": "^14.0.0",
-        "shiki": "^4.0.0",
+        "@shikijs/langs": "^4.3.1",
+        "@shikijs/markdown-it": "^4.3.1",
+        "@shikijs/themes": "^4.3.1",
+        "markdown-it": "^14.3.0",
+        "shiki": "^4.3.1",
         "ufo": "^1.6.4"
     },
     "devDependencies": {
@@ -36,6 +36,6 @@
         "typescript": "^7.0.2",
         "vite": "^8.1.5",
         "vitto": "workspace:*",
-        "wrangler": "^4.113.0"
+        "wrangler": "^4.114.0"
     }
 }
