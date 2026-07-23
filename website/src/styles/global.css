@@ -43,6 +43,9 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+
+    /* Offset anchor scroll for sticky header */
+    scroll-padding-top: 5rem;
   }
 
   html,
@@ -57,17 +60,6 @@
   pre,
   code {
     @apply font-mono;
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-sand-300 dark:bg-sand-700 rounded-full;
   }
 }
 
@@ -137,6 +129,18 @@
 /* Fallback pre/code (non-shiki) */
 .prose pre:not(.shiki) {
   @apply bg-sand-900 dark:bg-[#111110] text-sand-200 rounded-xl p-4 overflow-x-auto text-sm leading-relaxed border border-sand-800/50;
+}
+
+/* Code block inside prose — more padding, proper scrollbar */
+.prose pre {
+  @apply p-5;
+}
+.prose pre::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.prose pre::-webkit-scrollbar-thumb {
+  @apply bg-sand-400 dark:bg-sand-600 rounded-full;
 }
 
 .prose code {

@@ -73,13 +73,17 @@ md.use(
   })
 );
 
-// Override fence renderer to gracefully handle unknown languages (e.g. vento, toml)
+// Override fence renderer — treat `vento` as `html`, catch truly unknown langs gracefully
 const defaultFence = md.renderer.rules.fence!.bind(md.renderer.rules);
 md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  const token = tokens[idx];
+  // Alias vento → html (syntax is close enough)
+  if (token.info === 'vento') {
+    token.info = 'html';
+  }
   try {
     return defaultFence(tokens, idx, options, env, self);
   } catch {
-    const token = tokens[idx];
     const escaped = md.utils.escapeHtml(token.content);
     return `<pre class="shiki shiki-themes github-light github-dark" style="background-color:#fff;color:#24292e;--shiki-dark-bg:#1a1814;--shiki-dark:#e8e8e3" tabindex="0"><code>${escaped}</code></pre>`;
   }
