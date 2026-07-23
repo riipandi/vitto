@@ -1,7 +1,7 @@
 import './styles/global.css';
 
 // ----------------------------------------------------------------------------
-// Dark mode
+// Dark mode toggle (called from onclick in templates)
 // ----------------------------------------------------------------------------
 function toggleDarkMode() {
   document.documentElement.classList.toggle('dark');
@@ -9,13 +9,10 @@ function toggleDarkMode() {
   localStorage.setItem('darkMode', String(isDark));
 }
 
-if (localStorage.getItem('darkMode') === 'true') {
-  document.documentElement.classList.add('dark');
-}
-
 declare global {
   interface Window {
     toggleDarkMode: () => void;
+    copyCommand: (el: HTMLElement, text: string) => void;
   }
 }
 window.toggleDarkMode = toggleDarkMode;
@@ -96,12 +93,6 @@ async function copyCommand(el: HTMLElement, text: string) {
     }, 1500);
   } catch {
     // Fallback
-  }
-}
-
-declare global {
-  interface Window {
-    copyCommand: (el: HTMLElement, text: string) => void;
   }
 }
 window.copyCommand = copyCommand;
