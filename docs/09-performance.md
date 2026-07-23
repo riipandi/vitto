@@ -258,18 +258,33 @@ export default defineHooks('posts', async () => {
 ```ts
 const POSTS_PER_PAGE = 10;
 
-export default defineHooks('paginatedPosts', async () => {
+export default defineHooks('posts', async () => {
   const allPosts = await getAllPosts();
-  const pages = [];
+  const allItems = allPosts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    date: post.date,
+  }));
+  // Return all items; plugin slices per page via paginate()
+  return allItems;
+});
+```
 
-  for (let i = 0; i < allPosts.length; i += POSTS_PER_PAGE) {
-    pages.push({
-      posts: allPosts.slice(i, i + POSTS_PER_PAGE),
-      pageNumber: Math.floor(i / POSTS_PER_PAGE) + 1,
-    });
-  }
+Configure `paginatedRoutes` in `vite.config.ts`:
 
-  return pages;
+```ts
+vitto({
+  hooks: { posts: postsHook },
+  paginatedRoutes: [
+    {
+      template: 'blog',
+      dataSource: 'posts',
+      pageSize: 10,
+      getParams: (pageNum) => ({ _page: pageNum }),
+      getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+    },
+  ],
 });
 ```
 

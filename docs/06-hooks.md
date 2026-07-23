@@ -671,6 +671,25 @@ export default defineConfig({
 });
 ```
 
+### Pagination Hook
+
+For paginated routes, return **all items** from the hook. The plugin slices them per page automatically:
+
+```ts
+import { defineHooks } from 'vitto';
+
+export const postsHook = defineHooks('posts', async () => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const allPosts = await res.json();
+  // Return everything - plugin handles pagination
+  return allPosts;
+});
+
+export default postsHook;
+```
+
+Then configure `paginatedRoutes` in `vite.config.ts`. The template receives `posts.items`, `posts.page`, `posts.totalPages`, and navigation URLs as described in [Dynamic Routes](./05-dynamic-routes.md).
+
 ## Next Steps
 
 - [Dynamic Routes](./05-dynamic-routes.md) - Use hooks with dynamic routes

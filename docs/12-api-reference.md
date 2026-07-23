@@ -353,6 +353,45 @@ interface DynamicRouteConfig {
 }
 ```
 
+````ts
+
+#### `paginatedRoutes`
+
+- **Type**: `PaginatedRouteConfig[]`
+- **Default**: `[]`
+
+Configure paginated route generation. The plugin slices items from the data source hook per page automatically.
+
+```ts
+vitto({
+  metadata: {
+    siteName: 'My Site',
+    title: 'My Site',
+  },
+  paginatedRoutes: [
+    {
+      template: 'blog',
+      dataSource: 'posts',
+      pageSize: 5,
+      getParams: (pageNum) => ({ _page: pageNum }),
+      getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+    },
+  ],
+});
+````
+
+**PaginatedRouteConfig:**
+
+```ts
+interface PaginatedRouteConfig {
+  template: string; // Template name (without .vto)
+  dataSource: string; // Hook name providing all items
+  pageSize: number; // Items per page
+  getParams: (pageNum: number) => Record<string, any>;
+  getPath: (pageNum: number) => string;
+}
+```
+
 #### `hooks`
 
 - **Type**: `Record<string, HookFunction>`
@@ -1033,6 +1072,59 @@ const DEFAULT_OPTIONS: VittoOptions = {
   },
   outputStrategy: 'html',
 };
+```
+
+## Pagination Helpers
+
+Types and helpers for paginated routes.
+
+### `PaginatedData<T>`
+
+- **Type**: Interface
+
+Shape of paginated data injected into templates.
+
+```ts
+interface PaginatedData<T> {
+  items: T[]; // Items for the current page
+  page: number; // Current page number (1-based)
+  pageSize: number; // Items per page
+  totalItems: number; // Total items across all pages
+  totalPages: number; // Total number of pages
+  hasNext: boolean; // Whether there is a next page
+  hasPrev: boolean; // Whether there is a previous page
+  prevUrl?: string | null; // URL to previous page
+  nextUrl?: string | null; // URL to next page
+  firstUrl?: string; // URL to first page
+  lastUrl?: string; // URL to last page
+}
+```
+
+### `PaginateOptions`
+
+- **Type**: Interface
+
+Options passed to `paginate()`.
+
+```ts
+interface PaginateOptions {
+  page: number; // Current page number (1-based)
+  pageSize: number; // Items per page
+  totalItems?: number; // Override total count (defaults to items.length)
+}
+```
+
+### `paginate<T>(items, options)`
+
+- **Returns**: `PaginatedData<T>`
+
+Slice an array into a single page of items. Used internally by the plugin; you normally do not need to call this directly.
+
+```ts
+import { paginate } from 'vitto';
+
+const result = paginate(posts, { page: 1, pageSize: 10 });
+// { items: [...10 items], page: 1, pageSize: 10, totalPages: 5, ... }
 ```
 
 ## Next Steps

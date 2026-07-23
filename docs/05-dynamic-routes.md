@@ -467,50 +467,36 @@ In `blog.vto`:
 
 The template receives `posts.items`, `posts.page`, `posts.totalPages`, `posts.prevUrl`, `posts.nextUrl`, `posts.firstUrl`, and `posts.lastUrl`.
 
-Generate paginated list pages:
+Generate paginated list pages with the `paginate()` helper:
 
-`hooks/posts-paginated.ts`:
+`vite.config.ts`: register a `posts` hook that returns all items, then configure `paginatedRoutes`:
 
 ```ts
-import { defineHooks } from 'vitto';
+import { defineConfig } from 'vite';
+import vitto from 'vitto';
+import { postsHook } from './hooks/posts';
 
-const POSTS_PER_PAGE = 10;
-
-export const paginatedPostsHook = defineHooks('paginatedPosts', async () => {
-  const allPosts = await postsHook(); // Your function to fetch all posts
-  const pages = [];
-
-  for (let i = 0; i < allPosts.length; i += POSTS_PER_PAGE) {
-    const pageNumber = Math.floor(i / POSTS_PER_PAGE) + 1;
-    const posts = allPosts.slice(i, i + POSTS_PER_PAGE);
-
-    pages.push({
-      pageNumber,
-      posts,
-      hasNext: i + POSTS_PER_PAGE < allPosts.length,
-      hasPrev: pageNumber > 1,
-      totalPages: Math.ceil(allPosts.length / POSTS_PER_PAGE),
-    });
-  }
-
-  return pages;
+export default defineConfig({
+  plugins: [
+    vitto({
+      hooks: {
+        posts: postsHook,
+      },
+      paginatedRoutes: [
+        {
+          template: 'blog',
+          dataSource: 'posts',
+          pageSize: 5,
+          getParams: (pageNum) => ({ _page: pageNum }),
+          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+        },
+      ],
+    }),
+  ],
 });
-
-export default paginatedPostsHook;
 ```
 
-```ts
-{
-  template: 'blog-page',
-  dataSource: 'paginatedPosts',
-  getParams: (page) => ({ pageNumber: page.pageNumber }),
-  getPath: (page) => {
-    return page.pageNumber === 1
-      ? 'blog.html'
-      : `blog/page-${page.pageNumber}.html`
-  }
-}
-```
+The hook returns **all items**; the plugin slices them per page and injects `posts.items`, `posts.page`, `posts.totalPages`, `posts.prevUrl`, `posts.nextUrl`, `posts.firstUrl`, and `posts.lastUrl` into the template.
 
 ### Tag/Category Pages
 
