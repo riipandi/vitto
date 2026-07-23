@@ -34,35 +34,15 @@ interface DocSection {
   items: { slug: string; title: string; order: number }[];
 }
 
-const DOCS_DIR = path.resolve(import.meta.dirname, '../../../docs');
+const CONTENT_DIR = path.resolve(import.meta.dirname, '../../content');
 
-export const SECTIONS: { id: string; label: string; slugs: string[] }[] = [
-  {
-    id: 'getting-started',
-    label: 'Getting Started',
-    slugs: ['01-introduction', '02-getting-started', '03-configuration'],
-  },
-  {
-    id: 'core-concepts',
-    label: 'Core Concepts',
-    slugs: ['04-templating', '05-dynamic-routes', '06-hooks'],
-  },
-  {
-    id: 'features',
-    label: 'Features',
-    slugs: ['07-search', '08-deployment', '09-performance'],
-  },
-  {
-    id: 'reference',
-    label: 'Reference',
-    slugs: [
-      '10-examples',
-      '11-troubleshooting',
-      '12-api-reference',
-      '13-contributing',
-      '14-comparison',
-    ],
-  },
+// Section definitions — folder name = section id, order defines display order
+export const SECTIONS: { id: string; label: string; order: number }[] = [
+  { id: 'getting-started', label: 'Getting Started', order: 1 },
+  { id: 'core', label: 'Core Concepts', order: 2 },
+  { id: 'features', label: 'Features', order: 3 },
+  { id: 'guides', label: 'Guides', order: 4 },
+  { id: 'reference', label: 'Reference', order: 5 },
 ];
 
 // Create highlighter synchronously with pre-loaded themes/langs
@@ -105,10 +85,37 @@ md.renderer.rules.fence = (tokens, idx, options, env, self) => {
   }
 };
 
-function parseDocFile(filePath: string): DocItem | null {
+/**
+ * Scan content directory recursively and return all doc items.
+ * Folder structure: content/{category}/{slug}.md
+ * Slug = "category/slug" (e.g. "getting-started/introduction")
+ */
+function getAllDocs(): DocItem[] {
+  if (!fs.existsSync(CONTENT_DIR)) return [];
+
+  const docs: DocItem[] = [];
+
+  for (const section of SECTIONS) {
+    const sectionDir = path.join(CONTENT_DIR, section.id);
+    if (!fs.existsSync(sectionDir)) continue;
+
+    const files = fs.readdirSync(sectionDir).filter((f) => f.endsWith('.md'));
+
+    for (const file of files) {
+      const filePath = path.join(sectionDir, file);
+      const doc = parseDocFile(filePath, section.id, section.label);
+      if (doc) docs.push(doc);
+    }
+  }
+
+  return docs;
+}
+
+function parseDocFile(filePath: string, sectionId: string, sectionLabel: string): DocItem | null {
   try {
     const raw = fs.readFileSync(filePath, 'utf-8');
     const fileName = path.basename(filePath, '.md');
+    const slug = `${sectionId}/${fileName}`;
 
     // Extract first heading as title
     const titleMatch = raw.match(/^#\s+(.+)$/m);
@@ -121,44 +128,33 @@ function parseDocFile(filePath: string): DocItem | null {
     // Convert markdown to HTML with Shiki highlighting (synchronous)
     const content = md.render(raw);
 
-    // Extract order number from filename
+    // Extract order number from filename (optional prefix like "01-")
     const orderMatch = fileName.match(/^(\d+)/);
     const order = orderMatch ? parseInt(orderMatch[1], 10) : 99;
 
-    const slug = fileName;
-
-    // Find section
-    let section = 'reference';
-    let sectionLabel = 'Reference';
-    for (const s of SECTIONS) {
-      if (s.slugs.includes(slug)) {
-        section = s.id;
-        sectionLabel = s.label;
-        break;
-      }
-    }
-
-    return { slug, title, description, content, order, section, sectionLabel };
+    return {
+      slug,
+      title,
+      description,
+      content,
+      order,
+      section: sectionId,
+      sectionLabel,
+    };
   } catch {
     return null;
   }
 }
 
-function getAllDocs(): DocItem[] {
-  if (!fs.existsSync(DOCS_DIR)) return [];
-
-  const files = fs.readdirSync(DOCS_DIR).filter((f) => f.endsWith('.md'));
-  const docs = files.map((f) => parseDocFile(path.join(DOCS_DIR, f))).filter(Boolean) as DocItem[];
-
-  // Sort by order
-  docs.sort((a, b) => a.order - b.order);
-  return docs;
-}
-
 function getDocBySlug(slug: string): DocItem | null {
-  const filePath = path.join(DOCS_DIR, `${slug}.md`);
+  const filePath = path.join(CONTENT_DIR, `${slug}.md`);
   if (!fs.existsSync(filePath)) return null;
-  return parseDocFile(filePath);
+
+  // Determine section from slug path
+  const parts = slug.split('/');
+  const sectionId = parts[0] || '';
+  const section = SECTIONS.find((s) => s.id === sectionId);
+  return parseDocFile(filePath, sectionId, section?.label || '');
 }
 
 function getSections(): DocSection[] {
@@ -166,12 +162,10 @@ function getSections(): DocSection[] {
   return SECTIONS.map((s) => ({
     id: s.id,
     label: s.label,
-    items: s.slugs
-      .map((slug) => {
-        const doc = allDocs.find((d) => d.slug === slug);
-        return doc ? { slug: doc.slug, title: doc.title, order: doc.order } : null;
-      })
-      .filter(Boolean) as { slug: string; title: string; order: number }[],
+    items: allDocs
+      .filter((d: DocItem) => d.section === s.id)
+      .toSorted((a: DocItem, b: DocItem) => a.order - b.order)
+      .map((d: DocItem) => ({ slug: d.slug, title: d.title, order: d.order })),
   }));
 }
 
