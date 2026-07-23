@@ -25,8 +25,8 @@
     "vars": {
         /* Build -> Variables and secrets */
         "WRANGLER_SEND_METRICS": "false",
-        "COREPACK_INTEGRITY_KEYS": "0"
-        // "NODE_VERSION": "22.20.0",
-        // "PNPM_VERSION": "10.18.3"
+        "COREPACK_INTEGRITY_KEYS": "0",
+        "NODE_VERSION": "24.18.0",
+        "PNPM_VERSION": "11.16.0"
     }
 }

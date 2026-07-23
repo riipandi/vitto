@@ -23,8 +23,5 @@
         "oxlint": "^1.75.0",
         "turbo": "^2.10.6"
     },
-    "engines": {
-        "node": ">=22"
-    },
     "packageManager": "pnpm@11.16.0"
 }
