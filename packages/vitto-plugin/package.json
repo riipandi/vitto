@@ -49,7 +49,7 @@
         "build": "tsc && tsdown",
         "prepublishOnly": "NODE_ENV=production tsdown",
         "publish:dry": "NODE_ENV=production pnpm publish --no-git-checks --dry-run",
-        "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks",
+        "publish:npm": "NODE_ENV=production pnpm publish --no-git-checks --provenance",
         "cleanup": "pnpm dlx del-cli dist node_modules .turbo",
         "lint": "oxlint --fix",
         "check": "oxlint --fix && oxfmt --write",

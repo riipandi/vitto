@@ -72,7 +72,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: ${{ inputs.pnpmVersion }}
           run_install: false
           standalone: true
           cache: true
@@ -136,20 +135,19 @@ jobs:
         env:
           NODE_ENV: production
 
-      # This step not required when using OIDC authentication (Trusted Publisher)
-      - name: Setup npm authentication
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
+      # OIDC (Trusted Publisher) — no .npmrc token needed.
+      # Requires: npm package linked to this GitHub repo in npm settings.
+      # NODE_AUTH_TOKEN is used by setup-node for registry auth fallback.
       - name: Publish packages to npm
         if: steps.check_versions.outputs.can_publish == 'true'
         run: |
           # Publish vitto
           pnpm turbo publish:npm --filter=vitto
-          echo "✓ Published vitto@${{ steps.version.outputs.version }}"
+          echo "\u2714 Published vitto@${{ steps.version.outputs.version }}"
 
           # Publish create-vitto
           pnpm turbo publish:npm --filter=create-vitto
-          echo "✓ Published create-vitto@${{ steps.version.outputs.version }}"
+          echo "\u2714 Published create-vitto@${{ steps.version.outputs.version }}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
