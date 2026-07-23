@@ -1,6 +1,7 @@
 # Introduction
 
-Vitto is a Vite plugin that enables you to build static sites using the [Vento](https://vento.js.org) templating engine. It combines the power of Vite's development experience with Vento's simple and expressive templating syntax.
+Vitto is a Vite plugin that enables you to build static sites using the [Vento](https://vento.js.org) templating engine.
+It combines the power of Vite's development experience with Vento's simple and expressive templating syntax.
 
 ## Why Vitto?
 
@@ -9,7 +10,7 @@ Vitto is a Vite plugin that enables you to build static sites using the [Vento](
 - **🔍 Built-in Search**: Integrated Pagefind search indexing
 - **🎨 Modern Tooling**: Full TypeScript support and modern build pipeline
 - **🌐 Dynamic Routes**: Generate static pages from dynamic data sources
-- **⚡ Zero Configuration**: Works out of the box with sensible defaults
+- **⚡ Minimal Configuration**: Works out of the box with sensible defaults
 
 ## Requirements
 

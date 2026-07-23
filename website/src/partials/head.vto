@@ -8,6 +8,15 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.ico">
 
+<!-- Theme color -->
+<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1814" media="(prefers-color-scheme: dark)">
+
+<!-- Inter font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 {{ set pageTitle = metadata.title ? `${metadata.title} - ${metadata.siteName}` : metadata.siteName }}
 <title>{{ pageTitle |> safe }}</title>
 
@@ -16,7 +25,7 @@
 <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
 <script src="/_pagefind/pagefind-ui.js"></script>
 <script>
-  window.addEventListener('DOMContentLoaded', (event) => {
+  window.addEventListener('DOMContentLoaded', () => {
     const searchElement = document.querySelector("#search");
     if (searchElement) {
       new PagefindUI({

@@ -1,16 +1,60 @@
 {{ layout "layouts/site.vto" }}
 
 {{ setMetadata('title', 'About') }}
-{{ setMetadata('description', 'Learn more about Vitto, minimal static site generator built with Vite and the Vento templating engine') }}
+{{ setMetadata('description', 'Learn more about Vitto — a minimal static site generator built with Vite and the Vento templating engine.') }}
 
-<div class="flex min-h-[80vh] flex-col items-center justify-center space-y-12 w-full bg-white dark:bg-gray-900">
-  <div class="text-center">
-    <h1 class="text-4xl md:text-6xl font-bold mb-6">
-      About {{ metadata.siteName }}
+<!-- Hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50 to-sand-100/50 dark:from-sand-900 dark:to-sand-900"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-gradient-to-b from-amber-200/15 via-transparent to-transparent dark:from-amber-500/8 dark:via-transparent dark:to-transparent rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="max-w-3xl mx-auto px-5 sm:px-8 pt-20 pb-16 md:pt-28 md:pb-20 text-center">
+    <h1 class="slide-up text-4xl md:text-5xl font-bold tracking-tight text-sand-900 dark:text-white mb-6">
+      About Vitto
     </h1>
-    <p class="text-base md:text-lg mb-8 dark:text-gray-200 max-w-3xl mx-auto">
-      A modern web application built with Vento template engine. <br/> Fast, reliable, and easy to use.
+    <p class="slide-up-delay-1 text-lg text-sand-500 dark:text-sand-400 leading-relaxed max-w-2xl mx-auto">
+      A minimal static site generator built with Vite and the Vento templating engine.
+      Fast, flexible, and developer-friendly.
     </p>
   </div>
-</div>
-<
+</section>
+
+<!-- Content -->
+<section class="py-16 md:py-20">
+  <div class="max-w-3xl mx-auto px-5 sm:px-8">
+    <div class="prose prose-lg max-w-none">
+      <h2>The Idea</h2>
+      <p>
+        Vitto was born from a simple observation: building static sites shouldn't require learning
+        an entire framework. You should be able to write templates, point to your data, and ship.
+      </p>
+      <p>
+        Built on top of <a href="https://vite.dev">Vite</a> and the <a href="https://vento.js.org">Vento</a>
+        templating engine, Vitto gives you the full power of modern tooling without the overhead.
+      </p>
+
+      <h2>Philosophy</h2>
+      <ul>
+        <li><strong>Simple</strong> — Minimal configuration to get started</li>
+        <li><strong>Flexible</strong> — Extensive customization when you need it</li>
+        <li><strong>Fast</strong> — Leverages Vite's optimized build pipeline</li>
+        <li><strong>Developer-Friendly</strong> — Hot reload, helpful errors, great DX</li>
+      </ul>
+
+      <h2>Built by</h2>
+      <p>
+        Vitto is created and maintained by <a href="https://x.com/riipandi">Aris Ripandi</a>.
+        Open source, MIT licensed, and welcoming contributions.
+      </p>
+
+      <h2>Get Involved</h2>
+      <p>
+        Whether you want to report a bug, request a feature, or contribute code — we'd love your help.
+        Check out the <a href="https://github.com/riipandi/vitto">GitHub repository</a> or
+        join the <a href="https://github.com/riipandi/vitto/discussions">discussions</a>.
+      </p>
+    </div>
+  </div>
+</section>

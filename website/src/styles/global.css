@@ -1,14 +1,106 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Vitto Design System — Creative Minimalist
+   --------------------------------------------------------------------------- */
+
+@theme {
+  --color-sand-50: #faf9f6;
+  --color-sand-100: #f3f1eb;
+  --color-sand-200: #e8e4d9;
+  --color-sand-300: #d4cfc0;
+  --color-sand-400: #b0a894;
+  --color-sand-500: #8f8572;
+  --color-sand-600: #6b6354;
+  --color-sand-700: #4a4539;
+  --color-sand-800: #2d2a22;
+  --color-sand-900: #1a1814;
+
+  --color-amber-50: #fefce8;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   html,
   body {
-    @apply antialiased min-h-screen scroll-smooth;
+    @apply antialiased min-h-screen;
   }
+
+  ::selection {
+    @apply bg-amber-200/60 text-sand-900 dark:bg-violet-500/30 dark:text-white;
+  }
+
   pre,
   code {
     @apply font-mono;
   }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-sand-300 dark:bg-sand-700 rounded-full;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilities
+   --------------------------------------------------------------------------- */
+
+@utility fade-in {
+  animation: fadeIn 0.5s ease-out both;
+}
+
+@utility slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@utility slide-up-delay-1 {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@utility slide-up-delay-2 {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+@utility slide-up-delay-3 {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+@utility glow-amber {
+  box-shadow: 0 0 40px -8px rgba(245, 158, 11, 0.25);
+}
+
+@utility glow-violet {
+  box-shadow: 0 0 40px -8px rgba(139, 92, 246, 0.25);
 }
 
 /* Debug element */
@@ -16,4 +108,157 @@
   border-width: 1px;
   border-style: dashed;
   border-color: #f87171;
+}
+
+/* ---------------------------------------------------------------------------
+   Code blocks — Shiki syntax highlighting
+   --------------------------------------------------------------------------- */
+
+/* Shiki containers */
+.shiki {
+  @apply rounded-xl p-4 overflow-x-auto text-sm leading-relaxed border border-sand-200/60 dark:border-sand-700/40;
+  background-color: #fff !important;
+  color: #24292e !important;
+}
+
+.dark .shiki,
+.shiki[data-theme="dark"] {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+}
+
+.shiki code {
+  @apply font-mono;
+}
+
+/* Fallback pre/code (non-shiki) */
+.prose pre:not(.shiki) {
+  @apply bg-sand-900 dark:bg-[#111110] text-sand-200 rounded-xl p-4 overflow-x-auto text-sm leading-relaxed border border-sand-800/50;
+}
+
+.prose code {
+  @apply text-amber-600 dark:text-amber-400 text-[0.875em] font-medium;
+}
+
+.prose pre code:not(.shiki code) {
+  @apply text-sand-200 bg-transparent p-0;
+}
+
+.prose :not(pre) > code {
+  @apply bg-sand-100 dark:bg-sand-800 px-1.5 py-0.5 rounded-md;
+}
+
+/* Prose overrides for docs */
+.prose h1 {
+  @apply text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white;
+}
+
+.prose h2 {
+  @apply text-2xl font-semibold tracking-tight text-sand-900 dark:text-white mt-12 mb-4 pb-2 border-b border-sand-200 dark:border-sand-800;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold text-sand-800 dark:text-sand-100 mt-8 mb-3;
+}
+
+.prose p {
+  @apply text-sand-700 dark:text-sand-300 leading-relaxed;
+}
+
+.prose ul,
+.prose ol {
+  @apply text-sand-700 dark:text-sand-300;
+}
+
+.prose li {
+  @apply leading-relaxed;
+}
+
+.prose a {
+  @apply text-amber-600 dark:text-amber-400 underline decoration-amber-300/50 dark:decoration-amber-500/30 hover:decoration-amber-500 dark:hover:decoration-amber-400 transition-colors;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-amber-400 dark:border-violet-500 bg-amber-50/50 dark:bg-violet-500/5 rounded-r-xl px-5 py-4 my-6;
+}
+
+.prose blockquote p {
+  @apply text-sand-600 dark:text-sand-400 italic;
+}
+
+.prose table {
+  @apply w-full text-sm;
+}
+
+.prose th {
+  @apply text-left font-semibold text-sand-800 dark:text-sand-200 pb-2 border-b border-sand-200 dark:border-sand-700;
+}
+
+.prose td {
+  @apply py-2 border-b border-sand-100 dark:border-sand-800;
+}
+
+.prose hr {
+  @apply border-sand-200 dark:border-sand-800 my-8;
+}
+
+/* ---------------------------------------------------------------------------
+   Animations
+   --------------------------------------------------------------------------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Intersection observer reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

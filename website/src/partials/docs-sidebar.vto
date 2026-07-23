@@ -1,0 +1,125 @@
+<!-- Docs sidebar — desktop -->
+<aside class="hidden lg:block w-64 shrink-0 border-r border-sand-200/60 dark:border-sand-800/60 bg-sand-50 dark:bg-sand-900 overflow-y-auto sticky top-16 h-[calc(100vh-4rem)]">
+  <div class="p-6 space-y-6">
+    <!-- Search -->
+    {{ if !isDev }}
+    <div id="search" class="text-sm"></div>
+    {{ /if }}
+
+    <div>
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-2 px-1">
+        Getting Started
+      </h4>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="/docs/01-introduction"
+            class="{{currentPath === '/docs/01-introduction' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Introduction
+          </a>
+        </li>
+        <li>
+          <a href="/docs/02-getting-started"
+            class="{{currentPath === '/docs/02-getting-started' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Getting Started
+          </a>
+        </li>
+        <li>
+          <a href="/docs/03-configuration"
+            class="{{currentPath === '/docs/03-configuration' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Configuration
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-2 px-1">
+        Core Concepts
+      </h4>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="/docs/04-templating"
+            class="{{currentPath === '/docs/04-templating' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Templating
+          </a>
+        </li>
+        <li>
+          <a href="/docs/05-dynamic-routes"
+            class="{{currentPath === '/docs/05-dynamic-routes' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Dynamic Routes
+          </a>
+        </li>
+        <li>
+          <a href="/docs/06-hooks"
+            class="{{currentPath === '/docs/06-hooks' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Hooks System
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-2 px-1">
+        Features
+      </h4>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="/docs/07-search"
+            class="{{currentPath === '/docs/07-search' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Search Integration
+          </a>
+        </li>
+        <li>
+          <a href="/docs/08-deployment"
+            class="{{currentPath === '/docs/08-deployment' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Deployment
+          </a>
+        </li>
+        <li>
+          <a href="/docs/09-performance"
+            class="{{currentPath === '/docs/09-performance' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Performance
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-2 px-1">
+        Reference
+      </h4>
+      <ul class="space-y-0.5">
+        <li>
+          <a href="/docs/10-examples"
+            class="{{currentPath === '/docs/10-examples' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Examples
+          </a>
+        </li>
+        <li>
+          <a href="/docs/11-troubleshooting"
+            class="{{currentPath === '/docs/11-troubleshooting' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Troubleshooting
+          </a>
+        </li>
+        <li>
+          <a href="/docs/12-api-reference"
+            class="{{currentPath === '/docs/12-api-reference' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            API Reference
+          </a>
+        </li>
+        <li>
+          <a href="/docs/13-contributing"
+            class="{{currentPath === '/docs/13-contributing' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Contributing
+          </a>
+        </li>
+        <li>
+          <a href="/docs/14-comparison"
+            class="{{currentPath === '/docs/14-comparison' ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+            Comparison
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</aside>

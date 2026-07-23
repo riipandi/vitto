@@ -1,0 +1,74 @@
+{{ layout "layouts/docs.vto" }}
+
+{{ setMetadata('title', 'Documentation') }}
+{{ setMetadata('description', 'Comprehensive documentation for Vitto — a minimal static site generator built with Vite and Vento.') }}
+
+<!-- Build sections from docs array -->
+{{ set sections = [",",",",","] }}
+{{ set sectionData = [
+  { id: "getting-started", label: "Getting Started", slugs: ["01-introduction", "02-getting-started", "03-configuration"] },
+  { id: "core-concepts", label: "Core Concepts", slugs: ["04-templating", "05-dynamic-routes", "06-hooks"] },
+  { id: "features", label: "Features", slugs: ["07-search", "08-deployment", "09-performance"] },
+  { id: "reference", label: "Reference", slugs: ["10-examples", "11-troubleshooting", "12-api-reference", "13-contributing", "14-comparison"] }
+] }}
+
+<div class="flex grow">
+  <!-- Sidebar -->
+  <aside class="hidden lg:block w-64 shrink-0 border-r border-sand-200/60 dark:border-sand-800/60 bg-sand-50 dark:bg-sand-900 overflow-y-auto sticky top-16 h-[calc(100vh-4rem)]">
+    <div class="p-6 space-y-6">
+      {{ for sec of sectionData }}
+        <div>
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-2 px-1">
+            {{ sec.label }}
+          </h4>
+          <ul class="space-y-0.5">
+            {{ for slug of sec.slugs }}
+              <li>
+                <a href="/docs/{{ slug }}"
+                  class="{{currentPath === '/docs/' + slug ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 font-medium' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800'}} block px-3 py-1.5 rounded-lg text-sm transition-colors">
+                  {{ slug }}
+                </a>
+              </li>
+            {{ /for }}
+          </ul>
+        </div>
+      {{ /for }}
+    </div>
+  </aside>
+
+  <div class="flex-1 min-w-0">
+    <div class="max-w-3xl mx-auto px-5 sm:px-8 py-12 md:py-16">
+      <div class="mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white mb-4">
+          Documentation
+        </h1>
+        <p class="text-sand-500 dark:text-sand-400 text-lg leading-relaxed">
+          Everything you need to build fast, beautiful static sites with Vitto.
+        </p>
+      </div>
+
+      {{ for sec of sectionData }}
+        <div class="mb-10">
+          <h2 class="text-lg font-semibold text-sand-900 dark:text-white mb-4 pb-2 border-b border-sand-200/60 dark:border-sand-700/40">
+            {{ sec.label }}
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {{ for slug of sec.slugs }}
+              <a href="/docs/{{ slug }}"
+                class="group flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-sm">
+                <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/20 transition-colors">
+                  <i data-lucide="file-text" class="w-4 h-4 text-amber-600 dark:text-amber-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-sand-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    {{ slug }}
+                  </h3>
+                </div>
+              </a>
+            {{ /for }}
+          </div>
+        </div>
+      {{ /for }}
+    </div>
+  </div>
+</div>

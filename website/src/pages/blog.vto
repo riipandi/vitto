@@ -2,70 +2,73 @@
 
 {{ setMetadata('title', 'Blog') }}
 
-<div class="-z-10 fixed inset-0">
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-white dark:from-gray-950 dark:to-black"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/5 via-transparent to-transparent dark:from-blue-500/10">
-    </div>
-</div>
+<!-- Hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50 to-sand-100/50 dark:from-sand-900 dark:to-sand-900"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-gradient-to-b from-amber-200/15 via-transparent to-transparent dark:from-amber-500/8 dark:via-transparent dark:to-transparent rounded-full blur-3xl"></div>
+  </div>
 
-<div class="flex min-h-[80vh] flex-col items-center justify-center space-y-12 w-full bg-white dark:bg-gray-900 py-12">
-  <div class="text-center">
-    <h1 class="text-4xl md:text-6xl font-bold mb-6">
-      Latest Posts
+  <div class="max-w-3xl mx-auto px-5 sm:px-8 pt-20 pb-12 md:pt-28 md:pb-16 text-center">
+    <h1 class="slide-up text-4xl md:text-5xl font-bold tracking-tight text-sand-900 dark:text-white mb-4">
+      Blog
     </h1>
-    <p class="text-base md:text-lg mb-8 dark:text-gray-400 max-w-2xl mx-auto text-gray-600">
-      Thoughts, ideas, and updates from our team
+    <p class="slide-up-delay-1 text-lg text-sand-500 dark:text-sand-400">
+      Updates, ideas, and stories from the Vitto project.
     </p>
   </div>
+</section>
 
-  <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Posts -->
+<section class="py-12 md:py-16">
+  <div class="max-w-3xl mx-auto px-5 sm:px-8">
     {{ if posts && posts.items && posts.items.length > 0 }}
-      <ul class="space-y-8">
+      <div class="space-y-1">
         {{ for post of posts.items }}
-          <li class="border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
-            <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
-            </h3>
-            <p class="mb-4 text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
+          <a href="/blog/{{ post.slug }}"
+            class="group block p-5 -mx-5 rounded-xl hover:bg-sand-100/80 dark:hover:bg-sand-800/50 transition-colors">
+            <h2 class="text-xl font-semibold text-sand-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors mb-2">
+              {{ post.title }}
+            </h2>
+            <p class="text-sand-500 dark:text-sand-400 line-clamp-2 leading-relaxed mb-2">
               {{ post.body }}
             </p>
-            <a href="/blog/{{ post.slug }}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">
+            <span class="text-sm font-medium text-amber-600 dark:text-amber-400 inline-flex items-center gap-1">
               Read more
-              <span class="transition-transform group-hover:translate-x-1">→</span>
-            </a>
-          </li>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"></i>
+            </span>
+          </a>
         {{ /for }}
-      </ul>
+      </div>
     {{ else }}
-      <p class="text-center text-gray-500 dark:text-gray-400 text-lg">
-        No posts available yet
-      </p>
+      <div class="text-center py-20">
+        <div class="w-14 h-14 rounded-2xl bg-sand-100 dark:bg-sand-800 flex items-center justify-center mx-auto mb-5">
+          <i data-lucide="pen-line" class="w-7 h-7 text-sand-400 dark:text-sand-500"></i>
+        </div>
+        <p class="text-sand-500 dark:text-sand-400 text-lg">No posts available yet.</p>
+      </div>
+    {{ /if }}
+
+    {{ if posts && posts.totalPages > 1 }}
+      <nav class="flex items-center justify-center gap-3 mt-12 pt-8 border-t border-sand-200/60 dark:border-sand-700/40">
+        {{ if posts.hasPrev }}
+          <a href="{{ posts.prevUrl }}"
+            class="px-4 py-2 text-sm font-medium text-sand-600 dark:text-sand-400 bg-white dark:bg-sand-800 border border-sand-200/60 dark:border-sand-700/40 rounded-xl hover:border-amber-300 dark:hover:border-amber-500/30 transition-colors">
+            Previous
+          </a>
+        {{ /if }}
+
+        <span class="text-sm text-sand-400 dark:text-sand-500">
+          Page {{ posts.page }} of {{ posts.totalPages }}
+        </span>
+
+        {{ if posts.hasNext }}
+          <a href="{{ posts.nextUrl }}"
+            class="px-4 py-2 text-sm font-medium text-white bg-sand-900 dark:bg-white dark:text-sand-900 rounded-xl hover:bg-sand-800 dark:hover:bg-sand-100 transition-colors">
+            Next
+          </a>
+        {{ /if }}
+      </nav>
     {{ /if }}
   </div>
-
-  {{ if posts && posts.totalPages > 1 }}
-    <nav class="flex items-center justify-center gap-2 mt-8">
-      {{ if posts.hasPrev }}
-        <a
-          href="{{ posts.prevUrl }}"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-        >
-          Previous
-        </a>
-      {{ /if }}
-
-      <span class="text-sm text-gray-500 dark:text-gray-400 px-4">
-        Page {{ posts.page }} of {{ posts.totalPages }}
-      </span>
-
-      {{ if posts.hasNext }}
-        <a
-          href="{{ posts.nextUrl }}"
-          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:border-blue-500"
-        >
-          Next
-        </a>
-      {{ /if }}
-    </nav>
-  {{ /if }}
-</div>
+</section>

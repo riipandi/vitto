@@ -2,61 +2,40 @@
 
 {{ setMetadata('title', 'Page Not Found') }}
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
-  <div class="relative flex max-w-lg w-full space-y-8 text-center flex-col px-4 py-16 sm:px-6 lg:px-8">
-    <div>
-      <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6">404</h1>
-      <h2 class="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
-        Page Not Found
-      </h2>
-      <p class="text-gray-600 dark:text-gray-400 mt-6">
-        Sorry, we couldn't find the page you're looking for. <br/>
+<div class="min-h-screen flex items-center justify-center bg-sand-50 dark:bg-sand-900 px-5">
+  <div class="max-w-lg w-full text-center">
+    <div class="mb-8">
+      <div class="w-20 h-20 rounded-3xl bg-sand-100 dark:bg-sand-800 flex items-center justify-center mx-auto mb-6">
+        <span class="text-4xl font-bold text-sand-300 dark:text-sand-600">404</span>
+      </div>
+      <h1 class="text-3xl font-bold text-sand-900 dark:text-white mb-3">Page Not Found</h1>
+      <p class="text-sand-500 dark:text-sand-400">
         The page you're looking for doesn't exist or has been moved.
       </p>
     </div>
 
     {{ if !isDev }}
-      <!-- Pagefind Search -->
-      <div class="mb-6">
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Try searching for what you need:
-        </p>
-        <div id="search" class="text-left"></div>
-      </div>
+    <div class="mb-8">
+      <p class="text-sm text-sand-400 dark:text-sand-500 mb-3">Try searching:</p>
+      <div id="search" class="text-left"></div>
+    </div>
     {{ /if }}
 
-    <!-- Actions -->
-    <div class="space-y-4 md:space-y-0 md:space-x-4 flex items-center flex-col md:flex-row w-full max-w-none mx-auto">
-      <a
-        href="/"
-        class="block w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
-      >
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+      <a href="/"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-sand-900 dark:bg-white text-white dark:text-sand-900 font-medium text-sm hover:bg-sand-800 dark:hover:bg-sand-100 transition-colors">
         Go Home
       </a>
-      <button
-        onclick="window.history.back()"
-        class="block w-full cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium py-3 px-4 rounded-lg transition-colors"
-      >
+      <button onclick="window.history.back()"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-sand-100 dark:bg-sand-800 text-sand-700 dark:text-sand-300 font-medium text-sm hover:bg-sand-200 dark:hover:bg-sand-700 transition-colors">
         Go Back
       </button>
     </div>
 
-    <!-- Helpful Links -->
-    <div class="mt-8">
-      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        You might be looking for:
-      </p>
-      <div class="flex flex-wrap justify-center gap-4 md:gap-6 text-sm">
-        <a href="/blog" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-          Blog
-        </a>
-        <a href="/about" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-          About
-        </a>
-        <a href="/contact" class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-          Contact
-        </a>
-      </div>
+    <div class="flex flex-wrap justify-center gap-5 text-sm">
+      <a href="/docs" class="text-sand-400 dark:text-sand-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Docs</a>
+      <a href="/blog" class="text-sand-400 dark:text-sand-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Blog</a>
+      <a href="/about" class="text-sand-400 dark:text-sand-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">About</a>
     </div>
   </div>
 </div>
