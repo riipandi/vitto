@@ -95,6 +95,7 @@
   --pf-icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b6354' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
 }
 
+[data-pf-theme="dark"],
 :root.dark,
 html.dark {
   --pf-background: #1a1814;
@@ -115,8 +116,7 @@ html.dark {
   --pf-scroll-shadow: rgba(0, 0, 0, 0.3);
   --pf-icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238f8572' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
 }
-
-/* Search trigger — matches GitHub icon styling */
+/* Search trigger — desktop header */
 .search-trigger {
   cursor: pointer;
   user-select: none;
@@ -124,34 +124,65 @@ html.dark {
   align-items: center;
   justify-content: center;
   padding: 0px;
-  border-radius: 0;
+  border-radius: 12px;
   color: #8f8572;
-  transition: color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
 }
 .search-trigger:hover {
-  color: #ffffff;
-  background-color: transparent;
+  color: #6b6354;
+  background: #e8e4d9;
 }
-
-:root.dark .search-trigger,
-html.dark .search-trigger {
+.dark .search-trigger {
   color: #b0a894;
 }
-:root.dark .search-trigger:hover,
-html.dark .search-trigger:hover {
+.dark .search-trigger:hover {
   color: #fff;
+  background: #2d2a22;
 }
 
-/* Mobile search trigger override */
-#mobile-menu .search-trigger {
-  color: #b0a894;
+/* Header transition for mobile menu open/close */
+header {
+  transition:
+    background-color 0.25s ease,
+    backdrop-filter 0.25s ease;
 }
-.search-trigger:hover {
-  background: #f3f1eb;
+
+/* Mobile search trigger — inherit wrapper (GitHub-btn) styling */
+.mobile-search-wrap {
+  --pf-background: transparent;
+  --pf-border: transparent;
+  --pf-hover: transparent;
+  --pf-input-height: 40px;
+  --pf-border-radius: 0;
+  --pf-text-muted: #6b6354;
 }
-:root.dark .search-trigger:hover,
-html.dark .search-trigger:hover {
-  background: #2d2a22;
+.dark .mobile-search-wrap {
+  --pf-text-muted: #b0a894;
+}
+.mobile-search-wrap pagefind-modal-trigger {
+  width: 100%;
+}
+
+/* Mobile menu panel — slide-in from right */
+#mobile-menu {
+  transition: opacity 0.2s ease;
+}
+#mobile-menu > div {
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#mobile-menu.open > div {
+  transform: translateX(0);
+}
+
+/* Solid header when mobile menu is open */
+header.menu-open {
+  background-color: #faf9f6;
+}
+.dark header.menu-open {
+  background-color: #1a1814;
 }
 
 /* ---------------------------------------------------------------------------
@@ -202,6 +233,10 @@ html.dark .search-trigger:hover {
   @apply rounded-xl p-4 overflow-x-auto text-sm leading-relaxed border border-sand-200/60 dark:border-sand-700/40;
   background-color: #fff !important;
   color: #24292e !important;
+}
+
+pre.shiki {
+  @apply my-2;
 }
 
 .dark .shiki,

@@ -1,12 +1,9 @@
-{{ layout "layouts/docs.vto" }}
+{{ layout "layouts/site.vto" }}
 
 {{ setMetadata('title', 'Documentation') }}
 {{ setMetadata('description', 'Comprehensive documentation for Vitto — a minimal static site generator built with Vite and Vento.') }}
 
-{{ include "partials/docs-sidebar.vto" }}
-
-<div class="flex-1 min-w-0">
-  <div class="max-w-3xl mx-auto px-5 sm:px-8 py-12 md:py-16">
+<div class="max-w-6xl w-full mx-auto px-5 sm:px-8 py-12 md:py-16">
     <div class="mb-12">
       <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white mb-4">
         Documentation
@@ -21,7 +18,7 @@
       <h2 class="text-lg font-semibold text-sand-900 dark:text-white mb-4 pb-2 border-b border-sand-200/60 dark:border-sand-700/40">
         Getting Started
       </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <a href="/docs/getting-started/introduction"
           class="group flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-sm">
           <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/20 transition-colors">
@@ -60,7 +57,7 @@
       <h2 class="text-lg font-semibold text-sand-900 dark:text-white mb-4 pb-2 border-b border-sand-200/60 dark:border-sand-700/40">
         Core Concepts
       </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <a href="/docs/core/templating"
           class="group flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-sm">
           <div class="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-violet-100 dark:group-hover:bg-violet-500/20 transition-colors">
@@ -99,7 +96,7 @@
       <h2 class="text-lg font-semibold text-sand-900 dark:text-white mb-4 pb-2 border-b border-sand-200/60 dark:border-sand-700/40">
         Features
       </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <a href="/docs/features/search"
           class="group flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-sm">
           <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/20 transition-colors">
@@ -138,7 +135,7 @@
       <h2 class="text-lg font-semibold text-sand-900 dark:text-white mb-4 pb-2 border-b border-sand-200/60 dark:border-sand-700/40">
         Guides
       </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <a href="/docs/guides/examples"
           class="group flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-sm">
           <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/20 transition-colors">
@@ -167,7 +164,7 @@
       <h2 class="text-lg font-semibold text-sand-900 dark:text-white mb-4 pb-2 border-b border-sand-200/60 dark:border-sand-700/40">
         Reference
       </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <a href="/docs/reference/api-reference"
           class="group flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-sm">
           <div class="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-violet-100 dark:group-hover:bg-violet-500/20 transition-colors">
@@ -200,5 +197,4 @@
         </a>
       </div>
     </div>
-  </div>
 </div>

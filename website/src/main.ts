@@ -2,15 +2,27 @@ import '@pagefind/component-ui';
 import '@pagefind/component-ui/css';
 import './styles/global.css';
 
+// Dark mode toggle + system theme sync
 // ----------------------------------------------------------------------------
-// Dark mode toggle (called from onclick in templates)
-// ----------------------------------------------------------------------------
-function toggleDarkMode() {
+function setTheme(isDark: boolean) {
   const html = document.documentElement;
-  html.classList.toggle('dark');
-  const isDark = html.classList.contains('dark');
+  html.classList.toggle('dark', isDark);
   html.setAttribute('data-pf-theme', isDark ? 'dark' : 'light');
+}
+
+function toggleDarkMode() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  document.documentElement.setAttribute('data-pf-theme', isDark ? 'dark' : 'light');
   localStorage.setItem('darkMode', String(isDark));
+}
+
+function listenSystemTheme() {
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener('change', (e) => {
+    // Only follow system when user never explicitly toggled
+    if (localStorage.getItem('darkMode') !== null) return;
+    setTheme(e.matches);
+  });
 }
 
 declare global {
@@ -55,25 +67,43 @@ function initMobileMenu() {
 
   if (!btn || !menu) return;
 
-  function toggle() {
-    const open = menu!.classList.toggle('hidden');
-    overlay?.classList.toggle('hidden');
-    menuIcon?.classList.toggle('hidden');
-    closeIcon?.classList.toggle('hidden');
-    btn!.setAttribute('aria-expanded', String(!open));
-    document.body.style.overflow = open ? '' : 'hidden';
+  function open() {
+    const header = document.querySelector('header');
+    header?.classList.add('menu-open');
+    menu!.classList.remove('hidden');
+    overlay?.classList.remove('hidden');
+    menuIcon?.classList.add('hidden');
+    closeIcon?.classList.remove('hidden');
+    btn!.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        menu!.classList.add('open');
+      });
+    });
   }
 
   function close() {
-    menu!.classList.add('hidden');
-    overlay?.classList.add('hidden');
-    menuIcon?.classList.remove('hidden');
-    closeIcon?.classList.add('hidden');
-    btn!.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    const header = document.querySelector('header');
+    header?.classList.remove('menu-open');
+    menu!.classList.remove('open');
+    setTimeout(() => {
+      menu!.classList.add('hidden');
+      overlay?.classList.add('hidden');
+      menuIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+      btn!.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }, 250);
   }
 
-  btn.addEventListener('click', toggle);
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    if (expanded) close();
+    else open();
+  });
   overlay?.addEventListener('click', close);
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
   menu.querySelector('pagefind-modal-trigger')?.addEventListener('click', close);
@@ -105,4 +135,5 @@ window.copyCommand = copyCommand;
 document.addEventListener('DOMContentLoaded', () => {
   initReveal();
   initMobileMenu();
+  listenSystemTheme();
 });

@@ -23,10 +23,9 @@
   (function() {
     const stored = localStorage.getItem('darkMode');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (stored === 'true' || (stored === null && prefersDark)) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.setAttribute('data-pf-theme', 'dark');
-    }
+    const isDark = stored === 'true' || (stored === null && prefersDark);
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.setAttribute('data-pf-theme', isDark ? 'dark' : 'light');
   })();
 </script>
 
