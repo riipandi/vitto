@@ -688,7 +688,7 @@ export const postsHook = defineHooks('posts', async () => {
 export default postsHook;
 ```
 
-Then configure `paginatedRoutes` in `vite.config.ts`. The template receives `posts.items`, `posts.page`, `posts.totalPages`, and navigation URLs as described in [Dynamic Routes](./05-dynamic-routes.md).
+Then configure `dynamicRoutes` in `vite.config.ts`. The template receives `posts.items`, `posts.page`, `posts.totalPages`, and navigation URLs as described in [Dynamic Routes](./05-dynamic-routes.md).
 
 ## Next Steps
 

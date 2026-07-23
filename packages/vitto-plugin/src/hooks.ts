@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import { buildPaginatedContext } from './helper';
-import type { OutputStrategy, PaginatedRouteConfig, VittoOptions } from './options';
+import type { DynamicRouteConfig, OutputStrategy, VittoOptions } from './options';
 
 /**
  * Define a hook for injecting dynamic data into page templates.
@@ -131,6 +131,9 @@ export function createDynamicRoutePatterns(opts: VittoOptions) {
   }> = [];
 
   for (const config of opts.dynamicRoutes || []) {
+    // Skip paginated routes — they use createPaginatedRoutePatterns
+    if (config.pageSize) continue;
+
     // Extract base path by calling getPath with dummy data
     // e.g., `blog/${post.id}.html` with { id: ':id' } returns 'blog/:id.html'
     const samplePath = config.getPath({ id: ':id', slug: ':slug' });
@@ -156,11 +159,12 @@ export function createDynamicRoutePatterns(opts: VittoOptions) {
 }
 
 /**
- * Create URL patterns for paginated routes based on plugin configuration.
+ * Create URL patterns for paginated dynamic routes.
  *
- * Matches URLs like /blog/2, /blog/3, etc. for paginated listings.
+ * Matches URLs like /blog, /blog/2, /blog/3, etc. for paginated listings.
+ * A route is considered paginated when `pageSize` > 0.
  *
- * @param opts - Vitto plugin options containing paginated route configurations
+ * @param opts - Vitto plugin options containing dynamic route configurations
  * @returns Array of route patterns with regex, base path, and template name
  */
 export function createPaginatedRoutePatterns(opts: VittoOptions) {
@@ -168,9 +172,12 @@ export function createPaginatedRoutePatterns(opts: VittoOptions) {
     pattern: RegExp;
     basePath: string;
     template: string;
+    config: DynamicRouteConfig;
   }> = [];
 
-  for (const config of opts.paginatedRoutes || []) {
+  for (const config of opts.dynamicRoutes || []) {
+    if (!config.pageSize) continue;
+
     const page1Path = config.getPath(1);
     const pathWithoutHtml = page1Path.replace(/\.html$/, '');
     const parts = pathWithoutHtml.split('/');
@@ -186,6 +193,7 @@ export function createPaginatedRoutePatterns(opts: VittoOptions) {
       pattern,
       basePath,
       template: config.template,
+      config,
     });
   }
 
@@ -200,7 +208,7 @@ export function createPaginatedRoutePatterns(opts: VittoOptions) {
  * paginated routes to keep the data shape consistent.
  *
  * @param allItems - Full array of items from the data source hook
- * @param paginatedConfig - Paginated route configuration
+ * @param paginatedConfig - Dynamic route config with pageSize
  * @param pageNum - Current page number (1-based)
  * @param pageData - Existing page data from getPageData
  * @param outputStrategy - Output strategy for URL generation
@@ -208,7 +216,7 @@ export function createPaginatedRoutePatterns(opts: VittoOptions) {
  */
 export function buildPaginatedPageData<T>(
   allItems: T[],
-  paginatedConfig: PaginatedRouteConfig,
+  paginatedConfig: DynamicRouteConfig,
   pageNum: number,
   pageData: Record<string, any>,
   outputStrategy: OutputStrategy
@@ -218,7 +226,7 @@ export function buildPaginatedPageData<T>(
 
   const paginated = buildPaginatedContext(allItems, {
     pageNum,
-    pageSize: paginatedConfig.pageSize,
+    pageSize: paginatedConfig.pageSize!,
     totalItems: allItems.length,
     outputStrategy,
     getPath: paginatedConfig.getPath,

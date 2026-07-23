@@ -254,11 +254,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       const outputStrategy = opts.outputStrategy || DEFAULT_OPTS.outputStrategy || 'html';
 
       // Get list of templates that are used for dynamic or paginated routes
-      const dynamicTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`);
-      const paginatedTemplates = (opts.paginatedRoutes || []).map(
-        (config) => `${config.template}.vto`
-      );
-      const skippedTemplates = [...dynamicTemplates, ...paginatedTemplates];
+      const skippedTemplates = (opts.dynamicRoutes || []).map((config) => `${config.template}.vto`);
 
       // Track emitted files to prevent duplicates
       const emittedFiles = new Set<string>();
@@ -333,7 +329,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       }
 
       // Generate static HTML files for dynamic routes
-      const dynamicRouteConfigs = opts.dynamicRoutes || [];
+      const dynamicRouteConfigs = (opts.dynamicRoutes || []).filter((r) => !r.pageSize);
       for (const config of dynamicRouteConfigs) {
         const templatePath = path.resolve(pagesDir, `${config.template}.vto`);
 
@@ -439,8 +435,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
       }
 
       // Generate static HTML files for paginated routes
-      const paginatedRouteConfigs = opts.paginatedRoutes || [];
-      for (const config of paginatedRouteConfigs) {
+      for (const config of (opts.dynamicRoutes || []).filter((r) => r.pageSize)) {
         const templatePath = path.resolve(pagesDir, `${config.template}.vto`);
 
         // Verify template file exists
@@ -470,7 +465,7 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
         }
 
         const totalItems = allItems.length;
-        const totalPages = Math.max(1, Math.ceil(totalItems / config.pageSize));
+        const totalPages = Math.max(1, Math.ceil(totalItems / config.pageSize!));
         const spinner = new Spinner(
           `Generating ${totalPages} paginated pages from ${config.template}.vto`
         );
@@ -683,8 +678,8 @@ export function vitto(opts: VittoOptions = DEFAULT_OPTS): Plugin {
 
             if (fs.existsSync(templatePath)) {
               // Find the paginated route config
-              const paginatedConfig = (opts.paginatedRoutes || []).find(
-                (c) => c.template === route.template
+              const paginatedConfig = (opts.dynamicRoutes || []).find(
+                (c) => c.template === route.template && !!c.pageSize
               );
               if (!paginatedConfig) continue;
 

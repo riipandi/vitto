@@ -21,22 +21,39 @@ export interface RenderOptions {
 /**
  * Configuration for dynamic route generation.
  *
- * Dynamic routes allow you to generate multiple static pages from a single template
- * based on data fetched from a hook. This is useful for blog posts, products, etc.
+ * Dynamic routes allow you to generate multiple static HTML pages from a single template.
+ * This is useful for content like blog posts, product catalogs, documentation pages, etc.
+ *
+ * **Standard mode** (no pageSize): one page per data item.
+ * - `getParams(item)` receives each item from the data source.
+ * - `getPath(item)` receives each item.
+ *
+ * **Paginated mode** (pageSize > 0): one page per page number.
+ * - `getParams(pageNum)` receives the 1-based page number.
+ * - `getPath(pageNum)` receives the 1-based page number.
  *
  * @example
- * // Generate blog/1.html, blog/2.html, etc. from post.vto template
+ * // Standard: generate blog/1.html, blog/2.html per post
  * {
  *   template: 'post',
  *   dataSource: 'posts',
  *   getParams: (post) => ({ id: post.id }),
- *   getPath: (post) => `blog/${post.id}.html`
+ *   getPath: (post) => `blog/${post.slug}.html`
+ * }
+ *
+ * @example
+ * // Paginated: generate blog.html, blog/2.html per page
+ * {
+ *   template: 'blog',
+ *   dataSource: 'posts',
+ *   pageSize: 10,
+ *   getParams: (pageNum) => ({ _page: pageNum }),
+ *   getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
  * }
  */
 export interface DynamicRouteConfig {
   /**
    * Template file name (without .vto extension) to use for generation.
-   * This template will be used to render each dynamic page.
    *
    * @example 'post'
    */
@@ -51,94 +68,35 @@ export interface DynamicRouteConfig {
   dataSource: string;
 
   /**
-   * Function to extract route params from each data item.
-   * These params will be passed to the page hook when rendering.
-   *
-   * @param item - A single item from the data source array
-   * @returns Object containing params to pass to the page hook
-   *
-   * @example (post) => ({ id: post.id, slug: post.slug })
-   */
-  getParams: (item: any) => Record<string, any>;
-
-  /**
-   * Function to generate output file path from data item.
-   * This determines where the generated HTML file will be saved.
-   *
-   * @param item - A single item from the data source array
-   * @returns Output path relative to build output directory
-   *
-   * @example (post) => `blog/${post.id}.html`
-   */
-  getPath: (item: any) => string;
-}
-
-/**
- * Configuration for paginated route generation.
- *
- * Paginated routes allow you to generate multiple static HTML pages from a single
- * paginated template. This is useful for blog listings, product catalogs, and any
- * content page where you need pagination.
- *
- * During development, these routes are handled dynamically (e.g., /blog/2, /blog/3).
- * During build, static HTML files are generated for each page.
- *
- * @example
- * paginatedRoutes: [
- *   {
- *     template: 'blog',
- *     dataSource: 'posts',
- *     pageSize: 10,
- *     getParams: (pageNum) => ({ _page: pageNum }),
- *     getPath: (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
- *   }
- * ]
- */
-export interface PaginatedRouteConfig {
-  /**
-   * Template file name (without .vto extension) to use for generation.
-   *
-   * @example 'blog'
-   */
-  template: string;
-
-  /**
-   * Hook name to fetch all items for pagination.
-   * Must match a key in the `hooks` option.
-   * The hook should return an array of items (or an object with the hook name as key).
-   *
-   * @example 'posts'
-   */
-  dataSource: string;
-
-  /**
-   * Number of items to display per page.
+   * Number of items per page. When set (> 0), the route is paginated:
+   * `getParams` and `getPath` receive a 1-based page number instead of an item.
+   * When omitted or 0, standard mode: one page per item.
    *
    * @example 10
    */
-  pageSize: number;
+  pageSize?: number;
 
   /**
-   * Function to generate route parameters for each page request.
-   * These params will be passed to the hook when generating each page.
+   * Function to extract route parameters.
    *
-   * @param pageNum - The 1-based page number to generate
-   * @returns Object containing params to pass to the hook
+   * - **Standard mode**: receives each item from the data source.
+   * - **Paginated mode** (pageSize > 0): receives the 1-based page number.
    *
-   * @example (pageNum) => ({ _page: pageNum, _limit: 10 })
+   * @example (post) => ({ id: post.id, slug: post.slug }) // standard
+   * @example (pageNum) => ({ _page: pageNum })              // paginated
    */
-  getParams: (pageNum: number) => Record<string, any>;
+  getParams: (itemOrPageNum: any) => Record<string, any>;
 
   /**
-   * Function to generate output file path for each page.
-   * This determines where the generated HTML file will be saved.
+   * Function to generate output file path.
    *
-   * @param pageNum - The 1-based page number to generate
-   * @returns Output path relative to build output directory
+   * - **Standard mode**: receives each item from the data source.
+   * - **Paginated mode** (pageSize > 0): receives the 1-based page number.
    *
-   *   @example (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`
+   * @example (post) => `blog/${post.slug}.html`                     // standard
+   * @example (pageNum) => pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html` // paginated
    */
-  getPath: (pageNum: number) => string;
+  getPath: (itemOrPageNum: any) => string;
 }
 
 /**
@@ -255,38 +213,26 @@ export interface VittoOptions {
    * Configuration for dynamic route generation.
    *
    * Dynamic routes allow you to generate multiple static HTML pages from a single template.
-   * This is useful for content like blog posts, products, documentation pages, etc.
+   * Each route config can be **standard** (one page per item) or **paginated** (one page per
+   * page number, when `pageSize` is set). See {@link DynamicRouteConfig} for details.
    *
-   * During development, these routes are handled dynamically (e.g., /blog/1, /blog/2).
-   * During build, static HTML files are generated for each item (e.g., blog/1.html, blog/2.html).
-   *
-   * @example
-   * dynamicRoutes: [
-   *   {
-   *     template: 'post',              // Use post.vto template
-   *     dataSource: 'posts',           // Fetch data from 'posts' hook
-   *     getParams: (post) => ({        // Extract params for each post
-   *       id: post.id,
-   *       slug: post.slug
-   *     }),
-   *     getPath: (post) => `blog/${post.id}.html`  // Output to blog/1.html, blog/2.html, etc.
-   *   }
-   * ]
-   */
-  dynamicRoutes?: DynamicRouteConfig[];
-
-  /**
-   * Configuration for paginated route generation.
-   *
-   * Paginated routes allow you to generate multiple static HTML pages from a single
-   * paginated template. This is useful for blog listings, product catalogs, and any
-   * content page where you need pagination.
-   *
-   * During development, these routes are handled dynamically (e.g., /blog/2, /blog/3).
+   * During development, these routes are handled dynamically (e.g., /blog/1, /blog/my-post).
    * During build, static HTML files are generated for each page.
    *
    * @example
-   * paginatedRoutes: [
+   * // Standard mode: one page per item
+   * dynamicRoutes: [
+   *   {
+   *     template: 'post',
+   *     dataSource: 'posts',
+   *     getParams: (post) => ({ id: post.id }),
+   *     getPath: (post) => `blog/${post.id}.html`
+   *   }
+   * ]
+   *
+   * @example
+   * // Paginated mode: one page per page number
+   * dynamicRoutes: [
    *   {
    *     template: 'blog',
    *     dataSource: 'posts',
@@ -296,7 +242,7 @@ export interface VittoOptions {
    *   }
    * ]
    */
-  paginatedRoutes?: PaginatedRouteConfig[];
+  dynamicRoutes?: DynamicRouteConfig[];
 
   /**
    * Enable automatic search index generation using Pagefind after build.
@@ -383,7 +329,6 @@ export const DEFAULT_OPTS: VittoOptions = {
   minify: false,
   assets: undefined,
   dynamicRoutes: [],
-  paginatedRoutes: [],
   enableSearchIndex: true,
   pagefindOptions: PAGEFIND_OPTIONS,
   outputStrategy: 'html',

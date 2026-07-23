@@ -233,29 +233,6 @@ vitto({
 });
 ```
 
-### `paginatedRoutes`
-
-- **Type**: `PaginatedRouteConfig[]`
-- **Default**: `[]`
-
-Configure paginated route generation. The plugin slices items from the data source hook per page automatically.
-See [Dynamic Routes](./05-dynamic-routes.md) for detailed information.
-
-```ts
-vitto({
-  metadata: { siteName: 'My Site', title: 'My Site' },
-  paginatedRoutes: [
-    {
-      template: 'blog',
-      dataSource: 'posts',
-      pageSize: 5,
-      getParams: (pageNum) => ({ _page: pageNum }),
-      getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
-    },
-  ],
-});
-```
-
 ### `hooks`
 
 - **Type**: `Record<string, Function>`

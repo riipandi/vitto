@@ -429,7 +429,7 @@ export default defineConfig({
       hooks: {
         posts: postsHook,
       },
-      paginatedRoutes: [
+      dynamicRoutes: [
         {
           template: 'blog',
           dataSource: 'posts',
@@ -469,7 +469,7 @@ The template receives `posts.items`, `posts.page`, `posts.totalPages`, `posts.pr
 
 Generate paginated list pages with the `paginate()` helper:
 
-`vite.config.ts`: register a `posts` hook that returns all items, then configure `paginatedRoutes`:
+`vite.config.ts`: register a `posts` hook that returns all items, then configure `dynamicRoutes`:
 
 ```ts
 import { defineConfig } from 'vite';
@@ -482,7 +482,7 @@ export default defineConfig({
       hooks: {
         posts: postsHook,
       },
-      paginatedRoutes: [
+      dynamicRoutes: [
         {
           template: 'blog',
           dataSource: 'posts',

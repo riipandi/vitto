@@ -271,12 +271,12 @@ export default defineHooks('posts', async () => {
 });
 ```
 
-Configure `paginatedRoutes` in `vite.config.ts`:
+Configure `dynamicRoutes` in `vite.config.ts`:
 
 ```ts
 vitto({
   hooks: { posts: postsHook },
-  paginatedRoutes: [
+  dynamicRoutes: [
     {
       template: 'blog',
       dataSource: 'posts',

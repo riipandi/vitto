@@ -348,47 +348,9 @@ vitto({
 interface DynamicRouteConfig {
   template: string; // Template name (without .vto)
   dataSource: string; // Hook name providing data array
-  getParams: (item: any) => Record<string, any>; // Extract params for hook
-  getPath: (item: any) => string; // Generate output file path
-}
-```
-
-````ts
-
-#### `paginatedRoutes`
-
-- **Type**: `PaginatedRouteConfig[]`
-- **Default**: `[]`
-
-Configure paginated route generation. The plugin slices items from the data source hook per page automatically.
-
-```ts
-vitto({
-  metadata: {
-    siteName: 'My Site',
-    title: 'My Site',
-  },
-  paginatedRoutes: [
-    {
-      template: 'blog',
-      dataSource: 'posts',
-      pageSize: 5,
-      getParams: (pageNum) => ({ _page: pageNum }),
-      getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
-    },
-  ],
-});
-````
-
-**PaginatedRouteConfig:**
-
-```ts
-interface PaginatedRouteConfig {
-  template: string; // Template name (without .vto)
-  dataSource: string; // Hook name providing all items
-  pageSize: number; // Items per page
-  getParams: (pageNum: number) => Record<string, any>;
-  getPath: (pageNum: number) => string;
+  pageSize?: number; // Items per page — enables paginated mode
+  getParams: (item: any) => Record<string, any>; // item or pageNum
+  getPath: (item: any) => string; // item or pageNum
 }
 ```
 
@@ -662,8 +624,9 @@ Configuration for dynamic route generation.
 interface DynamicRouteConfig {
   template: string; // Template name (without .vto)
   dataSource: string; // Hook name providing data array
-  getParams: (item: any) => Record<string, any>; // Extract params for hook
-  getPath: (item: any) => string; // Generate output file path
+  pageSize?: number; // Items per page — enables paginated mode
+  getParams: (item: any) => Record<string, any>; // item or pageNum
+  getPath: (item: any) => string; // item or pageNum
 }
 ```
 
