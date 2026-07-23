@@ -47,10 +47,13 @@ importers:
         version: 1.75.0
       tsdown:
         specifier: ^0.22.14
-        version: 0.22.14(typescript@7.0.2)
+        version: 0.22.14(typescript@7.0.2)(unrun@0.3.1)
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      unrun:
+        specifier: ^0.3.1
+        version: 0.3.1
       vite:
         specifier: ^8.1.5
         version: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)
@@ -90,10 +93,13 @@ importers:
         version: 1.75.0
       tsdown:
         specifier: ^0.22.14
-        version: 0.22.14(typescript@7.0.2)
+        version: 0.22.14(typescript@7.0.2)(unrun@0.3.1)
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      unrun:
+        specifier: ^0.3.1
+        version: 0.3.1
       vite:
         specifier: ^8.1.5
         version: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)
@@ -2472,6 +2478,16 @@ packages:
   unist-util-visit@5.1.0:
     resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
 
+  unrun@0.3.1:
+    resolution: {integrity: sha512-onIck/oNnCaytwths1ZVp1LK2Gq2hPoyFhiHebObuUXqR3S0uHuLLaBK8K6mRRgV7Ptip8AnNvaUsgzwWwBZuA==}
+    engines: {node: ^22.13.0 || >=24.0.0}
+    hasBin: true
+    peerDependencies:
+      synckit: ^0.11.11
+    peerDependenciesMeta:
+      synckit:
+        optional: true
+
   update-check@1.5.4:
     resolution: {integrity: sha512-5YHsflzHP4t1G+8WGPlvKbJEbAJGCgw+Em+dGR1KmBUbr1J36SJBqlHLjR7oob7sco5hWHGQVcr9B2poIVDDTQ==}
 
@@ -4288,7 +4304,7 @@ snapshots:
 
   trim-lines@3.0.1: {}
 
-  tsdown@0.22.14(typescript@7.0.2):
+  tsdown@0.22.14(typescript@7.0.2)(unrun@0.3.1):
     dependencies:
       ansis: 4.3.1
       cac: 7.0.0
@@ -4307,6 +4323,7 @@ snapshots:
       verkit: 0.3.0
     optionalDependencies:
       typescript: 7.0.2
+      unrun: 0.3.1
     transitivePeerDependencies:
       - '@typescript/native-preview'
       - '@volar/typescript'
@@ -4389,6 +4406,10 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
+
+  unrun@0.3.1:
+    dependencies:
+      rolldown: 1.2.0
 
   update-check@1.5.4:
     dependencies:

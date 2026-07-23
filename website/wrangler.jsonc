@@ -6,26 +6,43 @@
  *
  * Build configurations:
  * - Build command: `pnpm run build`
- * - Deploy command: `pnpm exec wrangler pages deploy`
+ * - Deploy command: `pnpm exec wrangler deploy --env production`
  * - Non-production branch deploy command: `pnpm exec wrangler versions upload`
+ *
+ * Envar for build only (Settings -> Build -> Variables and secrets):
+ * - PUBLIC_ or VITE_ prefixed variables need to added here!
  */
 {
-    "$schema": "https://www.unpkg.com/wrangler@4.43.0/config-schema.json",
+    "$schema": "https://www.unpkg.com/wrangler@4/config-schema.json",
     "name": "vitto",
-    "compatibility_date": "2025-09-15",
+    "compatibility_date": "2026-04-07",
     "compatibility_flags": ["nodejs_compat"],
     "pages_build_output_dir": "dist",
+    "send_metrics": false,
+    "preview_urls": false,
     "dev": {
         "host": "127.0.0.1",
         "port": 3000
     },
+    // "routes": [
+    //     {
+    //         "pattern": "example.com",
+    //         "custom_domain": true
+    //     }
+    // ],
     "placement": {
         "mode": "smart"
     },
+    "observability": {
+        "enabled": false,
+        "head_sampling_rate": 0.01,
+        "logs": {
+            "enabled": false,
+            "head_sampling_rate": 0.7
+        }
+    },
     "vars": {
         /* Build -> Variables and secrets */
-        "WRANGLER_SEND_METRICS": "false",
-        "COREPACK_INTEGRITY_KEYS": "0",
         "NODE_VERSION": "24.18.0",
         "PNPM_VERSION": "11.17.0"
     }
