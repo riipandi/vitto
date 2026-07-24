@@ -6,7 +6,7 @@
         "erasableSyntaxOnly": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "lib": ["ES2023", "DOM", "DOM.Iterable"],
         "module": "ESNext",
         "moduleDetection": "force",
         "moduleResolution": "bundler",
@@ -19,12 +19,12 @@
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
-        "target": "ES2022",
+        "target": "esnext",
         "tsBuildInfoFile": "node_modules/tsconfig.tsbuildinfo",
         "types": ["vite/client"],
         "useDefineForClassFields": true,
         "useUnknownInCatchVariables": true,
         "verbatimModuleSyntax": true
     },
-    "include": ["src", "hooks"]
+    "include": ["src", "hooks", "types"]
 }

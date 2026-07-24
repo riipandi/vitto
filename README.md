@@ -100,19 +100,19 @@ command line options. For example, to scaffold a Vitto + Tailwind CSS project, r
 
 ```bash
 # npm 7+, extra double-dash is needed:
-npm create vitto@latest my-website -- --template tailwindcss
+npm create vitto@latest my-website -- --preset tailwindcss
 
 # yarn
-yarn create vitto my-website --template tailwindcss
+yarn create vitto my-website --preset tailwindcss
 
 # pnpm
-pnpm create vitto my-website --template tailwindcss
+pnpm create vitto my-website --preset tailwindcss
 
 # Bun
-bun create vitto my-website --template tailwindcss
+bun create vitto my-website --preset tailwindcss
 
 # Deno
-deno init --npm vitto my-website --template tailwindcss
+deno init --npm vitto my-website --preset tailwindcss
 ```
 
 ## Manual Installation

@@ -161,7 +161,16 @@ function testTemplate(template, skipInstall) {
   // Verify expected routes
   const routes = ['/index.html', '/404.html'];
   if (template === 'blog') {
-    routes.push('/blog.html', '/blog/post-1.html', '/about.html');
+    routes.push('/blog/index.html', '/blog/post-1.html', '/about.html');
+  } else if (template === 'full') {
+    routes.push(
+      '/blog/index.html',
+      '/blog/hello-world.html',
+      '/docs.html',
+      '/docs/getting-started/introduction.html',
+      '/about.html',
+      '/changelog.html'
+    );
   } else {
     routes.push('/about.html');
   }

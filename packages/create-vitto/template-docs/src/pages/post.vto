@@ -1,0 +1,32 @@
+{{ layout "layouts/site.vto" }}
+{{ setMetadata('title', post ? post.title : 'Post Not Found') }}
+
+<div class="max-w-3xl mx-auto px-4 py-12">
+  {{ if post }}
+    <a href="/blog" class="text-sm text-blue-600 dark:text-blue-400 hover:underline no-underline mb-6 inline-block">&larr; Back to blog</a>
+    <article>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{{ post.title }}</h1>
+      <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-8">
+        {{ if post.author }}<span class="font-medium">{{ post.author }}</span>{{ /if }}
+        {{ if post.created }}<time datetime="{{ post.created }}">{{ post.dateDisplay }}</time>{{ /if }}
+        {{ if post.tags && post.tags.length > 0 }}
+          <span class="flex gap-1.5">
+            {{ for tag of post.tags }}
+              <span class="post-tag">{{ tag }}</span>
+            {{ /for }}
+          </span>
+        {{ /if }}
+      </div>
+      {{ if post.description }}<p class="text-lg text-gray-600 dark:text-gray-400 mb-8">{{ post.description }}</p>{{ /if }}
+      <div class="prose prose-gray dark:prose-invert max-w-none">{{ post.content |> safe }}</div>
+    </article>
+    <div class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <a href="/blog" class="text-blue-600 dark:text-blue-400 hover:underline no-underline text-sm">&larr; Back to all posts</a>
+    </div>
+  {{ else }}
+    <div class="text-center py-16">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Post not found</h1>
+      <a href="/blog" class="text-blue-600 dark:text-blue-400 hover:underline">Browse blog</a>
+    </div>
+  {{ /if }}
+</div>

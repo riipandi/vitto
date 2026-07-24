@@ -179,22 +179,30 @@ export function createPaginatedRoutePatterns(opts: VittoOptions) {
     if (!config.pageSize) continue;
 
     const page1Path = config.getPath(1);
-    const pathWithoutHtml = page1Path.replace(/\.html$/, '');
-    const parts = pathWithoutHtml.split('/');
-    const fileName = parts.pop() || '';
+    const cleanPath = page1Path.replace(/\.html$/, '');
+    const parts = cleanPath.split('/');
+    const popResult = parts.pop() || '';
+    const fileName = popResult;
     const dir = parts.join('/');
     const basePath = dir ? `/${dir}/${fileName}` : `/${fileName}`;
 
     // Match base path (page 1) and subpath pages (page 2+)
     // e.g., /blog, /blog/2, /blog/3
-    const pattern = new RegExp(`^${basePath}(?:/(\\d+))?$`);
+    const primaryPattern = new RegExp(`^${basePath}(?:/(\\d+))?$`);
+    routes.push({ pattern: primaryPattern, basePath, template: config.template, config });
 
-    routes.push({
-      pattern,
-      basePath,
-      template: config.template,
-      config,
-    });
+    // Also match the directory path when getPath uses index.html
+    // e.g., if getPath(1) = 'blog/index.html', also match /blog or /blog/
+    if (fileName === 'index' && dir) {
+      const dirBasePath = `/${dir}`;
+      const dirPattern = new RegExp(`^${dirBasePath}(?:/(\\d+))?$`);
+      routes.push({
+        pattern: dirPattern,
+        basePath: dirBasePath,
+        template: config.template,
+        config,
+      });
+    }
   }
 
   return routes;

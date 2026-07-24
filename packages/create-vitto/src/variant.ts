@@ -35,6 +35,21 @@ const frameworkVariants: TemplateVariant[] = [
     display: 'Blog (Tailwind + Pagination)',
     color: (text: string) => styleText('green', text),
   },
+  {
+    name: 'docs',
+    display: 'Docs (Tailwind + Markdown)',
+    color: (text: string) => styleText('yellow', text),
+  },
+  {
+    name: 'full',
+    display: 'Full (Docs + Blog + Tailwind)',
+    color: (text: string) => styleText('white', text),
+  },
+  {
+    name: 'full',
+    display: 'Full (Docs + Blog + Tailwind)',
+    color: (text: string) => styleText('white', text),
+  },
 ];
 
 export { frameworkVariants };

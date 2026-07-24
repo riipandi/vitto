@@ -1,0 +1,57 @@
+{{ layout "layouts/site.vto" }}
+
+{{ setMetadata('title', 'Page Not Found') }}
+
+<section class="relative overflow-hidden">
+  <!-- Background -->
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50 to-sand-100/50 dark:from-sand-900 dark:to-sand-900"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[500px] bg-gradient-to-b from-amber-200/20 via-violet-200/10 to-transparent dark:from-amber-500/10 dark:via-violet-500/5 dark:to-transparent rounded-full blur-3xl"></div>
+    <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 24px 24px;"></div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 pt-24 pb-28 md:pt-36 md:pb-40 text-center">
+    <!-- 404 badge -->
+    <div class="slide-up inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-medium mb-8">
+      <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+      Error 404
+    </div>
+
+    <!-- Gradient number -->
+    <h1 class="slide-up-delay-1 text-8xl sm:text-9xl font-extrabold tracking-tight leading-none mb-6">
+      <span class="bg-gradient-to-r from-amber-400 via-amber-500 to-violet-500 bg-clip-text text-transparent">
+        404
+      </span>
+    </h1>
+
+    <!-- Message -->
+    <h2 class="slide-up-delay-2 text-3xl sm:text-4xl font-bold tracking-tight text-sand-900 dark:text-white mb-4">
+      Page not found
+    </h2>
+    <p class="slide-up-delay-2 text-lg text-sand-500 dark:text-sand-400 max-w-lg mx-auto leading-relaxed mb-10">
+      The page you're looking for doesn't exist or has been moved.
+    </p>
+
+    <!-- Action buttons -->
+    <div class="slide-up-delay-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="/"
+        class="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-sand-900 dark:bg-white text-white dark:text-sand-900 font-semibold text-sm hover:bg-sand-800 dark:hover:bg-sand-100 transition-all shadow-lg shadow-sand-900/10 dark:shadow-white/10 hover:shadow-xl hover:shadow-sand-900/15 dark:hover:shadow-white/15">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <button onclick="window.history.back()"
+        class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-sand-100 dark:bg-sand-800 text-sand-700 dark:text-sand-300 font-medium text-sm hover:bg-sand-200 dark:hover:bg-sand-700 transition-all border border-sand-200/60 dark:border-sand-700/60 hover:border-sand-300 dark:hover:border-sand-600">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m15 18-6-6 6-6"/></svg>
+        Go Back
+      </button>
+    </div>
+
+    <!-- Quick links -->
+    <div class="slide-up-delay-3 mt-12 flex flex-wrap justify-center gap-6 text-sm">
+      <a href="/docs" class="text-sand-400 dark:text-sand-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Docs</a>
+      <a href="/blog" class="text-sand-400 dark:text-sand-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">Blog</a>
+      <a href="/about" class="text-sand-400 dark:text-sand-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">About</a>
+      <a href="https://github.com/riipandi/vitto" target="_blank" rel="noopener noreferrer" class="text-sand-400 dark:text-sand-500 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">GitHub</a>
+    </div>
+  </div>
+</section>

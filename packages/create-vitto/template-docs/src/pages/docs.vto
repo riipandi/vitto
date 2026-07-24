@@ -1,0 +1,22 @@
+{{ layout "layouts/site.vto" }}
+{{ setMetadata('title', 'Documentation') }}
+
+<div class="max-w-4xl mx-auto px-4 py-12">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Documentation</h1>
+  {{ if docsIndex }}
+    {{ for section of docsIndex.sections }}
+      <div class="mb-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">{{ section.label }}</h2>
+        <div class="grid gap-3">
+          {{ for item of section.items }}
+            <a href="/docs/{{ item.slug }}" class="block p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-colors no-underline">
+              <h3 class="font-medium text-gray-900 dark:text-white">{{ item.title }}</h3>
+            </a>
+          {{ /for }}
+        </div>
+      </div>
+    {{ /for }}
+  {{ else }}
+    <p class="text-gray-500">No documentation available yet.</p>
+  {{ /if }}
+</div>

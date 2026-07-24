@@ -1,0 +1,166 @@
+{{ layout "layouts/site.vto" }}
+
+{{ setMetadata('title', post ? post.title : 'Post Not Found') }}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20">
+  {{ if post }}
+    <nav class="flex items-center gap-1.5 sm:gap-2 text-sm text-sand-400 dark:text-sand-500 mb-4 sm:mb-6 max-w-full overflow-hidden">
+      <a href="/blog" class="hover:text-sand-600 dark:hover:text-sand-300 transition-colors shrink-0">Blog</a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 shrink-0"><path d="m9 18 6-6-6-6"/></svg>
+      <span class="text-sand-600 dark:text-sand-300 truncate min-w-0">{{ post.title }}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_14rem] gap-6 lg:gap-8 xl:gap-12 min-w-0">
+      <!-- Mobile TOC — at top for mobile viewport -->
+      <details class="lg:hidden group" open>
+        <summary class="flex items-center gap-2 cursor-pointer text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 transition-transform group-open:rotate-90"><path d="m9 18 6-6-6-6"/></svg>
+          On this page
+        </summary>
+        <ul class="space-y-1.5 mt-3 text-sm text-sand-600 dark:text-sand-400 border-l border-sand-200 dark:border-sand-700 pl-4" id="toc-list-mobile"></ul>
+      </details>
+
+      <!-- Main content -->
+      <article class="overflow-x-hidden max-w-full min-w-0">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white mb-3 md:mb-4">
+          {{ post.title }}
+        </h1>
+
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-sand-400 dark:text-sand-500 mb-8 md:mb-10">
+          {{ if post.author }}
+            <span class="font-medium">{{ post.author }}</span>
+          {{ /if }}
+          {{ if post.created }}
+            <time datetime="{{ post.created }}" class="text-xs md:text-sm">{{ post.dateDisplay }}</time>
+          {{ /if }}
+          {{ if post.updated && post.updated != post.created }}
+            <span class="text-xs md:text-sm">Updated <time datetime="{{ post.updated }}">{{ post.updatedDisplay }}</time></span>
+          {{ /if }}
+          {{ if post.tags && post.tags.length > 0 }}
+            <span class="flex flex-wrap items-center gap-1.5">
+              {{ for tag of post.tags }}
+                <span class="px-2 py-0.5 rounded-full bg-sand-100 dark:bg-sand-800 text-xs font-medium text-sand-500 dark:text-sand-400">{{ tag }}</span>
+              {{ /for }}
+            </span>
+          {{ /if }}
+        </div>
+
+        {{ if post.description }}
+          <p class="text-base md:text-lg text-sand-500 dark:text-sand-400 mb-6 md:mb-8 leading-relaxed">{{ post.description }}</p>
+        {{ /if }}
+
+        <div class="prose md:prose-lg max-w-none min-w-0" id="post-content">
+          {{ post.content |> safe }}
+        </div>
+      </article>
+
+      <!-- Sidebar with TOC -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-20">
+          <nav id="post-toc" class="border-l border-sand-200 dark:border-sand-700 pl-4">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-3">
+              On this page
+            </h4>
+            <ul class="space-y-1.5 text-sm" id="toc-list"></ul>
+          </nav>
+        </div>
+      </aside>
+    </div>
+
+      <!-- Post navigation: prev / next -->
+      <nav class="mt-10 sm:mt-16 pt-5 sm:pt-8 border-t border-sand-200/60 dark:border-sand-700/40 max-w-full">
+        <div class="flex flex-col sm:flex-row w-full items-stretch">
+          <div class="flex-1 min-w-0 py-3 sm:py-0 sm:pr-6">
+            {{ if post.next }}
+              <a href="/blog/{{ post.next.slug }}">
+                <div class="text-xs font-medium uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-0.5">Next post</div>
+                <div class="text-sm font-semibold text-sand-700 dark:text-sand-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors truncate">{{ post.next.title }}</div>
+              </a>
+            {{ /if }}
+          </div>
+
+          {{ if post.prev && post.next }}
+            <hr class="block sm:hidden border-t border-sand-200 dark:border-sand-700 my-1" />
+            <div class="hidden sm:block w-px bg-sand-200 dark:bg-sand-700 shrink-0"></div>
+          {{ /if }}
+
+          <div class="flex-1 min-w-0 py-3 sm:py-0 sm:pl-6 sm:text-right">
+            {{ if post.prev }}
+              <a href="/blog/{{ post.prev.slug }}">
+                <div class="text-xs font-medium uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-0.5">Previous post</div>
+                <div class="text-sm font-semibold text-sand-700 dark:text-sand-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors truncate">{{ post.prev.title }}</div>
+              </a>
+            {{ /if }}
+          </div>
+        </div>
+      </nav>
+      </nav>
+
+    {{ else }}
+    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+      <div class="w-16 h-16 rounded-2xl bg-sand-100 dark:bg-sand-800 flex items-center justify-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-sand-400 dark:text-sand-500"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </div>
+      <h1 class="text-3xl font-bold text-sand-900 dark:text-white mb-3">Post not found</h1>
+      <p class="text-sand-500 dark:text-sand-400 mb-8 max-w-md">
+        The post you're looking for doesn't exist or has been moved.
+      </p>
+      <a href="/blog"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sand-900 dark:bg-white text-white dark:text-sand-900 font-medium text-sm hover:bg-sand-800 dark:hover:bg-sand-100 transition-colors">
+        Browse all posts
+      </a>
+    </div>
+  {{ /if }}
+</div>
+
+<script>
+(function() {
+  const content = document.getElementById('post-content');
+  if (!content) return;
+
+  // Build TOC data from headings
+  const tocData = [];
+  const headings = content.querySelectorAll('h2, h3');
+  headings.forEach((h) => {
+    const id = h.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    h.id = id;
+    tocData.push({ id, text: h.textContent, level: h.tagName.toLowerCase() });
+  });
+
+  if (!tocData.length) return;
+
+  // Render TOC lists
+  function renderToc(listId) {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    list.innerHTML = tocData.map((item) => {
+      const indent = item.level === 'h3' ? 'ml-3' : '';
+      return '<li class="' + indent + '">' +
+        '<a href="#' + item.id + '" class="toc-link">' +
+        item.text + '</a></li>';
+    }).join('');
+  }
+  renderToc('toc-list');
+  renderToc('toc-list-mobile');
+
+  // Highlight active heading on scroll
+  const links = document.querySelectorAll('.toc-link');
+  if (!links.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let activeId = '';
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) activeId = entry.target.id;
+      });
+      if (!activeId) return;
+      links.forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + activeId);
+      });
+    },
+    { rootMargin: '-80px 0px -70% 0px' }
+  );
+
+  headings.forEach((h) => observer.observe(h));
+})();
+</script>
