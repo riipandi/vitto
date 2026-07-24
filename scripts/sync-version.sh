@@ -23,14 +23,18 @@ if [[ ! "$NEW_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.\-]+)?$ ]]; then
     exit 1
 fi
 
-# Check if version is different from current
+# Check if version is different from current — skip prompt in CI
 if [ "$NEW_VERSION" = "$CURRENT_VERSION" ]; then
     echo "Warning: New version is the same as current version"
-    read -p "Continue anyway? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Aborted."
-        exit 0
+    if [ -t 0 ]; then
+        read -p "Continue anyway? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Aborted."
+            exit 0
+        fi
+    else
+        echo "Non-interactive shell — proceeding with version sync."
     fi
 fi
 
