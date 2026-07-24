@@ -53,6 +53,43 @@ pnpm store prune
 pnpm install
 ```
 
+### PNPM Ignored Build Scripts
+
+**Problem**: `pnpm install` succeeds but warns about ignored build scripts:
+
+```
+[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: esbuild@0.28.1, workerd@1.20260722.1
+Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.
+```
+
+This happens because pnpm v10+ blocks dependency lifecycle scripts by default. In pnpm v11, the old `onlyBuiltDependencies` setting in `package.json` is deprecated — all build settings must go in `pnpm-workspace.yaml`.
+
+**Solution**: Create or update `pnpm-workspace.yaml` in your project root:
+
+```yaml
+# pnpm-workspace.yaml
+allowBuilds:
+  '*': true
+```
+
+This allows all packages to run their build scripts. For a more restrictive approach, list only the specific packages that need builds:
+
+```yaml
+allowBuilds:
+  esbuild: true
+  workerd: true
+```
+
+Alternatively, run the interactive approval command after install:
+
+```bash
+pnpm approve-builds
+# or approve all at once (pnpm >= 10.32)
+pnpm approve-builds --all
+```
+
+When using `create-vitto` with the `--start` or `-s` flag and pnpm as the package manager, this configuration is automatically generated in the scaffolded project.
+
 ## Build Errors
 
 ### "Cannot find module 'vitto'"

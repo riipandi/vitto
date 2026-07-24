@@ -1,25 +1,32 @@
-/.fleet
 /.idea
 /.pnp
 /.husky
+/.snippets
 .turbo
 .vercel
 .pnp.js
 .DS_Store
 .DS_Store?
 /coverage
+/[Tt]emp/
+/[Tt]mp/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 node_modules/
 *tsbuildinfo
-.unikraft
+npm-debug.log*
+coverage.*
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 !.vscode/launch.json
+!.vscode/mcp.json
+!.vscode/tasks.json
 *.bak
+*.pid
+*~
 
 # SQLite
 *.sqlite*
@@ -82,6 +89,7 @@ terraform.tfvars*
 !terraform.tfvars.example
 
 # Development purposes
+.test-templates/
 my-website/
 demo-project/
 example-project/

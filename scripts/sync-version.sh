@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR=$(dirname "$0")
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 
 # Get current version from ROOT_DIR/package.json
 CURRENT_VERSION=$(jq -r '.version' "$ROOT_DIR/package.json")
@@ -47,13 +47,22 @@ done
 
 # Update vitto devDependencies in all template-* folders
 find "$ROOT_DIR/packages/create-vitto" -type f -name package.json | grep '/template-' | while read -r pkg; do
-    # Check if vitto exists in devDependencies
     if jq -e '.devDependencies.vitto' "$pkg" >/dev/null 2>&1; then
         jq --arg v "^$NEW_VERSION" '.devDependencies.vitto = $v' "$pkg" >"$pkg.tmp"
         mv "$pkg.tmp" "$pkg"
         echo "Updated vitto version in: $pkg"
     fi
 done
+
+# Update vitto devDependencies in starter/package.json
+STARTER_PKG="$ROOT_DIR/starter/package.json"
+if [ -f "$STARTER_PKG" ]; then
+    if jq -e '.devDependencies.vitto' "$STARTER_PKG" >/dev/null 2>&1; then
+        jq --arg v "^$NEW_VERSION" '.devDependencies.vitto = $v' "$STARTER_PKG" >"$STARTER_PKG.tmp"
+        mv "$STARTER_PKG.tmp" "$STARTER_PKG"
+        echo "Updated vitto version in: $STARTER_PKG"
+    fi
+fi
 
 # Running code formatting after version update
 if command -v pnpm >/dev/null 2>&1; then
@@ -66,4 +75,4 @@ fi
 echo ""
 echo "✓ Version updated from $CURRENT_VERSION to $NEW_VERSION"
 echo "✓ All package.json files have been updated"
-echo "✓ Template vitto devDependencies have been updated"
+echo "✓ Template and starter vitto devDependencies have been updated"

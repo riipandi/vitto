@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import vitto from 'vitto';
 
-import postsHook from './hooks/posts';
+import postsHook from './src/hooks/posts';
 
 export default defineConfig({
   plugins: [
@@ -35,15 +35,15 @@ export default defineConfig({
         {
           template: 'post',
           dataSource: 'posts',
-          getParams: (post) => ({ id: post.id }),
-          getPath: (post) => `blog/${post.id}.html`,
+          getParams: (post: any) => ({ slug: post.slug }),
+          getPath: (post: any) => `blog/${post.slug}.html`,
         },
         {
           template: 'blog',
           dataSource: 'posts',
-          pageSize: 10,
-          getParams: (pageNum) => ({ _page: pageNum }),
-          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+          pageSize: 5,
+          getParams: (pageNum: number) => ({ _page: pageNum }),
+          getPath: (pageNum: number) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
         },
       ],
     }),

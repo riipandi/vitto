@@ -15,7 +15,7 @@ Building a static site from scratch can feel overwhelming with all the choices a
 Start by scaffolding a new project with the Tailwind CSS template:
 
 ```bash
-npm create vitto@latest my-docs -- --template tailwindcss
+npm create vitto@latest my-docs -- --preset tailwindcss
 cd my-docs
 npm install
 npm run dev

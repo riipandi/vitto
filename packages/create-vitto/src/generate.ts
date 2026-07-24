@@ -14,6 +14,7 @@ interface ProjectOptions {
   preset?: TemplateVariant['name'];
   overwrite?: boolean;
   start?: boolean;
+  packageManager?: string;
 }
 
 const renameFiles: Record<string, string | undefined> = {
@@ -49,9 +50,10 @@ function install(root: string, agent: string) {
 
   _console.log(`Installing dependencies with ${agent}...`);
 
-  run(getInstallCommand(agent), {
+  run(getInstallCommand(agent, root), {
     stdio: 'inherit',
     cwd: root,
+    env: { ...process.env, CI: 'true' },
   });
 
   _console.log('Dependencies installed!');
@@ -122,32 +124,36 @@ function emptyDir(dir: string) {
   }
 }
 
-interface PkgInfo {
-  name: string;
-  version: string;
-}
-
-function pkgFromUserAgent(userAgent: string | undefined): PkgInfo | undefined {
-  if (!userAgent) return undefined;
-  const pkgSpec = userAgent.split(' ')[0];
-  if (!pkgSpec) return undefined;
-  const pkgSpecArr = pkgSpec.split('/');
-  const name = pkgSpecArr[0];
-  const version = pkgSpecArr[1];
-
-  if (!name || !version) return undefined;
-
-  return {
-    name,
-    version,
-  };
-}
-
-function getInstallCommand(agent: string): string[] {
+function getInstallCommand(agent: string, root: string): string[] {
   if (agent === 'yarn') {
     return [agent];
   }
-  return [agent, 'install'];
+
+  const cmd = [agent, 'install'];
+
+  if (agent === 'pnpm') {
+    // Inside pnpm workspace? Ignore it so pnpm reads the project-local config
+    if (isInsidePnpmWorkspace(root)) {
+      cmd.push('--ignore-workspace');
+    }
+    // Write allowBuilds config so build scripts actually run, not just ignored
+    // pnpm v11 ignores package.json#pnpm — must use pnpm-workspace.yaml
+    const wsYaml = path.join(root, 'pnpm-workspace.yaml');
+    if (!fs.existsSync(wsYaml)) {
+      fs.writeFileSync(wsYaml, "# pnpm workspace config\nallowBuilds:\n  '*': true\n", 'utf-8');
+    }
+  }
+
+  return cmd;
+}
+
+function isInsidePnpmWorkspace(root: string): boolean {
+  let dir = path.dirname(root);
+  while (dir !== path.dirname(dir)) {
+    if (fs.existsSync(path.join(dir, 'pnpm-workspace.yaml'))) return true;
+    dir = path.dirname(dir);
+  }
+  return false;
 }
 
 function getRunCommand(agent: string, script: string): string[] {
@@ -243,8 +249,7 @@ export default async function generateProject(opts: ProjectOptions) {
 
   _console.log('Project scaffolded successfully!\n');
 
-  const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
-  const pkgManager = pkgInfo ? pkgInfo.name : 'npm';
+  const pkgManager = opts.packageManager || 'pnpm';
 
   if (opts.start) {
     install(root, pkgManager);
@@ -259,7 +264,7 @@ export default async function generateProject(opts: ProjectOptions) {
         `  ${styleText('cyan', `cd ${cdProjectName.includes(' ') ? `"${cdProjectName}"` : cdProjectName}`)}`
       );
     }
-    _console.log(`  ${styleText('cyan', getInstallCommand(pkgManager).join(' '))}`);
+    _console.log(`  ${styleText('cyan', getInstallCommand(pkgManager, root).join(' '))}`);
     _console.log(`  ${styleText('cyan', getRunCommand(pkgManager, 'dev').join(' '))}`);
     _console.log('');
   }

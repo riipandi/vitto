@@ -171,7 +171,7 @@ Vitto is open source and available on [GitHub](https://github.com/riipandi/vitto
 
 ```bash
 # Quick start with Tailwind CSS
-npm create vitto@latest my-site -- --template tailwindcss
+npm create vitto@latest my-site -- --preset tailwindcss
 cd my-site
 npm run dev
 ```

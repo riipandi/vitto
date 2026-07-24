@@ -10,6 +10,7 @@ interface WizardResult {
   preset: TemplateVariant['name'];
   start: boolean;
   overwrite: boolean;
+  packageManager: string;
 }
 
 function isEmpty(dirPath: string): boolean {
@@ -92,6 +93,19 @@ export async function runWizard(): Promise<WizardResult> {
     process.exit(1);
   }
 
+  // Prompt for package manager
+  const pmChoices = [
+    { label: 'pnpm', value: 'pnpm', hint: 'recommended' },
+    { label: 'npm', value: 'npm' },
+    { label: 'yarn', value: 'yarn' },
+    { label: 'bun', value: 'bun' },
+    { label: 'deno', value: 'deno' },
+  ];
+  const packageManager = await _console.prompt('Select a package manager:', {
+    type: 'select',
+    options: pmChoices,
+  });
+
   // Prompt for start option
   const shouldStart = await _console.prompt(
     'Install dependencies and start dev server immediately?',
@@ -106,5 +120,6 @@ export async function runWizard(): Promise<WizardResult> {
     preset: selectedTemplate as TemplateVariant['name'],
     start: Boolean(shouldStart),
     overwrite,
+    packageManager: String(packageManager || 'pnpm'),
   };
 }

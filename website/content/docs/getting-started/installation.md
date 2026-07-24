@@ -53,31 +53,31 @@ You can also directly specify the project name and template:
 
 ```bash
 # npm 7+ (extra double-dash is needed)
-npm create vitto@latest my-website -- --template tailwindcss
+npm create vitto@latest my-website -- --preset tailwindcss
 ```
 
 @tab yarn
 
 ```bash
-yarn create vitto my-website --template tailwindcss
+yarn create vitto my-website --preset tailwindcss
 ```
 
 @tab pnpm
 
 ```bash
-pnpm create vitto my-website --template tailwindcss
+pnpm create vitto my-website --preset tailwindcss
 ```
 
 @tab bun
 
 ```bash
-bun create vitto my-website --template tailwindcss
+bun create vitto my-website --preset tailwindcss
 ```
 
 @tab deno
 
 ```bash
-deno init --npm vitto my-website --template tailwindcss
+deno init --npm vitto my-website --preset tailwindcss
 ```
 
 :::

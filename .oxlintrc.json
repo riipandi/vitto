@@ -27,5 +27,6 @@
                 "node": true
             }
         }
-    ]
+    ],
+    "ignorePatterns": ["packages/create-vitto/template-*"]
 }
