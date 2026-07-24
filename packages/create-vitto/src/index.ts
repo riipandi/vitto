@@ -22,7 +22,7 @@ const main = defineCommand({
     preset: {
       type: 'string',
       description: 'Preset to use',
-      alias: 'p',
+      alias: 'P',
     },
     overwrite: {
       type: 'boolean',
@@ -53,7 +53,6 @@ const main = defineCommand({
     packageManager: {
       type: 'string',
       description: 'Package manager to use (npm, yarn, pnpm, bun, deno)',
-      alias: 'pm',
       default: 'pnpm',
       valueHint: 'pnpm',
     },

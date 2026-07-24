@@ -55,15 +55,6 @@ function install(root: string, agent: string) {
     cwd: root,
   });
 
-  // pnpm requires explicit approval for certain package builds
-  if (agent === 'pnpm') {
-    _console.log('Approving package builds...');
-    run(['pnpm', 'approve-builds', '--all'], {
-      stdio: 'inherit',
-      cwd: root,
-    });
-  }
-
   _console.log('Dependencies installed!');
 }
 
@@ -242,6 +233,12 @@ export default async function generateProject(opts: ProjectOptions) {
 
   pkg.name = packageName;
   write('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
+
+  // pnpm v11 — write allowBuilds to pnpm-workspace.yaml (package.json#pnpm is ignored by pnpm 11)
+  if ((opts.packageManager || 'pnpm') === 'pnpm') {
+    const workspaceYaml = `# pnpm workspace config\nallowBuilds:\n  '*': true\n`;
+    fs.writeFileSync(path.join(root, 'pnpm-workspace.yaml'), workspaceYaml, 'utf-8');
+  }
 
   _console.log('Project scaffolded successfully!\n');
 
