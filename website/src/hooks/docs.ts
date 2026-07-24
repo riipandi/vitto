@@ -1,3 +1,7 @@
+/**
+ * TODO: https://www.npmjs.com/package/markdown-it-front-matter
+ */
+
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -5,12 +9,14 @@ import { alert } from '@mdit/plugin-alert';
 import { anchor } from '@mdit/plugin-anchor';
 import { tab } from '@mdit/plugin-tab';
 import { tasklist } from '@mdit/plugin-tasklist';
+import langAstro from '@shikijs/langs/astro';
 import langBash from '@shikijs/langs/bash';
 import langCss from '@shikijs/langs/css';
 import langHtml from '@shikijs/langs/html';
 import langJavascript from '@shikijs/langs/javascript';
 import langJson from '@shikijs/langs/json';
 import langMarkdown from '@shikijs/langs/markdown';
+import langTsx from '@shikijs/langs/tsx';
 import langTypescript from '@shikijs/langs/typescript';
 import langYaml from '@shikijs/langs/yaml';
 import { fromHighlighter } from '@shikijs/markdown-it/core';
@@ -60,6 +66,8 @@ const highlighter = createHighlighterCoreSync({
     langCss,
     langYaml,
     langMarkdown,
+    langTsx,
+    langAstro,
   ],
   engine: createJavaScriptRegexEngine(),
 });

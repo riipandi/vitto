@@ -85,8 +85,11 @@ The hook data is available in templates using the hook name:
 
 ## Hook Types
 
-### Static Hooks
+> [!TIP]
+> Choose the right hook type for your use case to keep your data layer clean and maintainable.
 
+:::tabs
+@tab:active Static Hooks
 Return the same data for all pages:
 
 ```ts
@@ -99,8 +102,7 @@ export default defineHooks('navigation', () => {
 });
 ```
 
-### Async Hooks
-
+@tab Async Hooks
 Fetch data asynchronously:
 
 ```ts
@@ -110,8 +112,7 @@ export default defineHooks('posts', async () => {
 });
 ```
 
-### Parameterized Hooks
-
+@tab Parameterized Hooks
 Accept parameters for filtering or customization:
 
 ```ts
@@ -122,6 +123,8 @@ export default defineHooks('post', async (params) => {
   return response.json();
 });
 ```
+
+:::
 
 Use with dynamic routes:
 
@@ -145,8 +148,8 @@ vitto({
 
 ## Common Use Cases
 
-### Reading Markdown Files
-
+:::tabs
+@tab:active Reading Markdown Files
 `hooks/posts.ts`:
 
 ```ts
@@ -179,8 +182,7 @@ export default defineHooks('posts', async () => {
 });
 ```
 
-### Fetching from an API
-
+@tab Fetching from an API
 `hooks/products.ts`:
 
 ```ts
@@ -203,8 +205,7 @@ export default defineHooks('products', async () => {
 });
 ```
 
-### Reading JSON Files
-
+@tab Reading JSON Files
 `hooks/data.ts`:
 
 ```ts
@@ -219,8 +220,7 @@ export default defineHooks('data', async () => {
 });
 ```
 
-### Processing Images
-
+@tab Processing Images
 `hooks/gallery.ts`:
 
 ```ts
@@ -242,8 +242,7 @@ export default defineHooks('gallery', async () => {
 });
 ```
 
-### Environment-Based Data
-
+@tab Environment-Based Data
 `hooks/config.ts`:
 
 ```ts
@@ -259,9 +258,17 @@ export default defineHooks('config', () => {
 });
 ```
 
+:::
+
+> [!WARNING]
+> Always handle async errors in hooks. An uncaught rejection can crash the build.
+
 ## Advanced Patterns
 
 ### Caching Hook Results
+
+> [!TIP]
+> Cache expensive hook results to speed up development rebuilds.
 
 ```ts
 let cache: any = null;
@@ -299,6 +306,9 @@ export default defineHooks('combined', async () => {
   };
 });
 ```
+
+> [!CAUTION]
+> Avoid over-combining data sources in a single hook. Each hook should have a single responsibility.
 
 ### Transforming Data
 
@@ -458,9 +468,15 @@ export default defineHooks<Post, PostParams>('post', async (params) => {
 
 ## Best Practices
 
-### 1. Handle Errors Gracefully
+- [x] **Handle Errors Gracefully** — Use try/catch and return safe defaults
+- [x] **Validate Parameters** — Check params exist and are the right type
+- [x] **Use Meaningful Names** — Prefer `blogPosts` over `data`
+- [x] **Document Your Hooks** — Use JSDoc comments for public hooks
+- [x] **Keep Hooks Focused** — One responsibility per hook
+- [x] **Export Both Named and Default** — Better import flexibility
 
 ```ts
+// Example: Handle Errors Gracefully
 export default defineHooks('data', async () => {
   try {
     return await fetchData();
@@ -471,9 +487,8 @@ export default defineHooks('data', async () => {
 });
 ```
 
-### 2. Validate Parameters
-
 ```ts
+// Example: Validate Parameters
 export default defineHooks('item', async (params) => {
   if (!params?.id) {
     throw new Error('ID parameter is required');
@@ -487,9 +502,8 @@ export default defineHooks('item', async (params) => {
 });
 ```
 
-### 3. Use Meaningful Names
-
 ```ts
+// Example: Use Meaningful Names
 // Good
 defineHooks('blogPosts', ...)
 defineHooks('featuredProducts', ...)
@@ -501,9 +515,8 @@ defineHooks('items', ...)
 defineHooks('stuff', ...)
 ```
 
-### 4. Document Your Hooks
-
 ```ts
+// Example: Document Your Hooks
 /**
  * Fetches all published blog posts, sorted by date (newest first).
  * Posts are read from the content/posts directory.
@@ -515,9 +528,8 @@ export default defineHooks('posts', async () => {
 });
 ```
 
-### 5. Keep Hooks Focused
-
 ```ts
+// Example: Keep Hooks Focused
 // Good - single responsibility
 export const postsHook = defineHooks('posts', async () => {
   return await fetchPosts();
@@ -537,9 +549,8 @@ export const everythingHook = defineHooks('everything', async () => {
 });
 ```
 
-### 6. Export Both Named and Default
-
 ```ts
+// Example: Export Both Named and Default
 // Good practice for better imports
 export const postsHook = defineHooks('posts', async () => {
   return await fetchPosts();

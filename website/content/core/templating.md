@@ -144,6 +144,9 @@ The `metadata` object configured in your `vite.config.ts` is automatically avail
 </html>
 ```
 
+> [!TIP]
+> Access nested metadata objects directly — `metadata.social.twitter`, `metadata.theme.primaryColor`, etc.
+
 ### Page-Specific Titles
 
 Combine page title with site name:
@@ -259,6 +262,9 @@ See [Hooks System](./06-hooks.md) for more details.
 
 ## Filters
 
+> [!IMPORTANT]
+> Always use the `safe` filter when rendering HTML content to prevent escaping.
+
 Vento includes built-in filters. Use the `safe` filter to render HTML:
 
 ```vento
@@ -312,18 +318,21 @@ Use in templates:
 
 ## Best Practices
 
-### 1. Always Use `safe` Filter for HTML Content
+- [x] **Always Use `safe` Filter for HTML Content** — Prevent double-escaping
+- [x] **Escape User-Generated Content** — Only use safe for trusted content. By default Vento escapes output.
+- [x] **Keep Layouts Simple** — Focus on structure. Move complex logic to hooks or partials.
+- [x] **Use Descriptive Variable Names** — Prefer `blogPost.title` over `x`
+- [x] **Organize Partials by Purpose** — Group related components in subdirectories
+- [x] **Leverage Metadata Configuration** — Store site-wide info in metadata instead of hardcoding
 
 ```vento
+{{# Always Use safe Filter for HTML Content #}}
 {{ content |> safe }}
 {{ renderAssets() |> safe }}
 ```
 
-### 2. Escape User-Generated Content
-
-By default, Vento escapes output. Only use `safe` for trusted content:
-
 ```vento
+{{# Escape User-Generated Content #}}
 {{# Auto-escaped (safe from XSS) #}}
 {{ userComment }}
 
@@ -331,43 +340,8 @@ By default, Vento escapes output. Only use `safe` for trusted content:
 {{ userComment |> safe }}
 ```
 
-### 3. Keep Layouts Simple
-
-Layouts should focus on structure. Move complex logic to hooks or partials.
-
-### 4. Use Descriptive Variable Names
-
-```vento
-{{# Good #}}
-{{ blogPost.title }}
-{{ author.name }}
-{{ metadata.siteName }}
-
-{{# Avoid #}}
-{{ x }}
-{{ data }}
-```
-
-### 5. Organize Partials by Purpose
-
-```
-src/partials/
-├── layout/
-│   ├── header.vto
-│   └── footer.vto
-├── components/
-│   ├── card.vto
-│   └── button.vto
-└── seo/
-    └── meta-tags.vto
-```
-
-### 6. Leverage Metadata Configuration
-
-Store site-wide information in metadata instead of hardcoding:
-
 ```ts
-// vite.config.ts
+// Leverage Metadata Configuration
 vitto({
   metadata: {
     siteName: 'My Blog',
@@ -382,11 +356,8 @@ vitto({
 });
 ```
 
-```vento
-<!-- In templates -->
-<meta name="author" content="{{ metadata.author }}">
-<a href="https://twitter.com/{{ metadata.social.twitter }}">Twitter</a>
-```
+> [!WARNING]
+> Never use the `safe` filter on untrusted user input — it bypasses Vento's XSS protection.
 
 ## Complete Example
 

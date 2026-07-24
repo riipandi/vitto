@@ -142,6 +142,17 @@ function initTabs() {
 
     if (!buttons.length || !panes.length) return;
 
+    // Activate first tab if none is active by default
+    const hasActive = [...buttons].some((b) => b.classList.contains('active'));
+    if (!hasActive && buttons[0]) {
+      buttons[0].classList.add('active');
+      buttons[0].setAttribute('data-active', '');
+      if (panes[0]) {
+        panes[0].classList.add('active');
+        panes[0].setAttribute('data-active', '');
+      }
+    }
+
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {
         const idx = btn.getAttribute('data-tab');

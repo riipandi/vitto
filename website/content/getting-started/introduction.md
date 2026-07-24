@@ -14,24 +14,23 @@ It combines the power of Vite's development experience with Vento's simple and e
 
 ## Requirements
 
-Vitto requires one of the following Node.js versions:
+> [!IMPORTANT]
+> Vitto requires one of the following Node.js versions:
 
 - Node.js 20.19 or higher
 - Node.js 22.12 or higher
 
-You can also use alternative runtimes:
-
-- Bun
-- Deno
+> [!TIP]
+> Vitto also works with alternative runtimes like Bun and Deno.
 
 ## Philosophy
 
 Vitto is designed to be:
 
-1. **Simple**: Minimal configuration required to get started
-2. **Flexible**: Extensive customization options for advanced use cases
-3. **Fast**: Leverages Vite's optimized build pipeline
-4. **Developer-Friendly**: Great DX with hot reload and helpful error messages
+- [x] **Simple**: Minimal configuration required to get started
+- [x] **Flexible**: Extensive customization options for advanced use cases
+- [x] **Fast**: Leverages Vite's optimized build pipeline
+- [x] **Developer-Friendly**: Great DX with hot reload and helpful error messages
 
 ## What's Next?
 

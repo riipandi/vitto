@@ -485,6 +485,9 @@ export const postHook = defineHooks('post', async (params) => {
 
 **TypeScript Example:**
 
+> [!TIP]
+> Use TypeScript generics to get full type safety in your hooks and templates.
+
 ```ts
 interface Post {
   id: number;
@@ -780,6 +783,9 @@ All registered hooks are available by their name.
 
 ## Vento Filters
 
+> [!NOTE]
+> Vento filters transform data in templates. Use the built-in filters before creating custom ones.
+
 Built-in Vento filters available in templates.
 
 ### `safe`
@@ -883,6 +889,9 @@ export default defineHooks('config', () => {
   };
 });
 ```
+
+> [!WARNING]
+> Environment variables accessed in templates via `env.*` are evaluated at build time. They won't update on the client side.
 
 ## Type Exports
 

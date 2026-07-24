@@ -2,6 +2,9 @@
 
 Vitto generates a static site that can be deployed to any static hosting platform. This guide covers deployment to popular platforms.
 
+> [!NOTE]
+> Before deploying, build your site for production with `npm run build`. This creates an optimized static site in the `dist/` directory.
+
 ## Building for Production
 
 Before deploying, build your site for production:
@@ -19,8 +22,8 @@ This creates an optimized static site in the `dist/` directory with:
 
 ## Platform-Specific Guides
 
-### Vercel
-
+:::tabs
+@tab:active Vercel
 Vercel provides zero-configuration deployment for static sites.
 
 #### 1. Install Vercel CLI
@@ -50,8 +53,7 @@ Create `vercel.json`:
 }
 ```
 
-### Netlify
-
+@tab Netlify
 Deploy to Netlify using Git or drag-and-drop.
 
 #### Using Netlify CLI
@@ -87,8 +89,7 @@ Create `netlify.toml`:
    - **Build command**: `npm run build`
    - **Publish directory**: `dist`
 
-### Cloudflare Pages
-
+@tab Cloudflare Pages
 Deploy to Cloudflare Pages for global edge delivery.
 
 #### Using Wrangler CLI
@@ -109,9 +110,10 @@ wrangler pages deploy dist
    - **Build command**: `npm run build`
    - **Build output directory**: `dist`
    - **Root directory**: `/`
+     :::
 
-### GitHub Pages
-
+:::tabs
+@tab:active GitHub Pages
 Deploy to GitHub Pages for free hosting.
 
 #### Using GitHub Actions
@@ -186,8 +188,7 @@ export default defineConfig({
 });
 ```
 
-### Azure Static Web Apps
-
+@tab Azure Static Web Apps
 Deploy to Azure for enterprise-grade hosting.
 
 #### Configuration
@@ -224,8 +225,7 @@ jobs:
           output_location: 'dist'
 ```
 
-### AWS Amplify
-
+@tab AWS Amplify
 Deploy to AWS Amplify for scalable hosting.
 
 #### Configuration
@@ -251,8 +251,10 @@ frontend:
       - node_modules/**/*
 ```
 
-### DigitalOcean App Platform
+:::
 
+:::tabs
+@tab:active DigitalOcean App Platform
 Deploy to DigitalOcean for simple cloud hosting.
 
 #### Configuration
@@ -279,8 +281,7 @@ static_sites:
       - path: /
 ```
 
-### Render
-
+@tab Render
 Deploy to Render for managed static hosting.
 
 #### Configuration
@@ -300,8 +301,7 @@ services:
         destination: /index.html
 ```
 
-### Firebase Hosting
-
+@tab Firebase Hosting
 Deploy to Firebase for Google Cloud infrastructure.
 
 #### Setup
@@ -341,6 +341,8 @@ Update `firebase.json`:
 ```bash
 firebase deploy
 ```
+
+:::
 
 ### Self-Hosted (VPS)
 
@@ -453,21 +455,12 @@ Repository → Settings → Pages → Custom domain
 
 ## Performance Optimization
 
-### Enable Compression
+- [x] **Enable Compression** — Most platforms enable gzip/brotli automatically. Verify in your hosting settings.
+- [x] **CDN Configuration** — Use platform CDN features (Vercel Edge Network, Netlify Global CDN, Cloudflare Global Network)
+- [x] **Cache Headers** — Configure in your hosting platform or web server
 
-Most platforms enable gzip/brotli automatically. Verify in your hosting settings.
-
-### CDN Configuration
-
-Use platform CDN features:
-
-- **Vercel**: Edge Network (automatic)
-- **Netlify**: Global CDN (automatic)
-- **Cloudflare Pages**: Global network (automatic)
-
-### Cache Headers
-
-Configure in your hosting platform or web server:
+> [!TIP]
+> Enable gzip or Brotli compression on your hosting platform to reduce transfer sizes significantly.
 
 ```
 # Static assets
@@ -564,46 +557,11 @@ Configure rewrites to serve `index.html` for all routes. See platform-specific c
 
 ## Best Practices
 
-### 1. Use Environment-Specific Configurations
-
-```ts
-export default defineConfig(({ mode }) => ({
-  plugins: [
-    vitto({
-      minify: mode === 'production',
-      enableSearchIndex: mode === 'production',
-    }),
-  ],
-}));
-```
-
-### 2. Test Builds Locally
-
-```bash
-npm run build
-npm run preview
-```
-
-### 3. Monitor Build Times
-
-Keep builds under platform limits:
-
-- Vercel Free: 45 minutes
-- Netlify Free: 300 minutes/month
-- GitHub Pages: No limit
-
-### 4. Use .gitignore
-
-```
-node_modules/
-dist/
-.env
-.env.local
-```
-
-### 5. Version Lock Dependencies
-
-Use `package-lock.json` or `pnpm-lock.yaml` for consistent builds.
+- [x] **Use Environment-Specific Configurations** — Enable minification and search index only in production
+- [x] **Test Builds Locally** — Run `npm run build` and `npm run preview` before deploying
+- [x] **Monitor Build Times** — Keep builds under platform limits (Vercel Free: 45 min, Netlify Free: 300 min/month)
+- [x] **Use .gitignore** — Exclude node_modules, dist, .env files
+- [x] **Version Lock Dependencies** — Use `package-lock.json` or `pnpm-lock.yaml` for consistent builds
 
 ## Next Steps
 

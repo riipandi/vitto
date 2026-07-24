@@ -132,6 +132,9 @@ vitto({
 });
 ```
 
+> [!NOTE]
+> See the [Pagefind documentation](https://pagefind.app/) for all available options.
+
 ## Customizing Search Behavior
 
 ### Mark Content as Searchable
@@ -399,6 +402,9 @@ const search = await pagefind.search(query, {
 
 ## Development vs Production
 
+> [!TIP]
+> Search indexing is skipped in dev mode for faster builds. Preview production build to test search.
+
 ### Development Mode
 
 Search indexing is skipped in development mode for faster builds. To test search locally:
@@ -460,6 +466,9 @@ The index files are created in `dist/_pagefind/`.
 
 ### Large Index Size
 
+> [!WARNING]
+> Large search indexes can impact page load time. Keep the indexed content focused on what users actually need to search.
+
 1. Index only essential content
 2. Exclude images and media from indexing
 3. Use `data-pagefind-ignore` on repetitive content
@@ -467,7 +476,11 @@ The index files are created in `dist/_pagefind/`.
 
 ## Best Practices
 
-### 1. Mark Main Content Explicitly
+- [x] **Mark Main Content Explicitly** — Use `data-pagefind-body` on your main content wrapper
+- [x] **Exclude Navigation and Footers** — Prevent noise in search results
+- [x] **Add Meaningful Metadata** — Use `data-pagefind-meta` for better result display
+- [x] **Optimize for Mobile** — Ensure search UI works on small screens
+- [x] **Provide Search Feedback** — Show loading states and result counts
 
 ```vento
 <main data-pagefind-body>
@@ -475,22 +488,16 @@ The index files are created in `dist/_pagefind/`.
 </main>
 ```
 
-### 2. Exclude Navigation and Footers
-
 ```vento
 <nav data-pagefind-ignore>...</nav>
 <footer data-pagefind-ignore>...</footer>
 ```
-
-### 3. Add Meaningful Metadata
 
 ```vento
 <article
   data-pagefind-meta="title:{{ title }}, category:{{ category }}"
 >
 ```
-
-### 4. Optimize for Mobile
 
 ```css
 @media (max-width: 768px) {
@@ -499,8 +506,6 @@ The index files are created in `dist/_pagefind/`.
   }
 }
 ```
-
-### 5. Provide Search Feedback
 
 ```html
 <div id="search-status" aria-live="polite"></div>

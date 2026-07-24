@@ -1077,6 +1077,12 @@ export default defineConfig({
 });
 ```
 
+> [!TIP]
+> Feel free to modify these examples to fit your project structure and data sources.
+
+> [!NOTE]
+> These examples assume file-based data sources (Markdown, JSON). For API-driven sites, replace the file reading logic with fetch calls.
+
 ## Next Steps
 
 - [Troubleshooting](./11-troubleshooting.md) - Common issues and solutions

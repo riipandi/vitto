@@ -21,6 +21,9 @@ export default defineConfig({
 });
 ```
 
+> [!NOTE]
+> The `metadata` option is required. It provides essential site information that is injected into all page templates.
+
 ## Configuration Options
 
 ### `metadata` (Required)
@@ -120,6 +123,9 @@ vitto({
 });
 ```
 
+> [!CAUTION]
+> Minification is best suited for production builds. Enable it conditionally with `process.env.NODE_ENV === 'production'` for faster development builds.
+
 #### Default Minification Options
 
 When `minify: true`, Vitto uses these defaults:
@@ -211,6 +217,9 @@ vitto({
   outputStrategy: 'directory',
 });
 ```
+
+> [!IMPORTANT]
+> Directory defaults are chosen for common project structures. Change them only if your project uses a non-standard layout.
 
 ### `dynamicRoutes`
 
@@ -387,7 +396,8 @@ export default defineConfig(({ mode }) => ({
 
 ## TypeScript Support
 
-Vitto provides full TypeScript support. Import types for better IDE experience:
+> [!TIP]
+> Vitto provides full TypeScript support. Import types for better IDE experience:
 
 ```ts
 import type { VittoOptions, Metadata } from 'vitto';

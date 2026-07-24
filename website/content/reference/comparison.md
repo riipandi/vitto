@@ -39,6 +39,9 @@ Because Vitto is built on Vite, you get:
 - 🔧 Plugin ecosystem (PostCSS, autoprefixer, etc.)
 - 🚀 Modern JavaScript/TypeScript support out of the box
 
+> [!NOTE]
+> Vitto's Vite foundation means you get all Vite features directly — no abstraction layer needed.
+
 **Integration Examples:**
 
 ```ts
@@ -84,7 +87,10 @@ export default defineConfig({
 </html>
 ```
 
-## Vitto vs Next.js
+## SSG Comparisons
+
+:::tabs
+@tab:active Vitto vs Next.js
 
 ### Next.js Overview
 
@@ -194,7 +200,7 @@ vitto({
 });
 ```
 
-## Vitto vs Astro
+@tab Vitto vs Astro
 
 ### Astro Overview
 
@@ -281,24 +287,7 @@ window.Alpine = Alpine;
 Alpine.start();
 ```
 
-**Or use CDN for quick setup:**
-
-```vento
-<!DOCTYPE html>
-<html>
-<head>
-  {{ renderAssets() |> safe }}
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body>
-  {{/* Your content */}}
-</body>
-</html>
-```
-
-## Vitto vs Gatsby
+@tab Vitto vs Gatsby
 
 ### Gatsby Overview
 
@@ -340,45 +329,7 @@ Gatsby is a React-based framework with GraphQL for data management and a rich pl
 - You're building a large, complex site
 - Your team knows React and GraphQL well
 
-### Integration Comparison
-
-**Gatsby** (Complex setup):
-
-```javascript
-// gatsby-config.js
-module.exports = {
-  plugins: [
-    'gatsby-plugin-postcss',
-    'gatsby-plugin-image',
-    {
-      resolve: 'gatsby-plugin-react-helmet',
-      options: {/* ... */},
-    },
-  ],
-};
-
-// Need separate webpack config for custom libraries
-```
-
-**Vitto** (Simple setup):
-
-```ts
-// vite.config.ts - Everything in one place
-import { defineConfig } from 'vite';
-import tailwindcss from '@tailwindcss/vite';
-import vitto from 'vitto';
-
-export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: { siteName: 'My Site', title: 'My Site' },
-    }),
-    tailwindcss(),
-  ],
-});
-```
-
-## Vitto vs Docusaurus
+@tab Vitto vs Docusaurus
 
 ### Docusaurus Overview
 
@@ -422,31 +373,7 @@ Docusaurus is a documentation-focused static site generator built with React.
 - You need Algolia search integration
 - You want MDX support
 
-### Library Integration Example
-
-**Vitto** (Flexible approach):
-
-```vento
-{{/* Add any library easily */}}
-<!DOCTYPE html>
-<html>
-<head>
-  {{ renderAssets() |> safe }}
-
-  {{/* Via CDN for quick setup */}}
-  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-
-  {{/* Or via Vite bundler (imported in main.ts) */}}
-</head>
-<body>
-  <div hx-get="/search" hx-trigger="keyup changed delay:500ms">
-    <input type="search" name="q" class="search-input">
-  </div>
-</body>
-</html>
-```
-
-## Vitto vs VitePress
+@tab Vitto vs VitePress
 
 ### VitePress Overview
 
@@ -519,7 +446,7 @@ export default defineConfig({
 </div>
 ```
 
-## Vitto vs Eleventy
+@tab Vitto vs Eleventy
 
 ### Eleventy Overview
 
@@ -562,51 +489,7 @@ Eleventy is a simpler static site generator with multiple template language supp
 - You prefer convention over configuration
 - You have existing Eleventy plugins
 - You don't need modern build tooling
-
-### Library Integration Comparison
-
-**Eleventy** (Manual setup):
-
-```javascript
-// .eleventy.js
-module.exports = function (eleventyConfig) {
-  // Need to manually copy assets
-  eleventyConfig.addPassthroughCopy('src/js');
-  eleventyConfig.addPassthroughCopy('src/css');
-
-  // Manual CSS processing
-  eleventyConfig.addPlugin(require('eleventy-plugin-postcss'));
-};
-```
-
-**Vitto** (Automatic with Vite):
-
-```ts
-// vite.config.ts - Vite handles everything
-import { defineConfig } from 'vite';
-import vitto from 'vitto';
-
-export default defineConfig({
-  plugins: [
-    vitto({
-      metadata: { siteName: 'My Site', title: 'My Site' },
-    }),
-  ],
-  // CSS processing is automatic
-  // HMR is built-in
-  // Modern JS is transpiled automatically
-});
-```
-
-```ts
-// src/main.ts - Import libraries like any Vite app
-import 'htmx.org';
-import Alpine from 'alpinejs';
-import './style.css'; // Processed automatically
-
-window.Alpine = Alpine;
-Alpine.start();
-```
+  :::
 
 ## Feature Comparison Matrix
 
@@ -634,6 +517,9 @@ Alpine.start();
 - ❌ Not supported
 
 ## When to Choose Vitto
+
+> [!TIP]
+> If you're migrating from another SSG, check the migration guides below for step-by-step instructions.
 
 ### Ideal Use Cases
 
@@ -801,6 +687,9 @@ Alpine.start();
 - Use Gatsby or Eleventy
 
 ## Migration Guides
+
+> [!IMPORTANT]
+> When choosing Vitto, consider that it excels at static site generation with a simple, template-based approach. For SSR or complex web apps, other tools may be more suitable.
 
 ### From Next.js to Vitto
 

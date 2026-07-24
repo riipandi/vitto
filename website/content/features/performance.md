@@ -34,6 +34,9 @@ export default defineConfig({
 });
 ```
 
+> [!WARNING]
+> Avoid premature optimization. Focus on measurable performance issues rather than micro-optimizations that add complexity without real impact.
+
 ### Tree Shaking
 
 Vite automatically removes unused code. Import only what you need:
@@ -462,9 +465,15 @@ Use these tools to measure performance:
 </script>
 ```
 
+> [!TIP]
+> Set up performance monitoring early and track Core Web Vitals in production to catch regressions before they impact users.
+
 ## Build Performance
 
 ### Faster Builds
+
+> [!NOTE]
+> Build performance matters for CI/CD pipelines. Optimize hooks and caching to keep builds fast.
 
 #### 1. Use npm ci
 
@@ -517,21 +526,21 @@ export default defineHooks('data', async () => {
 
 ## Best Practices Checklist
 
-- [ ] Enable minification for production
-- [ ] Optimize and compress images
-- [ ] Use lazy loading for images
-- [ ] Minimize third-party scripts
-- [ ] Implement proper caching headers
-- [ ] Use modern image formats (WebP, AVIF)
-- [ ] Self-host fonts with font-display: swap
-- [ ] Remove unused CSS
-- [ ] Enable gzip/brotli compression
-- [ ] Implement resource hints (preconnect, dns-prefetch)
-- [ ] Monitor Core Web Vitals
-- [ ] Optimize search index size
-- [ ] Use CDN for static assets
-- [ ] Implement service worker for offline support
-- [ ] Lazy load non-critical JavaScript
+- [x] Enable minification for production
+- [x] Optimize and compress images
+- [x] Use lazy loading for images
+- [x] Minimize third-party scripts
+- [x] Implement proper caching headers
+- [x] Use modern image formats (WebP, AVIF)
+- [x] Self-host fonts with font-display: swap
+- [x] Remove unused CSS
+- [x] Enable gzip/brotli compression
+- [x] Implement resource hints (preconnect, dns-prefetch)
+- [x] Monitor Core Web Vitals
+- [x] Optimize search index size
+- [x] Use CDN for static assets
+- [x] Implement service worker for offline support
+- [x] Lazy load non-critical JavaScript
 
 ## Performance Budget
 
