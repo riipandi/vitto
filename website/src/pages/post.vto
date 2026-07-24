@@ -21,11 +21,11 @@
           {{ if post.author }}
             <span class="font-medium">{{ post.author }}</span>
           {{ /if }}
-          {{ if post.date }}
-            <time datetime="{{ post.created }}">{{ post.date }}</time>
+          {{ if post.created }}
+            <time datetime="{{ post.created }}">{{ post.dateDisplay }}</time>
           {{ /if }}
-          {{ if post.updated && post.updated != post.date }}
-            <span>Updated <time datetime="{{ post.updated }}">{{ post.updated }}</time></span>
+          {{ if post.updated && post.updated != post.created }}
+            <span>Updated <time datetime="{{ post.updated }}">{{ post.updated.split('T')[0] || post.updated }}</time></span>
           {{ /if }}
           {{ if post.tags && post.tags.length > 0 }}
             <span class="flex items-center gap-1.5">

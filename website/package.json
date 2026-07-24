@@ -28,6 +28,7 @@
         "markdown-it": "^14.3.0",
         "markdown-it-front-matter": "^0.2.4",
         "shiki": "^4.3.1",
+        "slugify": "^1.6.9",
         "ufo": "^1.6.4"
     },
     "devDependencies": {

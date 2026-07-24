@@ -1,11 +1,10 @@
 ---
 title: Introducing Vitto - A Minimal Static Site Generator Powered by Vite
-date: 2025-07-24
 description: After months of development, I'm excited to introduce Vitto - a minimal, flexible static site generator that combines Vite's blazing-fast development experience with the simplicity of Vento templating.
 tags: [vitto, release, announcement, static-site]
 author: Aris Ripandi
-created: 2025-07-24
-updated: 2025-07-24
+created: 2025-07-20T08:00:00
+updated: 2025-07-24T15:00:00
 slug: introducing-vitto
 ---
 

@@ -4,6 +4,7 @@ import vitto from 'vitto';
 
 import docsHook from './src/hooks/docs';
 import postsHook from './src/hooks/posts';
+import type { BlogPost } from './types/blog';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -41,8 +42,8 @@ export default defineConfig({
         {
           template: 'post',
           dataSource: 'posts',
-          getParams: (post: any) => ({ slug: post.slug }),
-          getPath: (post: any) => `blog/${post.slug}.html`,
+          getParams: (post: BlogPost) => ({ slug: post.slug }),
+          getPath: (post: BlogPost) => `blog/${post.slug}.html`,
         },
         {
           template: 'blog',
