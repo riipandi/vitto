@@ -48,5 +48,13 @@ export function createMarkdownRenderer(): MarkdownIt {
   </div>`;
   };
 
+  // Wrap tables in a scrollable container for mobile
+  md.renderer.rules.table_open = function (tokens, idx, options, _env, self) {
+    return '<div class="table-wrapper">' + self.renderToken(tokens, idx, options);
+  };
+  md.renderer.rules.table_close = function (tokens, idx, options, _env, self) {
+    return self.renderToken(tokens, idx, options) + '</div>';
+  };
+
   return md;
 }

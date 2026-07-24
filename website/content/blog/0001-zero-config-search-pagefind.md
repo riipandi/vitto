@@ -3,8 +3,8 @@ title: Zero-Config Search with Pagefind - Making Your Static Site Searchable
 description: Add full-text search to your static site in minutes with Pagefind. No external services, no server, no complex setup - just search that works offline.
 tags: [search, pagefind, tutorial, performance]
 author: Aris Ripandi
-created: 2025-07-21T08:00:00
-updated: 2025-07-24T11:30:00
+created: 2025-12-14T10:00:00
+updated: 2025-12-20T14:30:00
 slug: zero-config-search-pagefind
 ---
 

@@ -4,8 +4,8 @@ import path from 'node:path';
 import slugify from 'slugify';
 import { defineHooks } from 'vitto';
 
-import { createMarkdownRenderer } from '../markdown';
 import type { BlogPost } from '../../types/blog';
+import { createMarkdownRenderer } from '../markdown';
 
 const BLOG_DIR = path.resolve(import.meta.dirname, '../../content/blog');
 const md = createMarkdownRenderer();
@@ -20,7 +20,10 @@ function parseFrontmatter(raw: string): Record<string, any> {
     const key = line.slice(0, sep).trim();
     let val: any = line.slice(sep + 1).trim();
     if (val.startsWith('[') && val.endsWith(']')) {
-      val = val.slice(1, -1).split(',').map((s: string) => s.trim().replace(/^['"]|['"]$/g, ''));
+      val = val
+        .slice(1, -1)
+        .split(',')
+        .map((s: string) => s.trim().replace(/^['"]|['"]$/g, ''));
     } else {
       val = val.replace(/^['"]|['"]$/g, '');
     }
@@ -36,8 +39,13 @@ function toSlug(text: string): string {
 function parseBlogFile(filePath: string): BlogPost | null {
   try {
     const raw = fs.readFileSync(filePath, 'utf-8');
-    const fileName = path.basename(filePath, '.md');
+    const rawName = path.basename(filePath, '.md');
     const meta = parseFrontmatter(raw);
+
+    // Extract 4-digit prefix as id
+    const prefixMatch = rawName.match(/^(\d{4})-(.+)/);
+    const id = prefixMatch ? parseInt(prefixMatch[1], 10) : 0;
+    const fileName = prefixMatch ? prefixMatch[2] : rawName;
 
     const body = raw.startsWith('---\n') ? raw.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '') : raw;
     const content = md.render(body);
@@ -46,8 +54,10 @@ function parseBlogFile(filePath: string): BlogPost | null {
     const slug = meta.slug || toSlug(title);
     const created = meta.created || '';
     const dateDisplay = created.split('T')[0] || created;
+    const updatedDisplay = (meta.updated || '').split('T')[0] || meta.updated || '';
 
     return {
+      id,
       slug,
       title,
       description: meta.description || '',
@@ -56,6 +66,7 @@ function parseBlogFile(filePath: string): BlogPost | null {
       created,
       updated: meta.updated || '',
       dateDisplay,
+      updatedDisplay,
       content,
       body,
     };
@@ -78,19 +89,34 @@ function getAllPosts(): BlogPost[] {
       if (isNaN(aTime)) return 1;
       if (isNaN(bTime)) return -1;
       return bTime - aTime;
-    })
-    .map((p, i) => ({ ...p, id: i + 1 }));
+    });
 }
 
 const slugMap = new Map<string, BlogPost>();
+
+interface NavItem {
+  slug: string;
+  title: string;
+}
 
 export default defineHooks('posts', async (params) => {
   const all = getAllPosts();
   if (slugMap.size === 0) {
     for (const p of all) slugMap.set(p.slug, p);
   }
+
   if (params?.slug) {
-    return slugMap.get(params.slug) || null;
+    const post = slugMap.get(params.slug) || null;
+    if (!post) return null;
+
+    const idx = all.findIndex((p) => p.slug === post.slug);
+    const prev: NavItem | null =
+      idx < all.length - 1 ? { slug: all[idx + 1].slug, title: all[idx + 1].title } : null;
+    const next: NavItem | null =
+      idx > 0 ? { slug: all[idx - 1].slug, title: all[idx - 1].title } : null;
+
+    return { ...post, prev, next };
   }
+
   return all;
 });

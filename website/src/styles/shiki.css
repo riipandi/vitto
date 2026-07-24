@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------- */
 .code-block {
   @apply my-5 rounded-lg;
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid var(--code-border, #d4cfc0);
   background: var(--cb-bg, #fff);
 }

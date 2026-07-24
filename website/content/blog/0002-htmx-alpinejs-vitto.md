@@ -3,8 +3,8 @@ title: Building Interactive Sites with HTMX and Alpine.js on Vitto
 description: Learn how to add dynamic interactions to your static site without a heavy JavaScript framework. Vitto makes it seamless to integrate HTMX and Alpine.js.
 tags: [htmx, alpinejs, tutorial, javascript, vento]
 author: Aris Ripandi
-created: 2025-07-22T14:30:00
-updated: 2025-07-24T09:00:00
+created: 2026-02-08T15:00:00
+updated: 2026-02-15T11:00:00
 ---
 
 One of the best things about building with Vitto is the freedom to choose your tools. Unlike framework-locked SSGs, Vitto lets you reach for exactly what you need.

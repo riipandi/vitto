@@ -76,8 +76,17 @@
   color: var(--prose-body);
   @apply italic;
 }
-.prose table {
-  @apply w-full text-sm my-6;
+
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  @apply my-6;
+}
+.table-wrapper table {
+  min-width: 100%;
+  width: auto;
+  @apply text-sm my-0;
 }
 .prose th {
   @apply text-left font-semibold pb-3;
@@ -94,6 +103,8 @@
   border-color: var(--prose-border);
 }
 .prose img {
+  max-width: 100%;
+  height: auto;
   @apply rounded-lg my-6;
 }
 .prose ul ul,
