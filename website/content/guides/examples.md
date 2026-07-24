@@ -2,17 +2,6 @@
 
 This guide provides real-world examples and common use cases for building sites with Vitto.
 
-## Table of Contents
-
-- [Blog with Markdown](#blog-with-markdown)
-- [Documentation Site](#documentation-site)
-- [Portfolio Website](#portfolio-website)
-- [E-commerce Product Catalog](#e-commerce-product-catalog)
-- [Multi-language Site](#multi-language-site)
-- [RSS Feed](#rss-feed)
-- [Sitemap Generation](#sitemap-generation)
-- [JSON API](#json-api)
-
 ## Blog with Markdown
 
 A complete blog implementation with posts, categories, and tags.

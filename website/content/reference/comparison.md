@@ -2,19 +2,6 @@
 
 Learn how Vitto compares to other popular static site generators and when to choose each one.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Vitto vs Next.js](#vitto-vs-nextjs)
-- [Vitto vs Astro](#vitto-vs-astro)
-- [Vitto vs Gatsby](#vitto-vs-gatsby)
-- [Vitto vs Docusaurus](#vitto-vs-docusaurus)
-- [Vitto vs VitePress](#vitto-vs-vitepress)
-- [Vitto vs Eleventy](#vitto-vs-eleventy)
-- [Feature Comparison Matrix](#feature-comparison-matrix)
-- [When to Choose Vitto](#when-to-choose-vitto)
-- [Migration Guides](#migration-guides)
-
 ## Overview
 
 Vitto is a lightweight, Vite-powered static site generator that focuses on simplicity and developer experience. Here's how it compares to other popular solutions.

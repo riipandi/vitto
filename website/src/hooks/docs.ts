@@ -87,10 +87,9 @@ md.use(
 md.use(anchor, { level: [2, 3, 4] });
 md.use(alert);
 md.use(tab, { name: 'tabs' });
-md.use(tasklist, { disabled: false, label: true });
+md.use(tasklist, { disabled: true, label: true });
 
-// ans: anchor level limits to h2-h4 so h1 page titles don't get duplicate anchors.
-// ans: tasklist `disabled: false` keeps checkboxes interactive.
+// ans: tasklist `disabled: true` keeps checkboxes read-only.
 
 // Override fence renderer — treat `vento` as `html`, catch truly unknown langs gracefully
 const defaultFence = md.renderer.rules.fence!.bind(md.renderer.rules);
@@ -192,12 +191,25 @@ function getSections(): DocSection[] {
   }));
 }
 
-// Hook for dynamic routes — returns array of docs
+// Hook for dynamic routes — returns array of docs, or single doc with nav
 export default defineHooks('docs', async (params?: { slug?: string }) => {
   if (params?.slug) {
     const doc = getDocBySlug(params.slug);
     if (!doc) return null;
-    return { ...doc, sections: getSections() };
+
+    const sections = getSections();
+    // Flatten all items into navigation order
+    const flatNav = sections.flatMap((s) =>
+      s.items.map((item) => ({ ...item, sectionLabel: s.label }))
+    );
+    const idx = flatNav.findIndex((item) => item.slug === doc.slug);
+
+    return {
+      ...doc,
+      sections,
+      prev: idx > 0 ? flatNav[idx - 1] : null,
+      next: idx >= 0 && idx < flatNav.length - 1 ? flatNav[idx + 1] : null,
+    };
   }
   return getAllDocs();
 });

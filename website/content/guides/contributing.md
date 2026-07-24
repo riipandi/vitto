@@ -2,18 +2,6 @@
 
 Thank you for your interest in contributing to Vitto! This guide will help you get started.
 
-## Table of Contents
-
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Setup](#development-setup)
-- [Project Structure](#project-structure)
-- [Development Workflow](#development-workflow)
-- [Testing](#testing)
-- [Code Style](#code-style)
-- [Submitting Changes](#submitting-changes)
-- [Reporting Issues](#reporting-issues)
-
 ## Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment for everyone. Please be respectful and considerate in all interactions.

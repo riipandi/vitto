@@ -228,15 +228,13 @@ header.menu-open {
    Code blocks — Shiki syntax highlighting
    --------------------------------------------------------------------------- */
 
-/* Shiki containers */
 .shiki {
-  @apply rounded-xl p-4 overflow-x-auto text-sm leading-relaxed border border-sand-200/60 dark:border-sand-700/40;
+  @apply rounded-lg border border-sand-200/60 dark:border-sand-700/40 overflow-x-auto;
   background-color: #fff !important;
   color: #24292e !important;
-}
-
-pre.shiki {
-  @apply my-2;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  padding: 1rem;
 }
 
 .dark .shiki,
@@ -249,90 +247,148 @@ pre.shiki {
 }
 
 .shiki code {
-  @apply font-mono;
+  @apply font-mono text-inherit;
+  background: none !important;
+  padding: 0;
 }
 
-/* Fallback pre/code (non-shiki) */
+pre.shiki {
+  @apply my-5;
+}
+
+/* Fallback pre (non-shiki) */
 .prose pre:not(.shiki) {
-  @apply bg-sand-900 dark:bg-[#111110] text-sand-200 rounded-xl p-4 overflow-x-auto text-sm leading-relaxed border border-sand-800/50;
+  @apply bg-sand-900 dark:bg-[#111110] text-sand-200 rounded-lg p-4 overflow-x-auto text-sm leading-relaxed border border-sand-800/50;
+}
+.prose pre:not(.shiki) code {
+  @apply bg-transparent text-sand-200 p-0 text-inherit font-mono;
 }
 
-/* Code block inside prose — more padding, proper scrollbar */
-.prose pre {
-  @apply p-5;
-}
-.prose pre::-webkit-scrollbar {
+/* Scrollbar — consistent for all overflow containers */
+pre::-webkit-scrollbar,
+.tabs-tabs-header::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
-.prose pre::-webkit-scrollbar-thumb {
-  @apply bg-sand-400 dark:bg-sand-600 rounded-full;
+.shiki::-webkit-scrollbar {
+  height: 6px;
 }
-
-.prose code {
-  @apply text-amber-600 dark:text-amber-400 text-[0.875em] font-medium;
+.tabs-tabs-header::-webkit-scrollbar {
+  height: 4px;
 }
-
-.prose pre code:not(.shiki code) {
-  @apply text-sand-200 bg-transparent p-0;
+.shiki::-webkit-scrollbar-track,
+.tabs-tabs-header::-webkit-scrollbar-track {
+  background: transparent;
 }
-
+.shiki::-webkit-scrollbar-thumb,
+.tabs-tabs-header::-webkit-scrollbar-thumb {
+  @apply bg-sand-300 dark:bg-sand-600 rounded-full;
+}
+.shiki::-webkit-scrollbar-thumb:hover,
+.tabs-tabs-header::-webkit-scrollbar-thumb:hover {
+  @apply bg-sand-400 dark:bg-sand-500;
+}
+/* Inline code inside prose */
 .prose :not(pre) > code {
   @apply bg-sand-100 dark:bg-sand-800 px-1.5 py-0.5 rounded-md;
+  @apply text-amber-700 dark:text-amber-300;
+  font-weight: 500;
+  font-size: 0.85em;
+}
+.prose code::before,
+.prose code::after {
+  content: none;
 }
 
-/* Prose overrides for docs */
+/* ---------------------------------------------------------------------------
+   Prose overrides for docs
+   --------------------------------------------------------------------------- */
+.prose {
+  --prose-body: #4a4539;
+  --prose-heading: #1a1814;
+  --prose-muted: #8f8572;
+  --prose-border: #e8e4d9;
+  --prose-accent: #d97706;
+}
+.dark .prose {
+  --prose-body: #d4cfc0;
+  --prose-heading: #f3f1eb;
+  --prose-muted: #6b6354;
+  --prose-border: #2d2a22;
+  --prose-accent: #fbbf24;
+}
 .prose h1 {
-  @apply text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white;
+  @apply text-3xl md:text-4xl font-bold tracking-tight mb-3;
+  color: var(--prose-heading);
 }
-
 .prose h2 {
-  @apply text-2xl font-semibold tracking-tight text-sand-900 dark:text-white mt-12 mb-4 pb-2 border-b border-sand-200 dark:border-sand-800;
+  @apply text-2xl font-semibold tracking-tight mt-12 mb-4 pb-3;
+  color: var(--prose-heading);
+  border-bottom: 1px solid var(--prose-border);
 }
-
 .prose h3 {
-  @apply text-xl font-semibold text-sand-800 dark:text-sand-100 mt-8 mb-3;
+  @apply text-xl font-semibold mt-8 mb-3;
+  color: var(--prose-heading);
 }
-
+.prose h4 {
+  @apply text-lg font-semibold mt-6 mb-2;
+  color: var(--prose-heading);
+}
 .prose p {
-  @apply text-sand-700 dark:text-sand-300 leading-relaxed;
+  @apply leading-relaxed;
+  color: var(--prose-body);
 }
-
 .prose ul,
 .prose ol {
-  @apply text-sand-700 dark:text-sand-300;
+  color: var(--prose-body);
 }
-
-.prose li {
-  @apply leading-relaxed;
+.prose ul > li,
+.prose ol > li {
+  @apply leading-relaxed my-1;
 }
-
 .prose a {
-  @apply text-amber-600 dark:text-amber-400 underline decoration-amber-300/50 dark:decoration-amber-500/30 hover:decoration-amber-500 dark:hover:decoration-amber-400 transition-colors;
+  @apply underline transition-colors;
+  color: var(--prose-accent);
+  text-decoration-color: color-mix(in srgb, var(--prose-accent) 40%, transparent);
 }
-
+.prose a:hover {
+  text-decoration-color: var(--prose-accent);
+}
 .prose blockquote {
-  @apply border-l-4 border-amber-400 dark:border-violet-500 bg-amber-50/50 dark:bg-violet-500/5 rounded-r-xl px-5 py-4 my-6;
+  @apply border-l-4 rounded-r-xl px-5 py-4 my-6;
+  border-color: var(--prose-accent);
+  background: color-mix(in srgb, var(--prose-accent) 6%, transparent);
 }
-
 .prose blockquote p {
-  @apply text-sand-600 dark:text-sand-400 italic;
+  color: var(--prose-body);
+  @apply italic;
 }
-
 .prose table {
-  @apply w-full text-sm;
+  @apply w-full text-sm my-6;
 }
-
 .prose th {
-  @apply text-left font-semibold text-sand-800 dark:text-sand-200 pb-2 border-b border-sand-200 dark:border-sand-700;
+  @apply text-left font-semibold pb-3;
+  color: var(--prose-heading);
+  border-bottom: 1px solid var(--prose-border);
 }
-
 .prose td {
-  @apply py-2 border-b border-sand-100 dark:border-sand-800;
+  @apply py-2.5;
+  border-bottom: 1px solid var(--prose-border);
+  color: var(--prose-body);
 }
-
 .prose hr {
-  @apply border-sand-200 dark:border-sand-800 my-8;
+  @apply my-10;
+  border-color: var(--prose-border);
+}
+.prose img {
+  @apply rounded-lg my-6;
+}
+.prose ul ul,
+.prose ol ol {
+  @apply my-1;
+}
+.prose li::marker {
+  color: var(--prose-muted);
 }
 
 /* ---------------------------------------------------------------------------
@@ -340,53 +396,86 @@ pre.shiki {
    --------------------------------------------------------------------------- */
 .header-anchor {
   float: left;
-  margin-left: -1.2em;
+  margin-left: -1.25em;
   padding-right: 0.3em;
   opacity: 0;
-  text-decoration: none;
+  text-decoration: none !important;
   color: var(--color-sand-400);
   transition: opacity 0.15s ease;
   font-size: 0.85em;
-  line-height: inherit;
-}
-h2:hover .header-anchor,
-h3:hover .header-anchor,
-h4:hover .header-anchor {
-  opacity: 1;
+  line-height: 1;
+  font-weight: 400;
 }
 .dark .header-anchor {
   color: var(--color-sand-500);
 }
+.header-anchor::before {
+  content: "\00B6";
+  font-size: 0.9em;
+}
 
+.prose h2:hover .header-anchor,
+.prose h3:hover .header-anchor,
+.prose h4:hover .header-anchor {
+  opacity: 0.7;
+}
+.header-anchor:hover {
+  opacity: 1 !important;
+  color: var(--color-amber-600);
+}
+.dark .header-anchor:hover {
+  color: var(--color-amber-400);
+}
 .prose h2 .header-anchor,
 .prose h3 .header-anchor,
 .prose h4 .header-anchor {
-  margin-top: 0.1em;
+  margin-top: 0.15em;
 }
 
 /* ---------------------------------------------------------------------------
    @mdit/plugin-alert — GFM-style alerts
    --------------------------------------------------------------------------- */
 .markdown-alert {
-  @apply border-l-4 rounded-r-xl px-5 py-4 my-6;
+  @apply border-l-4 rounded-lg px-5 py-4 my-6;
 }
 .markdown-alert-note {
-  @apply border-blue-500 bg-blue-50/50 dark:bg-blue-500/5;
+  border-color: #3b82f6;
+  background: color-mix(in srgb, #3b82f6 6%, transparent);
+}
+.dark .markdown-alert-note {
+  background: color-mix(in srgb, #3b82f6 8%, transparent);
 }
 .markdown-alert-tip {
-  @apply border-emerald-500 bg-emerald-50/50 dark:bg-emerald-500/5;
+  border-color: #10b981;
+  background: color-mix(in srgb, #10b981 6%, transparent);
+}
+.dark .markdown-alert-tip {
+  background: color-mix(in srgb, #10b981 8%, transparent);
 }
 .markdown-alert-important {
-  @apply border-violet-500 bg-violet-50/50 dark:bg-violet-500/5;
+  border-color: #8b5cf6;
+  background: color-mix(in srgb, #8b5cf6 6%, transparent);
+}
+.dark .markdown-alert-important {
+  background: color-mix(in srgb, #8b5cf6 8%, transparent);
 }
 .markdown-alert-warning {
-  @apply border-amber-500 bg-amber-50/50 dark:bg-amber-500/5;
+  border-color: #f59e0b;
+  background: color-mix(in srgb, #f59e0b 6%, transparent);
+}
+.dark .markdown-alert-warning {
+  background: color-mix(in srgb, #f59e0b 8%, transparent);
 }
 .markdown-alert-caution {
-  @apply border-red-500 bg-red-50/50 dark:bg-red-500/5;
+  border-color: #ef4444;
+  background: color-mix(in srgb, #ef4444 6%, transparent);
+}
+.dark .markdown-alert-caution {
+  background: color-mix(in srgb, #ef4444 8%, transparent);
 }
 .markdown-alert-title {
-  @apply flex items-center gap-2 font-semibold text-sm uppercase tracking-wider mb-2;
+  @apply flex items-center gap-2 font-bold uppercase tracking-wider mb-2;
+  font-size: 0.8125rem;
 }
 .markdown-alert-note .markdown-alert-title {
   @apply text-blue-600 dark:text-blue-400;
@@ -404,12 +493,19 @@ h4:hover .header-anchor {
   @apply text-red-600 dark:text-red-400;
 }
 .markdown-alert p {
-  @apply text-sand-700 dark:text-sand-300 leading-relaxed;
+  color: var(--prose-body, inherit);
+  @apply leading-relaxed my-0;
+}
+.markdown-alert p + p {
+  @apply mt-3;
 }
 .markdown-alert-title svg {
   width: 1em;
   height: 1em;
   flex-shrink: 0;
+}
+.markdown-alert code {
+  @apply text-sm;
 }
 
 /* ---------------------------------------------------------------------------
@@ -419,23 +515,38 @@ h4:hover .header-anchor {
   @apply my-6;
 }
 .tabs-tabs-header {
-  @apply flex gap-0 border-b border-sand-200 dark:border-sand-700 overflow-x-auto;
+  @apply flex gap-0 overflow-x-auto;
+  border-bottom: 1px solid var(--prose-border, #e8e4d9);
 }
 .tabs-tab-button {
-  @apply px-4 py-2 text-sm font-medium cursor-pointer whitespace-nowrap transition-colors;
-  @apply text-sand-500 dark:text-sand-400;
+  @apply px-5 py-2.5 text-sm font-medium cursor-pointer whitespace-nowrap transition-all duration-150;
   @apply border-b-2 border-transparent bg-transparent;
   @apply outline-none;
+  color: var(--color-sand-500);
 }
 .tabs-tab-button:hover {
-  @apply text-sand-700 dark:text-sand-200;
+  color: var(--color-sand-700);
+}
+.dark .tabs-tab-button:hover {
+  color: var(--color-sand-200);
 }
 .tabs-tab-button.active {
-  @apply text-amber-600 dark:text-amber-400 border-amber-500 dark:border-amber-400;
+  border-bottom-color: var(--color-amber-500);
+  color: var(--color-amber-600);
+}
+.dark .tabs-tab-button.active {
+  border-bottom-color: var(--color-amber-400);
+  color: var(--color-amber-400);
 }
 .tabs-tab-content {
-  @apply hidden p-4 border border-t-0 border-sand-200 dark:border-sand-700 rounded-b-xl;
-  background-color: #fff;
+  display: none;
+  @apply p-5 border border-t-0 rounded-b-lg;
+  border-color: var(--prose-border, #e8e4d9);
+  background: #fff;
+}
+.dark .tabs-tab-content {
+  background: rgba(26, 24, 20, 0.4);
+  border-color: var(--prose-border, #2d2a22);
 }
 .tabs-tab-content.active {
   @apply block;
@@ -446,92 +557,49 @@ h4:hover .header-anchor {
 .tabs-tab-content > :last-child {
   @apply mb-0;
 }
-.dark .tabs-tab-content {
-  background-color: rgba(26, 24, 20, 0.3);
+
+/* Shiki inside tabs — tighter, no extra border */
+.tabs-tab-content .shiki {
+  @apply my-0;
+  border: none;
+  border-radius: 0;
+}
+
+.tabs-tab-content pre.shiki {
+  @apply my-1;
 }
 
 /* ---------------------------------------------------------------------------
    @mdit/plugin-tasklist — checkboxes
    --------------------------------------------------------------------------- */
 .task-list-container {
-  @apply list-none p-0 pl-6;
+  @apply list-none p-0 pl-5 my-4;
 }
 .task-list-item {
-  @apply flex items-start gap-2 list-none;
+  @apply flex items-start gap-2.5 list-none my-0.5;
 }
 .task-list-item .task-list-item-checkbox {
   @apply mt-1 h-4 w-4 shrink-0 cursor-pointer;
-  @apply accent-amber-500 dark:accent-amber-400;
+  @apply accent-amber-600 dark:accent-amber-400;
 }
 .task-list-item-label {
   @apply cursor-pointer leading-relaxed;
 }
 .prose ul.task-list-container .task-list-item {
-  @apply -ml-5;
+  @apply ml-0;
 }
-/* ---------------------------------------------------------------------------
-   @mdit/plugin-tasklist — checkboxes
-   --------------------------------------------------------------------------- */
-.task-list-item {
-  @apply flex items-start gap-2 list-none;
+.prose ul.task-list-container .task-list-item .task-list-item-label {
+  color: var(--prose-body, inherit);
 }
-.task-list-item input[type="checkbox"] {
-  @apply mt-1 h-4 w-4 shrink-0 cursor-pointer;
-  @apply accent-amber-500 dark:accent-amber-400;
-}
-.task-list-item label {
-  @apply cursor-pointer leading-relaxed;
-}
-
-.prose ul .task-list-item {
-  @apply -ml-5;
+.task-list-item .task-list-item-checkbox:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ---------------------------------------------------------------------------
    Animations
    --------------------------------------------------------------------------- */
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-@keyframes pulse-slow {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-/* Intersection observer reveal */
 .reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -539,7 +607,6 @@ h4:hover .header-anchor {
     opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);

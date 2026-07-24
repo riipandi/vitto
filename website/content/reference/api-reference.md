@@ -2,14 +2,6 @@
 
 Complete API documentation for Vitto.
 
-## Table of Contents
-
-- [Plugin Options](#plugin-options)
-- [Hooks API](#hooks-api)
-- [Template Functions](#template-functions)
-- [Configuration Types](#configuration-types)
-- [Helper Functions](#helper-functions)
-
 ## Plugin Options
 
 ### `vitto(options: VittoOptions)`
