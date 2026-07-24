@@ -646,6 +646,6 @@ Common issues:
 
 ## Next Steps
 
-- [Hooks System](./06-hooks.md) - Learn more about creating and using hooks
-- [Search Integration](./07-search.md) - Add search functionality
-- [Deployment](./08-deployment.md) - Deploy your static site
+- [Hooks System](/docs/core/hooks) - Learn more about creating and using hooks
+- [Search Integration](/docs/features/search) - Add search functionality
+- [Deployment](/docs/features/deployment) - Deploy your static site

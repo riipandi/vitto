@@ -908,7 +908,7 @@ vitto({
 
 4. Use CDN for static assets
 
-See [Performance Guide](./09-performance.md) for more details.
+See [Performance Guide](/docs/features/performance) for more details.
 
 ## Deployment Problems
 

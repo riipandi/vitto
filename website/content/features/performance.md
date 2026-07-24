@@ -565,6 +565,6 @@ export default defineConfig({
 
 ## Next Steps
 
-- [Examples](./10-examples.md) - Real-world performance examples
-- [Troubleshooting](./11-troubleshooting.md) - Common performance issues
-- [API Reference](./12-api-reference.md) - Complete API documentation
+- [Examples](/docs/guides/examples) - Real-world performance examples
+- [Troubleshooting](/docs/reference/troubleshooting) - Common performance issues
+- [API Reference](/docs/reference/api-reference) - Complete API documentation

@@ -1093,7 +1093,7 @@ const result = paginate(posts, { page: 1, pageSize: 10 });
 
 ## Next Steps
 
-- [Examples](./10-examples.md) - Real-world usage examples
-- [Troubleshooting](./11-troubleshooting.md) - Common issues and solutions
-- [Contributing](./13-contributing.md) - Contribute to Vitto
-- [Configuration Guide](./03-configuration.md) - Detailed configuration guide
+- [Examples](/docs/guides/examples) - Real-world usage examples
+- [Troubleshooting](/docs/reference/troubleshooting) - Common issues and solutions
+- [Contributing](/docs/guides/contributing) - Contribute to Vitto
+- [Configuration Guide](/docs/getting-started/configuration) - Detailed configuration guide

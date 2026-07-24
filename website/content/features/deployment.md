@@ -565,6 +565,6 @@ Configure rewrites to serve `index.html` for all routes. See platform-specific c
 
 ## Next Steps
 
-- [Performance](./09-performance.md) - Optimize your site for speed
-- [Examples](./10-examples.md) - Real-world examples and templates
-- [Troubleshooting](./11-troubleshooting.md) - Common issues and solutions
+- [Performance](/docs/features/performance) - Optimize your site for speed
+- [Examples](/docs/guides/examples) - Real-world examples and templates
+- [Troubleshooting](/docs/reference/troubleshooting) - Common issues and solutions

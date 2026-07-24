@@ -901,10 +901,10 @@ export default defineConfig({
 
 ## Next Steps
 
-- [Getting Started](./01-getting-started.md) - Set up your first Vitto project
-- [Configuration](./03-configuration.md) - Configure Vitto
-- [Examples](./10-examples.md) - See real-world examples
-- [API Reference](./12-api-reference.md) - Complete API documentation
+- [Getting Started](/docs/getting-started/installation) - Set up your first Vitto project
+- [Configuration](/docs/getting-started/configuration) - Configure Vitto
+- [Examples](/docs/guides/examples) - See real-world examples
+- [API Reference](/docs/reference/api-reference) - Complete API documentation
 
 ## Community
 

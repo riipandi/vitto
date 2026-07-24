@@ -1074,6 +1074,6 @@ export default defineConfig({
 
 ## Next Steps
 
-- [Troubleshooting](./11-troubleshooting.md) - Common issues and solutions
-- [API Reference](./12-api-reference.md) - Complete API documentation
-- [Contributing](./13-contributing.md) - Contribute to Vitto
+- [Troubleshooting](/docs/reference/troubleshooting) - Common issues and solutions
+- [API Reference](/docs/reference/api-reference) - Complete API documentation
+- [Contributing](/docs/guides/contributing) - Contribute to Vitto

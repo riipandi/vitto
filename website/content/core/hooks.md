@@ -699,10 +699,10 @@ export const postsHook = defineHooks('posts', async () => {
 export default postsHook;
 ```
 
-Then configure `dynamicRoutes` in `vite.config.ts`. The template receives `posts.items`, `posts.page`, `posts.totalPages`, and navigation URLs as described in [Dynamic Routes](./05-dynamic-routes.md).
+Then configure `dynamicRoutes` in `vite.config.ts`. The template receives `posts.items`, `posts.page`, `posts.totalPages`, and navigation URLs as described in [Dynamic Routes](/docs/core/dynamic-routes).
 
 ## Next Steps
 
-- [Dynamic Routes](./05-dynamic-routes.md) - Use hooks with dynamic routes
-- [Search Integration](./07-search.md) - Add search functionality
-- [Deployment](./08-deployment.md) - Deploy your site
+- [Dynamic Routes](/docs/core/dynamic-routes) - Use hooks with dynamic routes
+- [Search Integration](/docs/features/search) - Add search functionality
+- [Deployment](/docs/features/deployment) - Deploy your site

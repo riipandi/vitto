@@ -226,7 +226,7 @@ vitto({
 - **Type**: `DynamicRouteConfig[]`
 - **Default**: `[]`
 
-Configure dynamic route generation. See [Dynamic Routes](./05-dynamic-routes.md) for detailed information.
+Configure dynamic route generation. See [Dynamic Routes](/docs/core/dynamic-routes) for detailed information.
 
 ```ts
 vitto({
@@ -247,7 +247,7 @@ vitto({
 - **Type**: `Record<string, Function>`
 - **Default**: `{}`
 
-Define hooks for injecting dynamic data into templates. See [Hooks System](./06-hooks.md) for details.
+Define hooks for injecting dynamic data into templates. See [Hooks System](/docs/core/hooks) for details.
 
 ```ts
 import { defineHooks } from 'vitto';
@@ -419,6 +419,6 @@ const vittoConfig: VittoOptions = {
 
 ## Next Steps
 
-- [Templating Guide](./04-templating.md) - Learn Vento templating syntax
-- [Dynamic Routes](./05-dynamic-routes.md) - Generate pages from data
-- [Hooks System](./06-hooks.md) - Inject dynamic data into templates
+- [Templating Guide](/docs/core/templating) - Learn Vento templating syntax
+- [Dynamic Routes](/docs/core/dynamic-routes) - Generate pages from data
+- [Hooks System](/docs/core/hooks) - Inject dynamic data into templates

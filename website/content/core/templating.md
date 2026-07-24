@@ -208,7 +208,7 @@ Data from hooks is automatically available in templates:
 {{ /for }}
 ```
 
-See [Hooks System](./06-hooks.md) for more details.
+See [Hooks System](/docs/core/hooks) for more details.
 
 ## Control Flow
 
@@ -402,11 +402,11 @@ vitto({
 ## Learn More
 
 - [Vento Documentation](https://vento.js.org) - Official Vento docs
-- [Dynamic Routes](./05-dynamic-routes.md) - Generate pages from data
-- [Hooks System](./06-hooks.md) - Inject dynamic data
+- [Dynamic Routes](/docs/core/dynamic-routes) - Generate pages from data
+- [Hooks System](/docs/core/hooks) - Inject dynamic data
 
 ## Next Steps
 
-- [Dynamic Routes](./05-dynamic-routes.md) - Generate multiple pages from data
-- [Hooks System](./06-hooks.md) - Fetch and inject dynamic data
-- [Search Integration](./07-search.md) - Add search to your site
+- [Dynamic Routes](/docs/core/dynamic-routes) - Generate multiple pages from data
+- [Hooks System](/docs/core/hooks) - Fetch and inject dynamic data
+- [Search Integration](/docs/features/search) - Add search to your site

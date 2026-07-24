@@ -34,4 +34,4 @@ Vitto is designed to be:
 
 ## What's Next?
 
-Continue to the [Getting Started](./02-getting-started.md) guide to create your first Vitto project.
+Continue to the [Getting Started](/docs/getting-started/installation) guide to create your first Vitto project.

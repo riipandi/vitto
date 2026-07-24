@@ -281,10 +281,10 @@ Static assets that are copied as-is to the output directory. Images, fonts, etc.
 
 Now that you have a basic Vitto site running, explore these topics:
 
-- [Configuration](./03-configuration.md) - Customize Vitto to your needs
-- [Templating Guide](./04-templating.md) - Learn Vento templating syntax
-- [Dynamic Routes](./05-dynamic-routes.md) - Generate pages from data
-- [Hooks System](./06-hooks.md) - Inject dynamic data into templates
+- [Configuration](/docs/getting-started/configuration) - Customize Vitto to your needs
+- [Templating Guide](/docs/core/templating) - Learn Vento templating syntax
+- [Dynamic Routes](/docs/core/dynamic-routes) - Generate pages from data
+- [Hooks System](/docs/core/hooks) - Inject dynamic data into templates
 
 ## Getting Help
 

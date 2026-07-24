@@ -629,6 +629,6 @@ The index files are created in `dist/_pagefind/`.
 
 ## Next Steps
 
-- [Deployment](./08-deployment.md) - Deploy your site with search
-- [Performance](./09-performance.md) - Optimize your site
+- [Deployment](/docs/features/deployment) - Deploy your site with search
+- [Performance](/docs/features/performance) - Optimize your site
 - [Pagefind Documentation](https://pagefind.app/) - Learn more about Pagefind

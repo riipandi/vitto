@@ -605,7 +605,7 @@ turbo run typecheck --filter=vitto # Type check specific package
 
 ## License
 
-By contributing to Vitto, you agree that your contributions will be licensed under the [MIT License](../LICENSE).
+By contributing to Vitto, you agree that your contributions will be licensed under the [MIT License](https://github.com/riipandi/vitto/blob/main/LICENSE).
 
 ### MIT License Summary
 
