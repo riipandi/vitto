@@ -1,7 +1,3 @@
-/**
- * TODO: https://www.npmjs.com/package/markdown-it-front-matter
- */
-
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -9,23 +5,11 @@ import { alert } from '@mdit/plugin-alert';
 import { anchor } from '@mdit/plugin-anchor';
 import { tab } from '@mdit/plugin-tab';
 import { tasklist } from '@mdit/plugin-tasklist';
-import langAstro from '@shikijs/langs/astro';
-import langBash from '@shikijs/langs/bash';
-import langCss from '@shikijs/langs/css';
-import langHtml from '@shikijs/langs/html';
-import langJavascript from '@shikijs/langs/javascript';
-import langJson from '@shikijs/langs/json';
-import langMarkdown from '@shikijs/langs/markdown';
-import langTsx from '@shikijs/langs/tsx';
-import langTypescript from '@shikijs/langs/typescript';
-import langYaml from '@shikijs/langs/yaml';
-import { fromHighlighter } from '@shikijs/markdown-it/core';
-import githubDark from '@shikijs/themes/github-dark';
-import githubLight from '@shikijs/themes/github-light';
 import MarkdownIt from 'markdown-it';
-import { createHighlighterCoreSync } from 'shiki/core';
-import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
+import frontMatter from 'markdown-it-front-matter';
 import { defineHooks } from 'vitto';
+
+import { useShiki } from '../shiki';
 
 interface DocItem {
   slug: string;
@@ -43,7 +27,7 @@ interface DocSection {
   items: { slug: string; title: string; order: number }[];
 }
 
-const CONTENT_DIR = path.resolve(import.meta.dirname, '../../content');
+const CONTENT_DIR = path.resolve(import.meta.dirname, '../../content/docs');
 
 // Section definitions — folder name = section id, order defines display order
 export const SECTIONS: { id: string; label: string; order: number }[] = [
@@ -54,35 +38,15 @@ export const SECTIONS: { id: string; label: string; order: number }[] = [
   { id: 'reference', label: 'Reference', order: 5 },
 ];
 
-// Create highlighter synchronously with pre-loaded themes/langs
-const highlighter = createHighlighterCoreSync({
-  themes: [githubLight, githubDark],
-  langs: [
-    langJavascript,
-    langTypescript,
-    langBash,
-    langJson,
-    langHtml,
-    langCss,
-    langYaml,
-    langMarkdown,
-    langTsx,
-    langAstro,
-  ],
-  engine: createJavaScriptRegexEngine(),
-});
-
-// Create markdown-it with Shiki — fully synchronous
+// Create markdown-it with Shiki syntax highlighting
 const md = MarkdownIt({ html: true, linkify: true, typographer: true });
+useShiki(md);
 
-md.use(
-  fromHighlighter(highlighter as any, {
-    themes: {
-      light: 'github-light',
-      dark: 'github-dark',
-    },
-  })
-);
+// Strip YAML front matter — callback receives raw meta string
+md.use(frontMatter, (_meta: string) => {
+  // Front matter is stripped from rendered output automatically
+  // Parsed YAML can be used here in the future for metadata
+});
 
 md.use(anchor, { level: [2, 3, 4] });
 md.use(alert);

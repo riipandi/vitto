@@ -2,7 +2,7 @@
 
 {{ setMetadata('title', post ? post.title : 'Post Not Found') }}
 
-<div class="max-w-3xl mx-auto px-5 sm:px-8 py-12 md:py-20">
+<div class="max-w-7xl mx-auto px-5 sm:px-8 py-12 md:py-20">
   {{ if post }}
     <nav class="flex items-center gap-2 text-sm text-sand-400 dark:text-sand-500 mb-8">
       <a href="/blog" class="hover:text-sand-600 dark:hover:text-sand-300 transition-colors">Blog</a>
@@ -10,18 +10,62 @@
       <span class="text-sand-600 dark:text-sand-300 truncate">{{ post.title }}</span>
     </nav>
 
-    <article>
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white mb-4">
-        {{ post.title }}
-      </h1>
-      <p class="text-sm text-sand-400 dark:text-sand-500 mb-10">
-        Post {{ post.id }}
-      </p>
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_14rem] gap-8 xl:gap-12">
+      <!-- Main content -->
+      <article>
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-sand-900 dark:text-white mb-4">
+          {{ post.title }}
+        </h1>
 
-      <div class="prose prose-lg max-w-none">
-        {{ post.body }}
-      </div>
-    </article>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-sand-400 dark:text-sand-500 mb-10">
+          {{ if post.author }}
+            <span class="font-medium">{{ post.author }}</span>
+          {{ /if }}
+          {{ if post.date }}
+            <time datetime="{{ post.created }}">{{ post.date }}</time>
+          {{ /if }}
+          {{ if post.updated && post.updated != post.date }}
+            <span>Updated <time datetime="{{ post.updated }}">{{ post.updated }}</time></span>
+          {{ /if }}
+          {{ if post.tags && post.tags.length > 0 }}
+            <span class="flex items-center gap-1.5">
+              {{ for tag of post.tags }}
+                <span class="px-2 py-0.5 rounded-full bg-sand-100 dark:bg-sand-800 text-xs font-medium text-sand-500 dark:text-sand-400">{{ tag }}</span>
+              {{ /for }}
+            </span>
+          {{ /if }}
+        </div>
+
+        {{ if post.description }}
+          <p class="text-lg text-sand-500 dark:text-sand-400 mb-8 leading-relaxed">{{ post.description }}</p>
+        {{ /if }}
+
+        <div class="prose prose-lg max-w-none" id="post-content">
+          {{ post.content |> safe }}
+        </div>
+      </article>
+
+      <!-- Sidebar with TOC -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-20">
+          <nav id="post-toc" class="border-l border-sand-200 dark:border-sand-700 pl-4">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-3">
+              On this page
+            </h4>
+            <ul class="space-y-1.5 text-sm" id="toc-list"></ul>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Mobile TOC — collapsible below content -->
+      <details class="lg:hidden mt-8 -mb-4 group">
+        <summary class="flex items-center gap-2 cursor-pointer text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 transition-transform group-open:rotate-90"><path d="m9 18 6-6-6-6"/></svg>
+          On this page
+        </summary>
+        <ul class="space-y-1.5 mt-3 text-sm text-sand-600 dark:text-sand-400 border-l border-sand-200 dark:border-sand-700 pl-4" id="toc-list-mobile"></ul>
+      </details>
+    </div>
 
     <div class="mt-16 pt-8 border-t border-sand-200/60 dark:border-sand-700/40">
       <a href="/blog" class="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 dark:text-amber-400 hover:underline">
@@ -45,3 +89,55 @@
     </div>
   {{ /if }}
 </div>
+<script>
+(function() {
+  const content = document.getElementById('post-content');
+  if (!content) return;
+
+  // Build TOC data from headings
+  const tocData = [];
+  const headings = content.querySelectorAll('h2, h3');
+  headings.forEach((h) => {
+    const id = h.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    h.id = id;
+    tocData.push({ id, text: h.textContent, level: h.tagName.toLowerCase() });
+  });
+
+  if (!tocData.length) return;
+
+  // Render TOC lists
+  function renderToc(listId) {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    list.innerHTML = tocData.map((item) => {
+      const indent = item.level === 'h3' ? 'ml-3' : '';
+      return '<li class="' + indent + '">' +
+        '<a href="#' + item.id + '" class="toc-link">' +
+        item.text + '</a></li>';
+    }).join('');
+  }
+  renderToc('toc-list');
+  renderToc('toc-list-mobile');
+
+  // Highlight active heading on scroll
+  const links = document.querySelectorAll('.toc-link');
+  if (!links.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let activeId = '';
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) activeId = entry.target.id;
+      });
+      if (!activeId) return;
+      links.forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + activeId);
+      });
+    },
+    { rootMargin: '-80px 0px -70% 0px' }
+  );
+
+  headings.forEach((h) => observer.observe(h));
+})();
+</script>
+</script>

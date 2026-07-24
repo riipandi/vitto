@@ -15,6 +15,10 @@
 
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-1">
+        <a href="/blog"
+          class="{{currentPath?.startsWith('/blog') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white'}} px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+          Blog
+        </a>
         <a href="/docs"
           class="{{currentPath?.startsWith('/docs') ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10' : 'text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white'}} px-3 py-2 rounded-lg text-sm font-medium transition-colors">
           Docs

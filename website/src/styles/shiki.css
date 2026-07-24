@@ -113,6 +113,10 @@
   background: var(--shiki-light-bg, #fff) !important;
   color: var(--shiki-light, #24292e) !important;
 }
+
+.prose .shiki {
+  @apply my-5;
+}
 .dark .shiki,
 .shiki[data-theme="dark"] {
   color: var(--shiki-dark, #e8e8e3) !important;

@@ -299,3 +299,43 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* ---------------------------------------------------------------------------
+   Table of contents — scroll-spy active state
+   --------------------------------------------------------------------------- */
+.toc-link {
+  display: block;
+  color: var(--color-sand-500);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  padding: 0.125rem 0;
+}
+.dark .toc-link {
+  color: var(--color-sand-400);
+}
+.toc-link:hover {
+  color: var(--color-amber-600);
+}
+.dark .toc-link:hover {
+  color: var(--color-amber-400);
+}
+.toc-link.active {
+  color: var(--color-amber-600);
+  font-weight: 500;
+}
+.dark .toc-link.active {
+  color: var(--color-amber-400);
+}
+
+.stretched-link {
+  text-decoration: none;
+  color: inherit;
+}
+.stretched-link::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  z-index: 1;
+}
