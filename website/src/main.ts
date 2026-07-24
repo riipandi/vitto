@@ -180,11 +180,53 @@ function initTabs() {
 }
 
 // ----------------------------------------------------------------------------
+// Copy buttons — code blocks, overlay toast
+// ----------------------------------------------------------------------------
+function initCopyButtons() {
+  document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+    // Create toast inside button, overlay over content
+    const toast = document.createElement('span');
+    toast.className = 'copy-toast';
+    toast.textContent = 'Copied!';
+    btn.appendChild(toast);
+
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    btn.addEventListener('click', async () => {
+      const encoded = btn.getAttribute('data-code');
+      if (!encoded) return;
+
+      try {
+        await navigator.clipboard.writeText(atob(encoded));
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = atob(encoded);
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+
+      btn.classList.add('copying');
+      toast.classList.add('visible');
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        btn.classList.remove('copying');
+        toast.classList.remove('visible');
+      }, 1200);
+    });
+  });
+}
+
+// ----------------------------------------------------------------------------
 // Init
 // ----------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   initReveal();
   initMobileMenu();
   initTabs();
+  initCopyButtons();
   listenSystemTheme();
 });

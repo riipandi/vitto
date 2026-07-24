@@ -1,4 +1,4 @@
-# Getting Started
+# Installation
 
 This guide will help you create your first Vitto project in minutes.
 
