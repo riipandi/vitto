@@ -2,17 +2,6 @@
 
 This guide provides real-world examples and common use cases for building sites with Vitto.
 
-## Table of Contents
-
-- [Blog with Markdown](#blog-with-markdown)
-- [Documentation Site](#documentation-site)
-- [Portfolio Website](#portfolio-website)
-- [E-commerce Product Catalog](#e-commerce-product-catalog)
-- [Multi-language Site](#multi-language-site)
-- [RSS Feed](#rss-feed)
-- [Sitemap Generation](#sitemap-generation)
-- [JSON API](#json-api)
-
 ## Blog with Markdown
 
 A complete blog implementation with posts, categories, and tags.
@@ -1077,8 +1066,14 @@ export default defineConfig({
 });
 ```
 
+> [!TIP]
+> Feel free to modify these examples to fit your project structure and data sources.
+
+> [!NOTE]
+> These examples assume file-based data sources (Markdown, JSON). For API-driven sites, replace the file reading logic with fetch calls.
+
 ## Next Steps
 
-- [Troubleshooting](./11-troubleshooting.md) - Common issues and solutions
-- [API Reference](./12-api-reference.md) - Complete API documentation
-- [Contributing](./13-contributing.md) - Contribute to Vitto
+- [Troubleshooting](/docs/reference/troubleshooting) - Common issues and solutions
+- [API Reference](/docs/reference/api-reference) - Complete API documentation
+- [Contributing](/docs/guides/contributing) - Contribute to Vitto

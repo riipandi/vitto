@@ -17,12 +17,18 @@
         "typecheck": "tsc -b --noEmit"
     },
     "dependencies": {
+        "@mdit/plugin-alert": "^1.0.1",
+        "@mdit/plugin-anchor": "^1.1.1",
+        "@mdit/plugin-tab": "^1.0.1",
+        "@mdit/plugin-tasklist": "^1.0.1",
         "@pagefind/component-ui": "^1.5.2",
         "@shikijs/langs": "^4.3.1",
         "@shikijs/markdown-it": "^4.3.1",
         "@shikijs/themes": "^4.3.1",
         "markdown-it": "^14.3.0",
+        "markdown-it-front-matter": "^0.2.4",
         "shiki": "^4.3.1",
+        "slugify": "^1.6.9",
         "ufo": "^1.6.4"
     },
     "devDependencies": {

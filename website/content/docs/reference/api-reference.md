@@ -2,14 +2,6 @@
 
 Complete API documentation for Vitto.
 
-## Table of Contents
-
-- [Plugin Options](#plugin-options)
-- [Hooks API](#hooks-api)
-- [Template Functions](#template-functions)
-- [Configuration Types](#configuration-types)
-- [Helper Functions](#helper-functions)
-
 ## Plugin Options
 
 ### `vitto(options: VittoOptions)`
@@ -485,6 +477,9 @@ export const postHook = defineHooks('post', async (params) => {
 
 **TypeScript Example:**
 
+> [!TIP]
+> Use TypeScript generics to get full type safety in your hooks and templates.
+
 ```ts
 interface Post {
   id: number;
@@ -780,6 +775,9 @@ All registered hooks are available by their name.
 
 ## Vento Filters
 
+> [!NOTE]
+> Vento filters transform data in templates. Use the built-in filters before creating custom ones.
+
 Built-in Vento filters available in templates.
 
 ### `safe`
@@ -883,6 +881,9 @@ export default defineHooks('config', () => {
   };
 });
 ```
+
+> [!WARNING]
+> Environment variables accessed in templates via `env.*` are evaluated at build time. They won't update on the client side.
 
 ## Type Exports
 
@@ -1092,7 +1093,7 @@ const result = paginate(posts, { page: 1, pageSize: 10 });
 
 ## Next Steps
 
-- [Examples](./10-examples.md) - Real-world usage examples
-- [Troubleshooting](./11-troubleshooting.md) - Common issues and solutions
-- [Contributing](./13-contributing.md) - Contribute to Vitto
-- [Configuration Guide](./03-configuration.md) - Detailed configuration guide
+- [Examples](/docs/guides/examples) - Real-world usage examples
+- [Troubleshooting](/docs/reference/troubleshooting) - Common issues and solutions
+- [Contributing](/docs/guides/contributing) - Contribute to Vitto
+- [Configuration Guide](/docs/getting-started/configuration) - Detailed configuration guide

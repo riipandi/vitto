@@ -130,10 +130,103 @@ async function copyCommand(el: HTMLElement, text: string) {
 window.copyCommand = copyCommand;
 
 // ----------------------------------------------------------------------------
+// Tabs — @mdit/plugin-tab switching
+// ----------------------------------------------------------------------------
+function initTabs() {
+  const wrappers = document.querySelectorAll('.tabs-tabs-wrapper');
+  if (!wrappers.length) return;
+
+  wrappers.forEach((wrapper) => {
+    const buttons = wrapper.querySelectorAll<HTMLButtonElement>('.tabs-tab-button');
+    const panes = wrapper.querySelectorAll<HTMLDivElement>('.tabs-tab-content');
+
+    if (!buttons.length || !panes.length) return;
+
+    // Activate first tab if none is active by default
+    const hasActive = [...buttons].some((b) => b.classList.contains('active'));
+    if (!hasActive && buttons[0]) {
+      buttons[0].classList.add('active');
+      buttons[0].setAttribute('data-active', '');
+      if (panes[0]) {
+        panes[0].classList.add('active');
+        panes[0].setAttribute('data-active', '');
+      }
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = btn.getAttribute('data-tab');
+        if (idx === null) return;
+
+        buttons.forEach((b) => {
+          b.classList.remove('active');
+          b.removeAttribute('data-active');
+        });
+        panes.forEach((p) => {
+          p.classList.remove('active');
+          p.removeAttribute('data-active');
+        });
+
+        btn.classList.add('active');
+        btn.setAttribute('data-active', '');
+        const pane = panes[Number(idx)];
+        if (pane) {
+          pane.classList.add('active');
+          pane.setAttribute('data-active', '');
+        }
+      });
+    });
+  });
+}
+
+// ----------------------------------------------------------------------------
+// Copy buttons — code blocks, overlay toast
+// ----------------------------------------------------------------------------
+function initCopyButtons() {
+  document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+    // Create toast inside button, overlay over content
+    const toast = document.createElement('span');
+    toast.className = 'copy-toast';
+    toast.textContent = 'Copied!';
+    btn.appendChild(toast);
+
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    btn.addEventListener('click', async () => {
+      const encoded = btn.getAttribute('data-code');
+      if (!encoded) return;
+
+      try {
+        await navigator.clipboard.writeText(atob(encoded));
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = atob(encoded);
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+
+      btn.classList.add('copying');
+      toast.classList.add('visible');
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        btn.classList.remove('copying');
+        toast.classList.remove('visible');
+      }, 1200);
+    });
+  });
+}
+
+// ----------------------------------------------------------------------------
 // Init
 // ----------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   initReveal();
   initMobileMenu();
+  initTabs();
+  initCopyButtons();
   listenSystemTheme();
 });

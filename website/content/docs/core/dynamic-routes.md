@@ -163,6 +163,9 @@ Function that extracts parameters from each data item. These params are passed t
 }
 ```
 
+> [!TIP]
+> Use descriptive parameter names like `slug` or `id` instead of short names. This makes templates more readable.
+
 ### `getPath`
 
 - **Type**: `(item: any) => string`
@@ -177,6 +180,9 @@ Function that determines the output file path for each page.
 ```
 
 The path should include the file extension (`.html`).
+
+> [!WARNING]
+> `getParams` and `getPath` run during build. Errors in these functions will fail the build — wrap them in try/catch if the data may be inconsistent.
 
 ## Complete Example
 
@@ -467,37 +473,6 @@ In `blog.vto`:
 
 The template receives `posts.items`, `posts.page`, `posts.totalPages`, `posts.prevUrl`, `posts.nextUrl`, `posts.firstUrl`, and `posts.lastUrl`.
 
-Generate paginated list pages with the `paginate()` helper:
-
-`vite.config.ts`: register a `posts` hook that returns all items, then configure `dynamicRoutes`:
-
-```ts
-import { defineConfig } from 'vite';
-import vitto from 'vitto';
-import { postsHook } from './hooks/posts';
-
-export default defineConfig({
-  plugins: [
-    vitto({
-      hooks: {
-        posts: postsHook,
-      },
-      dynamicRoutes: [
-        {
-          template: 'blog',
-          dataSource: 'posts',
-          pageSize: 5,
-          getParams: (pageNum) => ({ _page: pageNum }),
-          getPath: (pageNum) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
-        },
-      ],
-    }),
-  ],
-});
-```
-
-The hook returns **all items**; the plugin slices them per page and injects `posts.items`, `posts.page`, `posts.totalPages`, `posts.prevUrl`, `posts.nextUrl`, `posts.firstUrl`, and `posts.lastUrl` into the template.
-
 ### Tag/Category Pages
 
 Generate pages for each tag or category:
@@ -550,9 +525,15 @@ export default tagsHook;
 
 ## Best Practices
 
-### 1. Use Descriptive Parameter Names
+- [x] **Use Descriptive Parameter Names** — Prefer `slug` or `id` over `p` or `q`
+- [x] **Validate Data in Hooks** — Check params and throw meaningful errors
+- [x] **Handle Errors Gracefully** — Return fallback defaults instead of crashing
+- [x] **Cache Expensive Operations** — Avoid repeated API calls during rebuilds
+- [x] **Use Consistent URL Structures** — Keep paths predictable (`blog/:slug`, `products/:slug`)
+- [x] **Export Hooks Properly** — Use both named and default exports for flexibility
 
 ```ts
+// Use Descriptive Parameter Names
 // Good
 getParams: (post) => ({ slug: post.slug, id: post.id });
 
@@ -560,9 +541,8 @@ getParams: (post) => ({ slug: post.slug, id: post.id });
 getParams: (post) => ({ p: post.slug });
 ```
 
-### 2. Validate Data in Hooks
-
 ```ts
+// Validate Data in Hooks
 export const postHook = defineHooks('post', async (params) => {
   if (!params?.slug) {
     throw new Error('Slug parameter is required');
@@ -578,9 +558,8 @@ export const postHook = defineHooks('post', async (params) => {
 });
 ```
 
-### 3. Handle Errors Gracefully
-
 ```ts
+// Handle Errors Gracefully
 export const postsHook = defineHooks('posts', async () => {
   try {
     return await fetchPosts();
@@ -591,9 +570,8 @@ export const postsHook = defineHooks('posts', async () => {
 });
 ```
 
-### 4. Cache Expensive Operations
-
 ```ts
+// Cache Expensive Operations
 let cachedPosts = null;
 
 export const postsHook = defineHooks('posts', async () => {
@@ -606,9 +584,8 @@ export const postsHook = defineHooks('posts', async () => {
 });
 ```
 
-### 5. Use Consistent URL Structures
-
 ```ts
+// Use Consistent URL Structures
 // Good - consistent structure
 getPath: (post) => `blog/${post.slug}.html`;
 getPath: (product) => `products/${product.slug}.html`;
@@ -618,9 +595,8 @@ getPath: (post) => `${post.slug}.html`;
 getPath: (product) => `p/${product.id}.html`;
 ```
 
-### 6. Export Hooks Properly
-
 ```ts
+// Export Hooks Properly
 // Good - export both named and default
 export const postsHook = defineHooks('posts', async () => {
   /* ... */
@@ -633,6 +609,9 @@ export default postsHook;
 // Then import in config
 import { postsHook, postHook } from './hooks/posts';
 ```
+
+> [!CAUTION]
+> Slug collisions silently overwrite pages. Ensure your slugs are unique — use a combination of id and slug when possible.
 
 ## Troubleshooting
 
@@ -667,6 +646,6 @@ Common issues:
 
 ## Next Steps
 
-- [Hooks System](./06-hooks.md) - Learn more about creating and using hooks
-- [Search Integration](./07-search.md) - Add search functionality
-- [Deployment](./08-deployment.md) - Deploy your static site
+- [Hooks System](/docs/core/hooks) - Learn more about creating and using hooks
+- [Search Integration](/docs/features/search) - Add search functionality
+- [Deployment](/docs/features/deployment) - Deploy your static site

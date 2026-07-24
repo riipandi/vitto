@@ -1,6 +1,7 @@
 # Performance Optimization
 
-This guide covers best practices and techniques to optimize your Vitto site for maximum performance.
+> [!Note]
+> This guide covers best practices and techniques to optimize your Vitto site for maximum performance.
 
 ## Overview
 
@@ -32,6 +33,9 @@ export default defineConfig({
   ],
 });
 ```
+
+> [!WARNING]
+> Avoid premature optimization. Focus on measurable performance issues rather than micro-optimizations that add complexity without real impact.
 
 ### Tree Shaking
 
@@ -461,9 +465,15 @@ Use these tools to measure performance:
 </script>
 ```
 
+> [!TIP]
+> Set up performance monitoring early and track Core Web Vitals in production to catch regressions before they impact users.
+
 ## Build Performance
 
 ### Faster Builds
+
+> [!NOTE]
+> Build performance matters for CI/CD pipelines. Optimize hooks and caching to keep builds fast.
 
 #### 1. Use npm ci
 
@@ -516,21 +526,21 @@ export default defineHooks('data', async () => {
 
 ## Best Practices Checklist
 
-- [ ] Enable minification for production
-- [ ] Optimize and compress images
-- [ ] Use lazy loading for images
-- [ ] Minimize third-party scripts
-- [ ] Implement proper caching headers
-- [ ] Use modern image formats (WebP, AVIF)
-- [ ] Self-host fonts with font-display: swap
-- [ ] Remove unused CSS
-- [ ] Enable gzip/brotli compression
-- [ ] Implement resource hints (preconnect, dns-prefetch)
-- [ ] Monitor Core Web Vitals
-- [ ] Optimize search index size
-- [ ] Use CDN for static assets
-- [ ] Implement service worker for offline support
-- [ ] Lazy load non-critical JavaScript
+- [x] Enable minification for production
+- [x] Optimize and compress images
+- [x] Use lazy loading for images
+- [x] Minimize third-party scripts
+- [x] Implement proper caching headers
+- [x] Use modern image formats (WebP, AVIF)
+- [x] Self-host fonts with font-display: swap
+- [x] Remove unused CSS
+- [x] Enable gzip/brotli compression
+- [x] Implement resource hints (preconnect, dns-prefetch)
+- [x] Monitor Core Web Vitals
+- [x] Optimize search index size
+- [x] Use CDN for static assets
+- [x] Implement service worker for offline support
+- [x] Lazy load non-critical JavaScript
 
 ## Performance Budget
 
@@ -555,6 +565,6 @@ export default defineConfig({
 
 ## Next Steps
 
-- [Examples](./10-examples.md) - Real-world performance examples
-- [Troubleshooting](./11-troubleshooting.md) - Common performance issues
-- [API Reference](./12-api-reference.md) - Complete API documentation
+- [Examples](/docs/guides/examples) - Real-world performance examples
+- [Troubleshooting](/docs/reference/troubleshooting) - Common performance issues
+- [API Reference](/docs/reference/api-reference) - Complete API documentation

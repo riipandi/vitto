@@ -3,10 +3,10 @@
 {{ setMetadata('title', doc ? doc.title : 'Doc Not Found') }}
 {{ setMetadata('description', doc ? doc.description : '') }}
 
-<div class="w-full max-w-6xl mx-auto px-5 sm:px-8 grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)] grow">
+<div class="w-full max-w-7xl mx-auto px-5 sm:px-8 grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)] grow">
   {{ include "partials/docs-sidebar.vto" }}
 
-  <div class="min-w-0 py-12 md:py-16 xl:px-8">
+  <div class="min-w-0 py-10 md:py-8 xl:px-8">
     {{ if doc }}
       <nav class="flex items-center gap-2 text-sm text-sand-400 dark:text-sand-500 mb-8">
         <a href="/docs" class="hover:text-sand-600 dark:hover:text-sand-300 transition-colors">Docs</a>
@@ -20,12 +20,35 @@
         {{ doc.content |> safe }}
       </article>
 
-      <div class="mt-16 pt-8 border-t border-sand-200/60 dark:border-sand-700/40">
-        <a href="/docs" class="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 dark:text-amber-400 hover:underline">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-          Back to all docs
-        </a>
-      </div>
+      <!-- Doc navigation: prev / next -->
+      <nav class="mt-16 pt-8 border-t border-sand-200/60 dark:border-sand-700/40">
+        <div class="flex items-center justify-between gap-4">
+          {{ if doc.prev }}
+            <a href="/docs/{{ doc.prev.slug }}"
+              class="group flex flex-col items-start gap-0.5 min-w-0 flex-1">
+              <span class="text-xs font-medium tracking-wider text-sand-400 dark:text-sand-500">Previous page</span>
+              <span class="text-sm font-semibold text-sand-700 dark:text-sand-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors truncate max-w-full">
+                {{ doc.prev.title }}
+              </span>
+            </a>
+          {{ else }}
+            <div></div>
+          {{ /if }}
+
+          {{ if doc.next }}
+            <a href="/docs/{{ doc.next.slug }}"
+              class="group flex flex-col items-end gap-0.5 min-w-0 flex-1 text-right">
+              <span class="text-xs font-medium tracking-wider text-sand-400 dark:text-sand-500">Next page</span>
+              <span class="text-sm font-semibold text-sand-700 dark:text-sand-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors truncate max-w-full">
+                {{ doc.next.title }}
+              </span>
+            </a>
+          {{ else }}
+            <div></div>
+          {{ /if }}
+        </div>
+      </nav>
+
     {{ else }}
       <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <div class="w-16 h-16 rounded-2xl bg-sand-100 dark:bg-sand-800 flex items-center justify-center mb-6">

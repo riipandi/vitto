@@ -1,22 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import langBash from '@shikijs/langs/bash';
-import langCss from '@shikijs/langs/css';
-import langHtml from '@shikijs/langs/html';
-import langJavascript from '@shikijs/langs/javascript';
-import langJson from '@shikijs/langs/json';
-import langMarkdown from '@shikijs/langs/markdown';
-import langTypescript from '@shikijs/langs/typescript';
-import langYaml from '@shikijs/langs/yaml';
-import { fromHighlighter } from '@shikijs/markdown-it/core';
-import githubDark from '@shikijs/themes/github-dark';
-// Pre-import only the themes and languages we need (fine-grained bundle)
-import githubLight from '@shikijs/themes/github-light';
-import MarkdownIt from 'markdown-it';
-import { createHighlighterCoreSync } from 'shiki/core';
-import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 import { defineHooks } from 'vitto';
+
+import { createMarkdownRenderer } from '../markdown';
 
 interface DocItem {
   slug: string;
@@ -34,7 +21,7 @@ interface DocSection {
   items: { slug: string; title: string; order: number }[];
 }
 
-const CONTENT_DIR = path.resolve(import.meta.dirname, '../../content');
+const CONTENT_DIR = path.resolve(import.meta.dirname, '../../content/docs');
 
 // Section definitions — folder name = section id, order defines display order
 export const SECTIONS: { id: string; label: string; order: number }[] = [
@@ -45,49 +32,7 @@ export const SECTIONS: { id: string; label: string; order: number }[] = [
   { id: 'reference', label: 'Reference', order: 5 },
 ];
 
-// Create highlighter synchronously with pre-loaded themes/langs
-const highlighter = createHighlighterCoreSync({
-  themes: [githubLight, githubDark],
-  langs: [
-    langJavascript,
-    langTypescript,
-    langBash,
-    langJson,
-    langHtml,
-    langCss,
-    langYaml,
-    langMarkdown,
-  ],
-  engine: createJavaScriptRegexEngine(),
-});
-
-// Create markdown-it with Shiki — fully synchronous
-const md = MarkdownIt({ html: true, linkify: true, typographer: true });
-
-md.use(
-  fromHighlighter(highlighter, {
-    themes: {
-      light: 'github-light',
-      dark: 'github-dark',
-    },
-  })
-);
-
-// Override fence renderer — treat `vento` as `html`, catch truly unknown langs gracefully
-const defaultFence = md.renderer.rules.fence!.bind(md.renderer.rules);
-md.renderer.rules.fence = (tokens, idx, options, env, self) => {
-  const token = tokens[idx];
-  // Alias vento → html (syntax is close enough)
-  if (token.info === 'vento') {
-    token.info = 'html';
-  }
-  try {
-    return defaultFence(tokens, idx, options, env, self);
-  } catch {
-    const escaped = md.utils.escapeHtml(token.content);
-    return `<pre class="shiki shiki-themes github-light github-dark" style="background-color:#fff;color:#24292e;--shiki-dark-bg:#1a1814;--shiki-dark:#e8e8e3" tabindex="0"><code>${escaped}</code></pre>`;
-  }
-};
+const md = createMarkdownRenderer();
 
 /**
  * Scan content directory recursively and return all doc items.
@@ -161,6 +106,14 @@ function getDocBySlug(slug: string): DocItem | null {
   return parseDocFile(filePath, sectionId, section?.label || '');
 }
 
+const SECTION_ITEMS_ORDER: Record<string, string[]> = {
+  'getting-started': ['introduction', 'installation', 'configuration'],
+  core: ['templating', 'dynamic-routes', 'hooks'],
+  features: ['search', 'deployment', 'performance'],
+  guides: ['examples', 'contributing'],
+  reference: ['api-reference', 'troubleshooting', 'comparison'],
+};
+
 function getSections(): DocSection[] {
   const allDocs = getAllDocs();
   return SECTIONS.map((s) => ({
@@ -168,17 +121,33 @@ function getSections(): DocSection[] {
     label: s.label,
     items: allDocs
       .filter((d: DocItem) => d.section === s.id)
-      .toSorted((a: DocItem, b: DocItem) => a.order - b.order)
+      .toSorted((a: DocItem, b: DocItem) => {
+        const order = SECTION_ITEMS_ORDER[s.id] ?? [];
+        return order.indexOf(a.slug.split('/')[1]) - order.indexOf(b.slug.split('/')[1]);
+      })
       .map((d: DocItem) => ({ slug: d.slug, title: d.title, order: d.order })),
   }));
 }
 
-// Hook for dynamic routes — returns array of docs
+// Hook for dynamic routes — returns array of docs, or single doc with nav
 export default defineHooks('docs', async (params?: { slug?: string }) => {
   if (params?.slug) {
     const doc = getDocBySlug(params.slug);
     if (!doc) return null;
-    return { ...doc, sections: getSections() };
+
+    const sections = getSections();
+    // Flatten all items into navigation order
+    const flatNav = sections.flatMap((s) =>
+      s.items.map((item) => ({ ...item, sectionLabel: s.label }))
+    );
+    const idx = flatNav.findIndex((item) => item.slug === doc.slug);
+
+    return {
+      ...doc,
+      sections,
+      prev: idx > 0 ? flatNav[idx - 1] : null,
+      next: idx >= 0 && idx < flatNav.length - 1 ? flatNav[idx + 1] : null,
+    };
   }
   return getAllDocs();
 });

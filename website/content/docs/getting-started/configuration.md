@@ -21,6 +21,9 @@ export default defineConfig({
 });
 ```
 
+> [!NOTE]
+> The `metadata` option is required. It provides essential site information that is injected into all page templates.
+
 ## Configuration Options
 
 ### `metadata` (Required)
@@ -120,6 +123,9 @@ vitto({
 });
 ```
 
+> [!CAUTION]
+> Minification is best suited for production builds. Enable it conditionally with `process.env.NODE_ENV === 'production'` for faster development builds.
+
 #### Default Minification Options
 
 When `minify: true`, Vitto uses these defaults:
@@ -212,12 +218,15 @@ vitto({
 });
 ```
 
+> [!IMPORTANT]
+> Directory defaults are chosen for common project structures. Change them only if your project uses a non-standard layout.
+
 ### `dynamicRoutes`
 
 - **Type**: `DynamicRouteConfig[]`
 - **Default**: `[]`
 
-Configure dynamic route generation. See [Dynamic Routes](./05-dynamic-routes.md) for detailed information.
+Configure dynamic route generation. See [Dynamic Routes](/docs/core/dynamic-routes) for detailed information.
 
 ```ts
 vitto({
@@ -238,7 +247,7 @@ vitto({
 - **Type**: `Record<string, Function>`
 - **Default**: `{}`
 
-Define hooks for injecting dynamic data into templates. See [Hooks System](./06-hooks.md) for details.
+Define hooks for injecting dynamic data into templates. See [Hooks System](/docs/core/hooks) for details.
 
 ```ts
 import { defineHooks } from 'vitto';
@@ -387,7 +396,8 @@ export default defineConfig(({ mode }) => ({
 
 ## TypeScript Support
 
-Vitto provides full TypeScript support. Import types for better IDE experience:
+> [!TIP]
+> Vitto provides full TypeScript support. Import types for better IDE experience:
 
 ```ts
 import type { VittoOptions, Metadata } from 'vitto';
@@ -409,6 +419,6 @@ const vittoConfig: VittoOptions = {
 
 ## Next Steps
 
-- [Templating Guide](./04-templating.md) - Learn Vento templating syntax
-- [Dynamic Routes](./05-dynamic-routes.md) - Generate pages from data
-- [Hooks System](./06-hooks.md) - Inject dynamic data into templates
+- [Templating Guide](/docs/core/templating) - Learn Vento templating syntax
+- [Dynamic Routes](/docs/core/dynamic-routes) - Generate pages from data
+- [Hooks System](/docs/core/hooks) - Inject dynamic data into templates

@@ -1,4 +1,4 @@
-# Getting Started
+# Installation
 
 This guide will help you create your first Vitto project in minutes.
 
@@ -6,58 +6,81 @@ This guide will help you create your first Vitto project in minutes.
 
 The fastest way to start a new Vitto project is using the `create-vitto` scaffolding tool:
 
-### Using NPM
+:::tabs
+@tab:active npm
 
 ```bash
 npm create vitto@latest
 ```
 
-### Using Yarn
+@tab yarn
 
 ```bash
 yarn create vitto
 ```
 
-### Using PNPM
+@tab pnpm
 
 ```bash
 pnpm create vitto
 ```
 
-### Using Bun
+@tab bun
 
 ```bash
 bun create vitto
 ```
 
-### Using Deno
+@tab deno
 
 ```bash
 deno init --npm vitto
 ```
 
+:::
+
 Then follow the interactive prompts to configure your project!
+
+> [!TIP]
+> After the setup completes, run `npm run dev` (or your package manager's equivalent) and open `http://localhost:5173` to see your new site.
 
 ## Scaffolding with Templates
 
 You can also directly specify the project name and template:
 
+:::tabs
+@tab:active npm
+
 ```bash
 # npm 7+ (extra double-dash is needed)
 npm create vitto@latest my-website -- --template tailwindcss
+```
 
-# yarn
+@tab yarn
+
+```bash
 yarn create vitto my-website --template tailwindcss
+```
 
-# pnpm
+@tab pnpm
+
+```bash
 pnpm create vitto my-website --template tailwindcss
+```
 
-# Bun
+@tab bun
+
+```bash
 bun create vitto my-website --template tailwindcss
+```
 
-# Deno
+@tab deno
+
+```bash
 deno init --npm vitto my-website --template tailwindcss
 ```
+
+:::
 
 ### Available Templates
 
@@ -72,16 +95,26 @@ If you prefer to add Vitto to an existing Vite project:
 
 ### 1. Install Vitto
 
+:::tabs
+@tab:active pnpm
+
 ```bash
-# Using pnpm
 pnpm add -D vitto
+```
 
-# Using npm
+@tab npm
+
+```bash
 npm install --save-dev vitto
+```
 
-# Using yarn
+@tab yarn
+
+```bash
 yarn add --dev vitto
 ```
+
+:::
 
 ### 2. Configure Vite
 
@@ -160,39 +193,67 @@ Create `src/layouts/base.vto`:
 
 ### 6. Run Development Server
 
+:::tabs
+@tab:active npm
+
 ```bash
-# Using npm
 npm run dev
+```
 
-# Using pnpm
+@tab pnpm
+
+```bash
 pnpm dev
+```
 
-# Using yarn
+@tab yarn
+
+```bash
 yarn dev
+```
 
-# Using bun
+@tab bun
+
+```bash
 bun dev
 ```
 
-Open your browser at `http://localhost:5173` to see your site!
+:::
+
+> [!TIP]
+> Open your browser at `http://localhost:5173` to see your site!
 
 ### 7. Build for Production
 
+:::tabs
+@tab:active npm
+
 ```bash
-# Using npm
 npm run build
+```
 
-# Using pnpm
+@tab pnpm
+
+```bash
 pnpm build
+```
 
-# Using yarn
+@tab yarn
+
+```bash
 yarn build
+```
 
-# Using bun
+@tab bun
+
+```bash
 bun run build
 ```
 
-Your static site will be generated in the `dist/` directory.
+:::
+
+> [!NOTE]
+> Your static site will be generated in the `dist/` directory.
 
 ## Project Structure Explained
 
@@ -220,10 +281,10 @@ Static assets that are copied as-is to the output directory. Images, fonts, etc.
 
 Now that you have a basic Vitto site running, explore these topics:
 
-- [Configuration](./03-configuration.md) - Customize Vitto to your needs
-- [Templating Guide](./04-templating.md) - Learn Vento templating syntax
-- [Dynamic Routes](./05-dynamic-routes.md) - Generate pages from data
-- [Hooks System](./06-hooks.md) - Inject dynamic data into templates
+- [Configuration](/docs/getting-started/configuration) - Customize Vitto to your needs
+- [Templating Guide](/docs/core/templating) - Learn Vento templating syntax
+- [Dynamic Routes](/docs/core/dynamic-routes) - Generate pages from data
+- [Hooks System](/docs/core/hooks) - Inject dynamic data into templates
 
 ## Getting Help
 

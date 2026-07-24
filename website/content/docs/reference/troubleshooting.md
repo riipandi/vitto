@@ -2,18 +2,6 @@
 
 This guide covers common issues and their solutions when working with Vitto.
 
-## Table of Contents
-
-- [Installation Issues](#installation-issues)
-- [Build Errors](#build-errors)
-- [Template Errors](#template-errors)
-- [Dynamic Routes Issues](#dynamic-routes-issues)
-- [Hook Errors](#hook-errors)
-- [Search Problems](#search-problems)
-- [Asset Loading Issues](#asset-loading-issues)
-- [Performance Issues](#performance-issues)
-- [Deployment Problems](#deployment-problems)
-
 ## Installation Issues
 
 ### Node Version Mismatch
@@ -920,7 +908,7 @@ vitto({
 
 4. Use CDN for static assets
 
-See [Performance Guide](./09-performance.md) for more details.
+See [Performance Guide](/docs/features/performance) for more details.
 
 ## Deployment Problems
 
@@ -1051,75 +1039,17 @@ ls dist/assets/
 
 ## Getting Help
 
+> [!TIP]
+> When debugging, start with the simplest reproduction possible. Check the browser console and build logs for error messages.
+
+> [!WARNING]
+> Always backup your `vite.config.ts` before making major changes. Keep your `dist/` in `.gitignore` to avoid committing build artifacts.
+
+> [!CAUTION]
+> Be aware that `rm -rf node_modules` and re-installing will lose any uncommitted dependency changes. Commit or stash before cleaning.
+
 If you're still stuck after trying these solutions:
 
-### 1. Check Existing Resources
-
-- **Documentation**: Review relevant docs sections
-- **GitHub Issues**: [github.com/riipandi/vitto/issues](https://github.com/riipandi/vitto/issues)
-- **Discussions**: Search for similar problems
-
-### 2. Create a Minimal Reproduction
-
-```bash
-# Create new minimal project
-npm create vitto@latest test-issue
-cd test-issue
-
-# Add only the code that causes the issue
-# Try to reproduce the problem
-# Share repository or code snippet
-```
-
-### 3. Open an Issue
-
-When creating an issue, include:
-
-````markdown
-## Environment
-
-- Vitto version: (run `npm list vitto`)
-- Node version: (run `node --version`)
-- Package manager: npm/pnpm/yarn
-- OS: macOS/Windows/Linux
-
-## Configuration
-
-```ts
-// Your vite.config.ts
-```
-````
-
-## Steps to Reproduce
-
-1. ...
-2. ...
-3. ...
-
-## Expected Behavior
-
-What you expected to happen
-
-## Actual Behavior
-
-What actually happened
-
-## Error Messages
-
-```
-Paste error messages here
-```
-
-## Additional Context
-
-Any other relevant information
-
-```
-
-## Next Steps
-
-- [API Reference](./12-api-reference.md) - Complete API documentation
-- [Contributing](./13-contributing.md) - Contribute to Vitto
-- [Examples](./10-examples.md) - More working examples
-- [Performance Guide](./09-performance.md) - Optimize your site
-```
+- [x] **Check Existing Resources** — Review relevant docs sections, GitHub Issues, and Discussions
+- [x] **Create a Minimal Reproduction** — Build a minimal project that reproduces the issue
+- [x] **Open an Issue** — Include environment details, configuration, steps to reproduce, expected vs actual behavior, and error messages

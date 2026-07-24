@@ -2,21 +2,12 @@
 
 Thank you for your interest in contributing to Vitto! This guide will help you get started.
 
-## Table of Contents
-
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Setup](#development-setup)
-- [Project Structure](#project-structure)
-- [Development Workflow](#development-workflow)
-- [Testing](#testing)
-- [Code Style](#code-style)
-- [Submitting Changes](#submitting-changes)
-- [Reporting Issues](#reporting-issues)
-
 ## Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment for everyone. Please be respectful and considerate in all interactions.
+
+> [!NOTE]
+> All contributors are expected to follow our Code of Conduct. Please report unacceptable behavior to the maintainers.
 
 ### Our Standards
 
@@ -117,55 +108,47 @@ vitto/
 │   │   └── package.json
 │   ├── create-vitto/       # CLI tool for scaffolding
 │   │   └── src/
-├── docs/                   # Documentation markdown files
-├── website/                # Documentation website
-├── turbo.json              # Turborepo configuration
-├── package.json            # Root package.json
-└── pnpm-workspace.yaml     # PNPM workspace config
+│   ├── docs/                   # Documentation markdown files
+│   ├── website/                # Documentation website
+│   ├── turbo.json              # Turborepo configuration
+│   ├── package.json            # Root package.json
+│   └── pnpm-workspace.yaml     # PNPM workspace config
 ```
 
 ## Development Workflow
 
-### 1. Create a Branch
+- [ ] **1. Create a Branch** — Create feature or fix branches from updated main
+- [ ] **2. Make Changes** — Write clear commits, follow code style, add tests, update docs
+- [ ] **3. Test Your Changes** — Run typecheck, lint, and format checks
+- [ ] **4. Commit Changes** — Use Conventional Commits format
+- [ ] **5. Push and Create PR** — Push to your fork and open a Pull Request
 
 ```bash
-# Update main branch
+# 1. Create a Branch
 git checkout main
 git pull upstream main
-
-# Create feature branch
 git checkout -b feature/your-feature-name
 
 # Or for bug fixes
 git checkout -b fix/issue-number-description
 ```
 
-### 2. Make Changes
-
-- Write clear, focused commits
-- Follow existing code style
-- Add tests for new features
-- Update documentation
-
-### 3. Test Your Changes
+> [!TIP]
+> Run `pnpm typecheck` and `pnpm lint` before committing to catch issues early.
 
 ```bash
-# Type checking
+# 3. Test Your Changes
 pnpm typecheck
-
-# Linting
 pnpm lint
-
-# Format checking and fixing
 pnpm check
 pnpm format
 ```
 
-### 4. Commit Changes
-
-We use [Conventional Commits](https://www.conventionalcommits.org/):
+> [!IMPORTANT]
+> Use [Conventional Commits](https://www.conventionalcommits.org/) format. This enables automated changelog generation.
 
 ```bash
+# 4. Commit Changes
 # Format: <type>(<scope>): <description>
 
 git commit -m "feat: add support for custom filters"
@@ -186,10 +169,8 @@ git commit -m "test: add tests for dynamic routes"
 - `chore`: Maintenance tasks
 - `ci`: CI/CD changes
 
-### 5. Push and Create PR
-
 ```bash
-# Push to your fork
+# 5. Push and Create PR
 git push origin feature/your-feature-name
 ```
 
@@ -317,19 +298,11 @@ export function defineHooks<T, P>(
 
 ### Pull Request Guidelines
 
-1. **Title**: Clear and descriptive
-   - Good: "feat: add support for custom Vento filters"
-   - Bad: "Update code"
-
-2. **Description**: Include:
-   - What changes were made
-   - Why the changes were necessary
-   - Any breaking changes
-   - Related issues (use `Closes #123`)
-
-3. **Tests**: All tests must pass
-4. **Documentation**: Update docs if needed
-5. **Changelog**: Update if making user-facing changes
+- [x] **Title**: Clear and descriptive (good: "feat: add support for custom Vento filters")
+- [x] **Description**: Include what, why, breaking changes, and related issues
+- [x] **Tests**: All tests must pass
+- [x] **Documentation**: Update docs if needed
+- [x] **Changelog**: Update if making user-facing changes
 
 ### PR Template
 
@@ -632,7 +605,7 @@ turbo run typecheck --filter=vitto # Type check specific package
 
 ## License
 
-By contributing to Vitto, you agree that your contributions will be licensed under the [MIT License](../LICENSE).
+By contributing to Vitto, you agree that your contributions will be licensed under the [MIT License](https://github.com/riipandi/vitto/blob/main/LICENSE).
 
 ### MIT License Summary
 
