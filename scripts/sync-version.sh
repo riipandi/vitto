@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR=$(dirname "$0")
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 
 # Get current version from ROOT_DIR/package.json
 CURRENT_VERSION=$(jq -r '.version' "$ROOT_DIR/package.json")
@@ -47,7 +47,6 @@ done
 
 # Update vitto devDependencies in all template-* folders
 find "$ROOT_DIR/packages/create-vitto" -type f -name package.json | grep '/template-' | while read -r pkg; do
-    # Check if vitto exists in devDependencies
     if jq -e '.devDependencies.vitto' "$pkg" >/dev/null 2>&1; then
         jq --arg v "^$NEW_VERSION" '.devDependencies.vitto = $v' "$pkg" >"$pkg.tmp"
         mv "$pkg.tmp" "$pkg"

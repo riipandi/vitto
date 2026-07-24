@@ -36,7 +36,7 @@ export default defineConfig({
           template: 'post',
           dataSource: 'posts',
           getParams: (post) => ({ id: post.id }),
-          getPath: (post) => `blog/${post.id}.html`,
+          getPath: (post) => `blog/post-${post.id}.html`,
         },
         {
           template: 'blog',
