@@ -76,7 +76,7 @@ const highlighter = createHighlighterCoreSync({
 const md = MarkdownIt({ html: true, linkify: true, typographer: true });
 
 md.use(
-  fromHighlighter(highlighter, {
+  fromHighlighter(highlighter as any, {
     themes: {
       light: 'github-light',
       dark: 'github-dark',
@@ -195,6 +195,14 @@ function getDocBySlug(slug: string): DocItem | null {
   return parseDocFile(filePath, sectionId, section?.label || '');
 }
 
+const SECTION_ITEMS_ORDER: Record<string, string[]> = {
+  'getting-started': ['introduction', 'installation', 'configuration'],
+  core: ['templating', 'dynamic-routes', 'hooks'],
+  features: ['search', 'deployment', 'performance'],
+  guides: ['examples', 'contributing'],
+  reference: ['api-reference', 'troubleshooting', 'comparison'],
+};
+
 function getSections(): DocSection[] {
   const allDocs = getAllDocs();
   return SECTIONS.map((s) => ({
@@ -202,7 +210,10 @@ function getSections(): DocSection[] {
     label: s.label,
     items: allDocs
       .filter((d: DocItem) => d.section === s.id)
-      .toSorted((a: DocItem, b: DocItem) => a.order - b.order)
+      .toSorted((a: DocItem, b: DocItem) => {
+        const order = SECTION_ITEMS_ORDER[s.id] ?? [];
+        return order.indexOf(a.slug.split('/')[1]) - order.indexOf(b.slug.split('/')[1]);
+      })
       .map((d: DocItem) => ({ slug: d.slug, title: d.title, order: d.order })),
   }));
 }
