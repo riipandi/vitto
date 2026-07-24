@@ -130,10 +130,50 @@ async function copyCommand(el: HTMLElement, text: string) {
 window.copyCommand = copyCommand;
 
 // ----------------------------------------------------------------------------
+// Tabs — @mdit/plugin-tab switching
+// ----------------------------------------------------------------------------
+function initTabs() {
+  const wrappers = document.querySelectorAll('.tabs-tabs-wrapper');
+  if (!wrappers.length) return;
+
+  wrappers.forEach((wrapper) => {
+    const buttons = wrapper.querySelectorAll<HTMLButtonElement>('.tabs-tab-button');
+    const panes = wrapper.querySelectorAll<HTMLDivElement>('.tabs-tab-content');
+
+    if (!buttons.length || !panes.length) return;
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = btn.getAttribute('data-tab');
+        if (idx === null) return;
+
+        buttons.forEach((b) => {
+          b.classList.remove('active');
+          b.removeAttribute('data-active');
+        });
+        panes.forEach((p) => {
+          p.classList.remove('active');
+          p.removeAttribute('data-active');
+        });
+
+        btn.classList.add('active');
+        btn.setAttribute('data-active', '');
+        const pane = panes[Number(idx)];
+        if (pane) {
+          pane.classList.add('active');
+          pane.setAttribute('data-active', '');
+        }
+      });
+    });
+  });
+}
+
+// ----------------------------------------------------------------------------
 // Init
 // ----------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   initReveal();
   initMobileMenu();
+  initTabs();
   listenSystemTheme();
 });

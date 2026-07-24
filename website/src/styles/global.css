@@ -336,6 +336,158 @@ pre.shiki {
 }
 
 /* ---------------------------------------------------------------------------
+   @mdit/plugin-anchor — heading permalinks
+   --------------------------------------------------------------------------- */
+.header-anchor {
+  float: left;
+  margin-left: -1.2em;
+  padding-right: 0.3em;
+  opacity: 0;
+  text-decoration: none;
+  color: var(--color-sand-400);
+  transition: opacity 0.15s ease;
+  font-size: 0.85em;
+  line-height: inherit;
+}
+h2:hover .header-anchor,
+h3:hover .header-anchor,
+h4:hover .header-anchor {
+  opacity: 1;
+}
+.dark .header-anchor {
+  color: var(--color-sand-500);
+}
+
+.prose h2 .header-anchor,
+.prose h3 .header-anchor,
+.prose h4 .header-anchor {
+  margin-top: 0.1em;
+}
+
+/* ---------------------------------------------------------------------------
+   @mdit/plugin-alert — GFM-style alerts
+   --------------------------------------------------------------------------- */
+.markdown-alert {
+  @apply border-l-4 rounded-r-xl px-5 py-4 my-6;
+}
+.markdown-alert-note {
+  @apply border-blue-500 bg-blue-50/50 dark:bg-blue-500/5;
+}
+.markdown-alert-tip {
+  @apply border-emerald-500 bg-emerald-50/50 dark:bg-emerald-500/5;
+}
+.markdown-alert-important {
+  @apply border-violet-500 bg-violet-50/50 dark:bg-violet-500/5;
+}
+.markdown-alert-warning {
+  @apply border-amber-500 bg-amber-50/50 dark:bg-amber-500/5;
+}
+.markdown-alert-caution {
+  @apply border-red-500 bg-red-50/50 dark:bg-red-500/5;
+}
+.markdown-alert-title {
+  @apply flex items-center gap-2 font-semibold text-sm uppercase tracking-wider mb-2;
+}
+.markdown-alert-note .markdown-alert-title {
+  @apply text-blue-600 dark:text-blue-400;
+}
+.markdown-alert-tip .markdown-alert-title {
+  @apply text-emerald-600 dark:text-emerald-400;
+}
+.markdown-alert-important .markdown-alert-title {
+  @apply text-violet-600 dark:text-violet-400;
+}
+.markdown-alert-warning .markdown-alert-title {
+  @apply text-amber-600 dark:text-amber-400;
+}
+.markdown-alert-caution .markdown-alert-title {
+  @apply text-red-600 dark:text-red-400;
+}
+.markdown-alert p {
+  @apply text-sand-700 dark:text-sand-300 leading-relaxed;
+}
+.markdown-alert-title svg {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   @mdit/plugin-tab — tabbed content
+   --------------------------------------------------------------------------- */
+.tabs-tabs-wrapper {
+  @apply my-6;
+}
+.tabs-tabs-header {
+  @apply flex gap-0 border-b border-sand-200 dark:border-sand-700 overflow-x-auto;
+}
+.tabs-tab-button {
+  @apply px-4 py-2 text-sm font-medium cursor-pointer whitespace-nowrap transition-colors;
+  @apply text-sand-500 dark:text-sand-400;
+  @apply border-b-2 border-transparent bg-transparent;
+  @apply outline-none;
+}
+.tabs-tab-button:hover {
+  @apply text-sand-700 dark:text-sand-200;
+}
+.tabs-tab-button.active {
+  @apply text-amber-600 dark:text-amber-400 border-amber-500 dark:border-amber-400;
+}
+.tabs-tab-content {
+  @apply hidden p-4 border border-t-0 border-sand-200 dark:border-sand-700 rounded-b-xl;
+  background-color: #fff;
+}
+.tabs-tab-content.active {
+  @apply block;
+}
+.tabs-tab-content > :first-child {
+  @apply mt-0;
+}
+.tabs-tab-content > :last-child {
+  @apply mb-0;
+}
+.dark .tabs-tab-content {
+  background-color: rgba(26, 24, 20, 0.3);
+}
+
+/* ---------------------------------------------------------------------------
+   @mdit/plugin-tasklist — checkboxes
+   --------------------------------------------------------------------------- */
+.task-list-container {
+  @apply list-none p-0 pl-6;
+}
+.task-list-item {
+  @apply flex items-start gap-2 list-none;
+}
+.task-list-item .task-list-item-checkbox {
+  @apply mt-1 h-4 w-4 shrink-0 cursor-pointer;
+  @apply accent-amber-500 dark:accent-amber-400;
+}
+.task-list-item-label {
+  @apply cursor-pointer leading-relaxed;
+}
+.prose ul.task-list-container .task-list-item {
+  @apply -ml-5;
+}
+/* ---------------------------------------------------------------------------
+   @mdit/plugin-tasklist — checkboxes
+   --------------------------------------------------------------------------- */
+.task-list-item {
+  @apply flex items-start gap-2 list-none;
+}
+.task-list-item input[type="checkbox"] {
+  @apply mt-1 h-4 w-4 shrink-0 cursor-pointer;
+  @apply accent-amber-500 dark:accent-amber-400;
+}
+.task-list-item label {
+  @apply cursor-pointer leading-relaxed;
+}
+
+.prose ul .task-list-item {
+  @apply -ml-5;
+}
+
+/* ---------------------------------------------------------------------------
    Animations
    --------------------------------------------------------------------------- */
 

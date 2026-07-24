@@ -1,6 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { alert } from '@mdit/plugin-alert';
+import { anchor } from '@mdit/plugin-anchor';
+import { tab } from '@mdit/plugin-tab';
+import { tasklist } from '@mdit/plugin-tasklist';
 import langBash from '@shikijs/langs/bash';
 import langCss from '@shikijs/langs/css';
 import langHtml from '@shikijs/langs/html';
@@ -11,7 +15,6 @@ import langTypescript from '@shikijs/langs/typescript';
 import langYaml from '@shikijs/langs/yaml';
 import { fromHighlighter } from '@shikijs/markdown-it/core';
 import githubDark from '@shikijs/themes/github-dark';
-// Pre-import only the themes and languages we need (fine-grained bundle)
 import githubLight from '@shikijs/themes/github-light';
 import MarkdownIt from 'markdown-it';
 import { createHighlighterCoreSync } from 'shiki/core';
@@ -72,6 +75,14 @@ md.use(
     },
   })
 );
+
+md.use(anchor, { level: [2, 3, 4] });
+md.use(alert);
+md.use(tab, { name: 'tabs' });
+md.use(tasklist, { disabled: false, label: true });
+
+// ans: anchor level limits to h2-h4 so h1 page titles don't get duplicate anchors.
+// ans: tasklist `disabled: false` keeps checkboxes interactive.
 
 // Override fence renderer — treat `vento` as `html`, catch truly unknown langs gracefully
 const defaultFence = md.renderer.rules.fence!.bind(md.renderer.rules);

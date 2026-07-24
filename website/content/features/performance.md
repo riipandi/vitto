@@ -1,6 +1,7 @@
 # Performance Optimization
 
-This guide covers best practices and techniques to optimize your Vitto site for maximum performance.
+> [!Note]
+> This guide covers best practices and techniques to optimize your Vitto site for maximum performance.
 
 ## Overview
 
