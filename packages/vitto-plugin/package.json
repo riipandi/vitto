@@ -1,6 +1,6 @@
 {
     "name": "vitto",
-    "version": "0.3.0",
+    "version": "0.0.0",
     "description": "A minimal static site generator built with Vite and the Vento templating engine.",
     "keywords": [
         "generator",

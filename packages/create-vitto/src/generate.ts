@@ -53,6 +53,7 @@ function install(root: string, agent: string) {
   run(getInstallCommand(agent, root), {
     stdio: 'inherit',
     cwd: root,
+    env: { ...process.env, CI: 'true' },
   });
 
   _console.log('Dependencies installed!');
@@ -127,11 +128,23 @@ function getInstallCommand(agent: string, root: string): string[] {
   if (agent === 'yarn') {
     return [agent];
   }
-  // Inside pnpm workspace? Install locally, not as workspace member
-  if (agent === 'pnpm' && isInsidePnpmWorkspace(root)) {
-    return [agent, 'install', '--ignore-workspace'];
+
+  const cmd = [agent, 'install'];
+
+  if (agent === 'pnpm') {
+    // Inside pnpm workspace? Ignore it so pnpm reads the project-local config
+    if (isInsidePnpmWorkspace(root)) {
+      cmd.push('--ignore-workspace');
+    }
+    // Write allowBuilds config so build scripts actually run, not just ignored
+    // pnpm v11 ignores package.json#pnpm — must use pnpm-workspace.yaml
+    const wsYaml = path.join(root, 'pnpm-workspace.yaml');
+    if (!fs.existsSync(wsYaml)) {
+      fs.writeFileSync(wsYaml, "# pnpm workspace config\nallowBuilds:\n  '*': true\n", 'utf-8');
+    }
   }
-  return [agent, 'install'];
+
+  return cmd;
 }
 
 function isInsidePnpmWorkspace(root: string): boolean {
@@ -233,12 +246,6 @@ export default async function generateProject(opts: ProjectOptions) {
 
   pkg.name = packageName;
   write('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
-
-  // pnpm v11 — write allowBuilds to pnpm-workspace.yaml (package.json#pnpm is ignored by pnpm 11)
-  if ((opts.packageManager || 'pnpm') === 'pnpm') {
-    const workspaceYaml = `# pnpm workspace config\nallowBuilds:\n  '*': true\n`;
-    fs.writeFileSync(path.join(root, 'pnpm-workspace.yaml'), workspaceYaml, 'utf-8');
-  }
 
   _console.log('Project scaffolded successfully!\n');
 
