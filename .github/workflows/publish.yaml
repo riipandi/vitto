@@ -143,7 +143,6 @@ jobs:
         run: |
           # Write the token to the user-level auth file before installing
           pnpm config set //registry.npmjs.org/:_authToken "${{ secrets.NPM_TOKEN }}"
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}"
 
           # Publish vitto
           pnpm turbo publish:npm --filter=vitto
