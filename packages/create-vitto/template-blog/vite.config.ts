@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import vitto from 'vitto';
 
-import postsHook from './hooks/posts';
+import postsHook from './src/hooks/posts';
 
 export default defineConfig({
   plugins: [

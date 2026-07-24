@@ -50,7 +50,15 @@ const main = defineCommand({
       description: 'Print version information',
       default: false,
     },
+    packageManager: {
+      type: 'string',
+      description: 'Package manager to use (npm, yarn, pnpm, bun, deno)',
+      alias: 'pm',
+      default: 'pnpm',
+      valueHint: 'pnpm',
+    },
   },
+
   async run({ args, cmd }) {
     if (args.version) {
       _console.log(`create-vitto v${pkg.version}`);
@@ -79,6 +87,7 @@ const main = defineCommand({
         preset: wizardResult.preset,
         overwrite: wizardResult.overwrite,
         start: wizardResult.start,
+        packageManager: args.packageManager || wizardResult.packageManager,
       });
     }
 
@@ -94,6 +103,7 @@ const main = defineCommand({
       preset: args.preset,
       overwrite: args.overwrite,
       start: args.start,
+      packageManager: args.packageManager,
     });
   },
 });

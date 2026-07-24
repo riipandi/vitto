@@ -2,8 +2,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import vitto from 'vitto';
 
-import docsHook from './hooks/docs';
-import postsHook from './hooks/posts';
+import docsHook from './src/hooks/docs';
+import postsHook from './src/hooks/posts';
 import type { BlogPost } from './types/blog';
 
 const isProduction = process.env.NODE_ENV === 'production';

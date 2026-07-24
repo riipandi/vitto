@@ -24,25 +24,38 @@ const TEST_DIR = join(ROOT, '.test-templates');
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function log(label, msg, color = '') {
-  const prefix = color ? `\x1b[${color}m${label}\x1b[0m` : label;
-  console.log(`${prefix} ${msg}`);
-}
+const B = (s) => `\x1b[1m${s}\x1b[0m`;
+const DIM = (s) => `\x1b[2m${s}\x1b[0m`;
+const GREEN = (s) => `\x1b[32m${s}\x1b[0m`;
+const RED = (s) => `\x1b[31m${s}\x1b[0m`;
+const CYAN = (s) => `\x1b[36m${s}\x1b[0m`;
+const BOLD_CYAN = (s) => `\x1b[1;36m${s}\x1b[0m`;
 
-function ok(msg) {
-  log('  ✔', msg, '32');
+function tag(name) {
+  return DIM(`[${name}]`);
 }
-function fail(msg) {
-  log('  ✘', msg, '31');
+const BLANK = '';
+
+function ok(p, t, msg) {
+  console.log(`  ${GREEN('✔')} ${p} ${t} ${msg}`);
 }
-function info(msg) {
-  log('  ~', msg, '36');
+function fail(p, t, msg) {
+  console.log(`  ${RED('✘')} ${p} ${t} ${msg}`);
 }
-function title(t) {
-  console.log(`\n\x1b[1;34m${t}\x1b[0m\n`);
+function info(p, t, msg) {
+  console.log(`  ${CYAN('~')} ${p} ${t} ${msg}`);
+}
+function dim(msg) {
+  console.log(`    ${DIM(msg)}`);
+}
+function section(title) {
+  console.log(`\n${'─'.repeat(50)}`);
+  console.log(` ${BOLD_CYAN(title)}`);
+  console.log(`${'─'.repeat(50)}`);
 }
 
 function run(cmd, cwd, _label) {
+  const start = Date.now();
   try {
     const out = execSync(cmd, {
       cwd,
@@ -50,17 +63,26 @@ function run(cmd, cwd, _label) {
       stdio: ['pipe', 'pipe', 'pipe'],
       timeout: 120_000,
     });
-    return { ok: true, out: out.trim() };
+    return { ok: true, out: out.trim(), ms: Date.now() - start };
   } catch (e) {
-    return { ok: false, out: e.stdout?.trim() || '', err: e.stderr?.trim() || e.message };
+    return {
+      ok: false,
+      out: e.stdout?.trim() || '',
+      err: e.stderr?.trim() || e.message,
+      ms: Date.now() - start,
+    };
   }
+}
+
+function elapsed(ms) {
+  if (ms < 1000) return `${ms}ms`;
+  return `${(ms / 1000).toFixed(1)}s`;
 }
 
 // ---------------------------------------------------------------------------
 // Discover templates
 // ---------------------------------------------------------------------------
 function getTemplates() {
-  // Parse available templates from CLI --help or --templates output
   const out = execSync(`node "${CLI_ENTRY}" --templates`, { encoding: 'utf8' });
   const lines = out.split('\n');
   const templates = [];
@@ -89,7 +111,7 @@ function checkRoutes(distDir, routes) {
 }
 
 // ---------------------------------------------------------------------------
-// Scaffold a template
+// Scaffold / Install / Build
 // ---------------------------------------------------------------------------
 function scaffold(template, dest) {
   return run(
@@ -98,17 +120,9 @@ function scaffold(template, dest) {
     `scaffold ${template}`
   );
 }
-
-// ---------------------------------------------------------------------------
-// Install dependencies
-// ---------------------------------------------------------------------------
 function install(dest) {
   return run('npm install --loglevel=error 2>&1', dest, 'install');
 }
-
-// ---------------------------------------------------------------------------
-// Build
-// ---------------------------------------------------------------------------
 function build(dest) {
   return run('npm run build 2>&1', dest, 'build');
 }
@@ -118,56 +132,66 @@ function build(dest) {
 // ---------------------------------------------------------------------------
 function testTemplate(template, skipInstall) {
   const dest = join(TEST_DIR, template);
-  const label = `[${template}]`;
+  const t = tag(template);
+  const phases = [];
 
-  info(`${label} scaffolding...`);
+  // ── Phase 1: Scaffold ──────────────────────────────────────
+  info(BLANK, t, 'Scaffolding');
   let r = scaffold(template, dest);
   if (!r.ok) {
-    fail(`${label} scaffold failed: ${r.err}`);
-    return null;
+    fail(BLANK, t, 'scaffold failed');
+    dim(r.err?.split('\n').slice(0, 3).join('\n'));
+    phases.push({ phase: 'scaffold', ok: false });
+    return { template, phases, buildOk: false };
   }
-  ok(`${label} scaffolded`);
+  ok(BLANK, t, `scaffolded ${DIM(`(${elapsed(r.ms)})`)}`);
+  phases.push({ phase: 'scaffold', ok: true, ms: r.ms });
 
+  // ── Phase 2: Install ────────────────────────────────────────
   if (!skipInstall) {
-    info(`${label} installing dependencies...`);
+    info(BLANK, t, 'Installing dependencies');
     r = install(dest);
     if (!r.ok) {
-      fail(`${label} install failed: ${r.err}`);
-      return null;
+      fail(BLANK, t, 'install failed');
+      dim(r.err?.split('\n').slice(0, 3).join('\n'));
+      phases.push({ phase: 'install', ok: false });
+      return { template, phases, buildOk: false };
     }
-    ok(`${label} installed`);
+    ok(BLANK, t, `installed ${DIM(`(${elapsed(r.ms)})`)}`);
+    phases.push({ phase: 'install', ok: true, ms: r.ms });
   }
 
-  info(`${label} building...`);
+  // ── Phase 3: Build ─────────────────────────────────────────
+  info(BLANK, t, 'Building');
   r = build(dest);
   if (!r.ok) {
-    // Capture specific errors
     const errors = (r.out + '\n' + (r.err || ''))
       .split('\n')
       .filter((l) => /error|Error|ERR|FAIL/i.test(l));
-    fail(`${label} build failed`);
-    errors.slice(0, 5).forEach((e) => console.log(`       ${e.trim()}`));
-    return { template, buildOk: false, errors };
+    fail(BLANK, t, `build failed ${DIM(`(${elapsed(r.ms)})`)}`);
+    errors.slice(0, 5).forEach((e) => dim(e.trim()));
+    phases.push({ phase: 'build', ok: false, ms: r.ms });
+    return { template, phases, buildOk: false };
   }
-  ok(`${label} built`);
+  ok(BLANK, t, `built ${DIM(`(${elapsed(r.ms)})`)}`);
+  phases.push({ phase: 'build', ok: true, ms: r.ms });
 
-  // Check dist output
+  // ── Check dist output ───────────────────────────────────────
   const distDir = join(dest, 'dist');
   if (!existsSync(distDir)) {
-    fail(`${label} dist/ not found`);
-    return { template, buildOk: false, errors: ['dist/ not found'] };
+    fail(BLANK, t, 'dist/ not found');
+    return { template, phases, buildOk: true, routesOk: false, missing: ['dist/'] };
   }
 
-  // Verify expected routes
   const routes = ['/index.html', '/404.html'];
   if (template === 'blog') {
-    routes.push('/blog/index.html', '/blog/post-1.html', '/about.html');
+    routes.push('/blog.html', '/blog/qui-est-esse.html', '/about.html');
   } else if (template === 'full') {
     routes.push(
-      '/blog/index.html',
+      '/blog.html',
       '/blog/hello-world.html',
       '/docs.html',
-      '/docs/getting-started/introduction.html',
+      '/docs/getting-started/overview.html',
       '/about.html',
       '/changelog.html'
     );
@@ -179,13 +203,19 @@ function testTemplate(template, skipInstall) {
   const failed = checks.filter((c) => !c.ok);
 
   if (failed.length > 0) {
-    fail(`${label} ${failed.length} route(s) missing:`);
-    failed.forEach((f) => console.log(`         ${f.route}`));
-    return { template, buildOk: true, routesOk: false, missing: failed.map((f) => f.route) };
+    fail(BLANK, t, `${failed.length} route(s) missing:`);
+    failed.forEach((f) => dim(`  ${f.route}`));
+    return {
+      template,
+      phases,
+      buildOk: true,
+      routesOk: false,
+      missing: failed.map((f) => f.route),
+    };
   }
 
-  checks.forEach((c) => ok(`${label} ${c.route} (${(c.size / 1024).toFixed(1)} KB)`));
-  return { template, buildOk: true, routesOk: true, pages: checks.length };
+  checks.forEach((c) => ok(BLANK, t, `${c.route} ${DIM(`(${(c.size / 1024).toFixed(1)} KB)`)}`));
+  return { template, phases, buildOk: true, routesOk: true, pages: checks.length };
 }
 
 // ---------------------------------------------------------------------------
@@ -196,67 +226,81 @@ async function main() {
   const filter = args.find((a) => !a.startsWith('--'));
   const skipInstall = args.includes('--skip-install');
 
-  // Clean & create test dir
+  const startTime = Date.now();
+
   if (existsSync(TEST_DIR)) rmSync(TEST_DIR, { recursive: true });
   mkdirSync(TEST_DIR, { recursive: true });
 
-  // Auto-build the vitto-plugin first
-  title('Pre-build vitto-plugin');
+  section('Pre-build vitto-plugin');
   const pluginDir = join(PACKAGES_DIR, 'vitto-plugin');
   if (existsSync(join(pluginDir, 'dist'))) {
-    info('vitto-plugin already built');
+    info(BLANK, tag('skip'), 'vitto-plugin already built');
   } else {
+    info(BLANK, tag('build'), 'Building vitto-plugin...');
     const r = run('npm run build 2>&1', pluginDir, 'build vitto-plugin');
     if (!r.ok) {
-      fail('vitto-plugin build failed — cannot continue');
+      fail(BLANK, tag('build'), 'failed — cannot continue');
       process.exit(1);
     }
-    ok('vitto-plugin built');
+    ok(BLANK, tag('build'), `vitto-plugin built ${DIM(`(${elapsed(r.ms)})`)}`);
   }
 
-  // Discover templates
   const allTemplates = getTemplates();
   const templates = filter ? allTemplates.filter((t) => t === filter) : allTemplates;
 
   if (templates.length === 0) {
-    fail(`Template "${filter}" not found. Available: ${allTemplates.join(', ')}`);
+    fail(BLANK, tag('error'), `"${filter}" not found. Available: ${allTemplates.join(', ')}`);
     process.exit(1);
   }
 
-  title(`Testing ${templates.length} template(s): ${templates.join(', ')}`);
+  section(`Testing ${templates.length} template(s)`);
+  templates.forEach((t) => console.log(`   ${DIM('·')} ${t}`));
 
   const results = [];
-  for (const tmpl of templates) {
+  for (let i = 0; i < templates.length; i++) {
+    const tmpl = templates[i];
+    console.log('');
     const r = testTemplate(tmpl, skipInstall);
     if (r) results.push(r);
   }
 
-  // Summary
-  title('Results');
+  // ── Summary Dashboard ───────────────────────────────────────
+  const elapsedTotal = Date.now() - startTime;
+  section('Results Summary');
+
+  const hdr = (s) => `\x1b[1;37m${s.padEnd(10)}\x1b[0m`;
+  const sep = DIM('─'.repeat(10) + ' ─' + '─'.repeat(8) + ' ─' + '─'.repeat(20));
+  console.log(`  ${hdr('Template')}  ${hdr('Build')}  ${hdr('Routes')}`);
+  console.log(`  ${sep}`);
 
   let passed = 0,
     failed = 0;
   for (const r of results) {
-    if (r.buildOk && r.routesOk) {
-      ok(`${r.template}: build ✓, ${r.pages} routes ✓`);
-      passed++;
-    } else if (r.buildOk) {
-      fail(`${r.template}: build ✓, routes ✘ (missing: ${r.missing?.join(', ')})`);
-      failed++;
-    } else {
-      fail(`${r.template}: build ✘`);
-      failed++;
-    }
+    const name = `\x1b[1m${r.template.padEnd(10)}\x1b[0m`;
+    const buildStatus = r.buildOk ? GREEN('  ✓  ') : RED('  ✘  ');
+    const routesStatus = r.routesOk ? GREEN('✓') : r.buildOk ? RED('✘') : DIM('—');
+    const routesDetail = r.routesOk
+      ? DIM(`${r.pages} pages`)
+      : r.missing
+        ? DIM(`missing: ${r.missing.join(',')}`)
+        : '';
+
+    console.log(`  ${name} ${buildStatus}   ${routesStatus} ${routesDetail}`);
+    if (r.buildOk && r.routesOk) passed++;
+    else failed++;
   }
 
-  console.log(`\n\x1b[1m${passed + failed} total · ${passed} passed · ${failed} failed\x1b[0m`);
+  console.log(`  ${sep}`);
+  const totalTime = elapsed(elapsedTotal);
+  const summary = `${results.length} total · ${GREEN(`${passed} passed`)} · ${failed > 0 ? RED(`${failed} failed`) : '0 failed'} · ${DIM(totalTime)}`;
+  console.log(`  ${B(summary)}`);
+  console.log('');
 
-  // Cleanup
   if (failed === 0) {
-    info('All tests passed — cleaning up...');
+    info(BLANK, tag('clean'), 'All tests passed — cleaning up...');
     rmSync(TEST_DIR, { recursive: true });
   } else {
-    info(`Test artifacts left at ${TEST_DIR} for inspection`);
+    info(BLANK, tag('info'), `Test artifacts left at ${TEST_DIR} for inspection`);
   }
 
   process.exit(failed > 0 ? 1 : 0);

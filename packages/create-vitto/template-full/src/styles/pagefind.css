@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Pagefind Modal — CSS variables for sand/amber theme
+   Pagefind Modal — CSS variables for sand/emerald theme
    --------------------------------------------------------------------------- */
 :root {
   --pf-border-radius: 12px;
@@ -16,12 +16,12 @@
   --pf-text-secondary: #6b6354;
   --pf-text-muted: #8f8572;
   --pf-border: #e8e4d9;
-  --pf-border-focus: #fbbf24;
+  --pf-border-focus: #34d399;
   --pf-hover: #f3f1eb;
   --pf-skeleton: #e8e4d9;
   --pf-skeleton-shine: #f3f1eb;
-  --pf-mark: #d97706;
-  --pf-outline-focus: #fbbf24;
+  --pf-mark: #059669;
+  --pf-outline-focus: #34d399;
   --pf-outline-offset: 2px;
   --pf-shadow-sm: 0 2px 8px rgba(26, 24, 20, 0.06);
   --pf-shadow-md: 0 4px 12px rgba(26, 24, 20, 0.1);
@@ -38,12 +38,12 @@ html.dark {
   --pf-text-secondary: #b0a894;
   --pf-text-muted: #8f8572;
   --pf-border: #2d2a22;
-  --pf-border-focus: #fbbf24;
+  --pf-border-focus: #34d399;
   --pf-hover: #2d2a22;
   --pf-skeleton: #2d2a22;
   --pf-skeleton-shine: #4a4539;
-  --pf-mark: #fbbf24;
-  --pf-outline-focus: #fbbf24;
+  --pf-mark: #34d399;
+  --pf-outline-focus: #34d399;
   --pf-modal-backdrop: rgba(0, 0, 0, 0.6);
   --pf-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);

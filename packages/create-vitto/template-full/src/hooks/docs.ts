@@ -107,11 +107,11 @@ function getDocBySlug(slug: string): DocItem | null {
 }
 
 const SECTION_ITEMS_ORDER: Record<string, string[]> = {
-  'getting-started': ['introduction', 'installation', 'configuration'],
-  core: ['templating', 'dynamic-routes', 'hooks'],
-  features: ['search', 'deployment', 'performance'],
-  guides: ['examples', 'contributing'],
-  reference: ['api-reference', 'troubleshooting', 'comparison'],
+  'getting-started': ['overview', 'quick-start'],
+  core: ['templating'],
+  features: ['search'],
+  guides: ['examples'],
+  reference: [],
 };
 
 function getSections(): DocSection[] {

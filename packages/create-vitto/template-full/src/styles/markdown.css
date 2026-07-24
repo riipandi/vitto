@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------- */
 .prose :not(pre) > code {
   @apply bg-sand-100 dark:bg-sand-800 px-1.5 py-0.5 rounded-md;
-  @apply text-amber-700 dark:text-amber-300;
+  @apply text-emerald-700 dark:text-emerald-300;
   font-weight: 500;
   font-size: 0.85em;
 }
@@ -20,14 +20,14 @@
   --prose-heading: #1a1814;
   --prose-muted: #8f8572;
   --prose-border: #e8e4d9;
-  --prose-accent: #d97706;
+  --prose-accent: #059669;
 }
 .dark .prose {
   --prose-body: #d4cfc0;
   --prose-heading: #f3f1eb;
   --prose-muted: #6b6354;
   --prose-border: #2d2a22;
-  --prose-accent: #fbbf24;
+  --prose-accent: #34d399;
 }
 
 .prose h1 {
@@ -145,10 +145,10 @@
 }
 .header-anchor:hover {
   opacity: 1 !important;
-  color: var(--color-amber-600);
+  color: var(--color-emerald-600);
 }
 .dark .header-anchor:hover {
-  color: var(--color-amber-400);
+  color: var(--color-emerald-400);
 }
 .prose h2 .header-anchor,
 .prose h3 .header-anchor,
@@ -178,18 +178,18 @@
   background: color-mix(in srgb, #10b981 8%, transparent);
 }
 .markdown-alert-important {
-  border-color: #8b5cf6;
-  background: color-mix(in srgb, #8b5cf6 6%, transparent);
+  border-color: #6366f1;
+  background: color-mix(in srgb, #6366f1 6%, transparent);
 }
 .dark .markdown-alert-important {
-  background: color-mix(in srgb, #8b5cf6 8%, transparent);
+  background: color-mix(in srgb, #6366f1 8%, transparent);
 }
 .markdown-alert-warning {
-  border-color: #f59e0b;
-  background: color-mix(in srgb, #f59e0b 6%, transparent);
+  border-color: #10b981;
+  background: color-mix(in srgb, #10b981 6%, transparent);
 }
 .dark .markdown-alert-warning {
-  background: color-mix(in srgb, #f59e0b 8%, transparent);
+  background: color-mix(in srgb, #10b981 8%, transparent);
 }
 .markdown-alert-caution {
   border-color: #ef4444;
@@ -210,10 +210,10 @@
   @apply text-emerald-600 dark:text-emerald-400;
 }
 .markdown-alert-important .markdown-alert-title {
-  @apply text-violet-600 dark:text-violet-400;
+  @apply text-indigo-600 dark:text-indigo-400;
 }
 .markdown-alert-warning .markdown-alert-title {
-  @apply text-amber-600 dark:text-amber-400;
+  @apply text-emerald-600 dark:text-emerald-400;
 }
 .markdown-alert-caution .markdown-alert-title {
   @apply text-red-600 dark:text-red-400;
@@ -257,12 +257,12 @@
   color: var(--color-sand-200);
 }
 .tabs-tab-button.active {
-  border-bottom-color: var(--color-amber-500);
-  color: var(--color-amber-600);
+  border-bottom-color: var(--color-emerald-500);
+  color: var(--color-emerald-600);
 }
 .dark .tabs-tab-button.active {
-  border-bottom-color: var(--color-amber-400);
-  color: var(--color-amber-400);
+  border-bottom-color: var(--color-emerald-400);
+  color: var(--color-emerald-400);
 }
 .tabs-tab-content {
   display: none;
@@ -295,7 +295,7 @@
 }
 .task-list-item .task-list-item-checkbox {
   @apply mt-1 h-4 w-4 shrink-0 cursor-pointer;
-  @apply accent-amber-600 dark:accent-amber-400;
+  @apply accent-emerald-600 dark:accent-emerald-400;
 }
 .task-list-item-label {
   @apply cursor-pointer leading-relaxed;
@@ -327,17 +327,17 @@
   color: var(--color-sand-400);
 }
 .toc-link:hover {
-  color: var(--color-amber-600);
+  color: var(--color-emerald-600);
 }
 .dark .toc-link:hover {
-  color: var(--color-amber-400);
+  color: var(--color-emerald-400);
 }
 .toc-link.active {
-  color: var(--color-amber-600);
+  color: var(--color-emerald-600);
   font-weight: 500;
 }
 .dark .toc-link.active {
-  color: var(--color-amber-400);
+  color: var(--color-emerald-400);
 }
 
 .stretched-link {
