@@ -48,11 +48,15 @@
   color: var(--prose-heading);
 }
 .prose p {
-  @apply leading-relaxed;
+  @apply leading-relaxed my-4;
   color: var(--prose-body);
 }
-.prose ul,
+.prose ul {
+  @apply list-disc pl-6 my-4;
+  color: var(--prose-body);
+}
 .prose ol {
+  @apply list-decimal pl-6 my-4;
   color: var(--prose-body);
 }
 .prose ul > li,

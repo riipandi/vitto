@@ -4,34 +4,152 @@
 {{ setMetadata('description', 'Release notes and changelog for Vitto — track new features, improvements, and bug fixes.') }}
 
 <!-- Hero -->
-<section class="relative overflow-hidden">
+<section class="relative overflow-hidden border-b border-sand-200/60 dark:border-sand-800/60">
   <div class="absolute inset-0 -z-10">
     <div class="absolute inset-0 bg-gradient-to-b from-sand-50 to-sand-100/50 dark:from-sand-900 dark:to-sand-900"></div>
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-gradient-to-b from-amber-200/15 via-transparent to-transparent dark:from-amber-500/8 dark:via-transparent dark:to-transparent rounded-full blur-3xl"></div>
   </div>
 
-  <div class="max-w-3xl mx-auto px-5 sm:px-8 pt-20 pb-16 md:pt-28 md:pb-20 text-center">
-    <h1 class="slide-up text-4xl md:text-5xl font-bold tracking-tight text-sand-900 dark:text-white mb-6">
-      Changelog
-    </h1>
-    <p class="slide-up-delay-1 text-lg text-sand-500 dark:text-sand-400 leading-relaxed max-w-2xl mx-auto">
-      Track every release, feature, and fix in Vitto.
-    </p>
-  </div>
-
-  <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/20 dark:via-amber-400/15 to-transparent"></div>
-</section>
-
-<!-- Content -->
-<section class="py-16 md:py-20">
-  <div class="max-w-3xl mx-auto px-5 sm:px-8">
-    <div class="prose prose-lg max-w-none">
-      <h2>0.1.0 — <small>Initial Release</small></h2>
-      <p><em>Coming soon.</em></p>
-      <p>
-        This page will track all releases, new features, improvements, and bug fixes
-        as Vitto evolves. Stay tuned.
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-12 md:pt-20 md:pb-16">
+    <div class="max-w-3xl">
+      <h1 class="slide-up text-4xl md:text-5xl font-bold tracking-tight text-sand-900 dark:text-white mb-4">
+        Changelog
+      </h1>
+      <p class="slide-up-delay-1 text-lg text-sand-500 dark:text-sand-400 leading-relaxed">
+        Track every release, feature, and fix in Vitto.
       </p>
     </div>
   </div>
 </section>
+
+<!-- Two-column layout -->
+<div class="w-full max-w-7xl mx-auto px-5 sm:px-8 grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)] grow">
+  <!-- Sidebar — desktop -->
+  <aside class="hidden lg:block pt-10 pb-8 border-r border-sand-200/60 dark:border-sand-800/60">
+    <div class="sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)] pr-4 space-y-1">
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-sand-400 dark:text-sand-500 mb-3 px-3">
+        Versions
+      </h4>
+      {{ if changelogs && changelogs.length > 0 }}
+        {{ for entry of changelogs }}
+          <a href="#{{ entry.slug }}"
+            class="changelog-nav flex items-center justify-between px-3 py-1.5 rounded-lg text-sm text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800 transition-colors">
+            <span class="text-xs text-sand-400 dark:text-sand-500">{{ entry.date }}</span>
+            <span class="font-mono">v{{ entry.version }}</span>
+          </a>
+        {{ /for }}
+      {{ /if }}
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <div class="min-w-0 py-10 md:py-12 xl:px-10">
+    {{ if changelogs && changelogs.length > 0 }}
+      <div class="space-y-6">
+        {{ for entry of changelogs }}
+          <a href="/changelog/{{ entry.slug }}" id="{{ entry.slug }}"
+            class="changelog-card scroll-mt-24 group flex items-start gap-4 p-5 rounded-xl bg-white dark:bg-sand-800/50 border border-sand-200/60 dark:border-sand-700/40 hover:border-amber-300/60 dark:hover:border-amber-500/30 transition-all hover:shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/20 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-600 dark:text-amber-400"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </div>
+            <div class="min-w-0 flex-1">
+              <h2 class="text-base font-semibold text-sand-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">{{ entry.title }}</h2>
+              <p class="text-sm text-sand-500 dark:text-sand-400 mt-1 line-clamp-2">{{ entry.description }}</p>
+              <div class="flex items-center gap-2 mt-2 text-xs text-sand-400 dark:text-sand-500">
+                <span class="font-mono">v{{ entry.version }}</span>
+                <span aria-hidden="true" class="text-sand-300 dark:text-sand-600">·</span>
+                {{ if entry.date }}
+                  <time datetime="{{ entry.date }}">{{ entry.date }}</time>
+                {{ /if }}
+              </div>
+            </div>
+          </a>
+        {{ /for }}
+      </div>
+    {{ else }}
+      <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div class="w-14 h-14 rounded-2xl bg-sand-100 dark:bg-sand-800 flex items-center justify-center mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 text-sand-400 dark:text-sand-500"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>
+        </div>
+        <p class="text-sand-500 dark:text-sand-400 text-lg">No changelog entries yet.</p>
+      </div>
+    {{ /if }}
+  </div>
+</div>
+
+<!-- Sidebar — mobile -->
+<div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-sand-50/95 dark:bg-sand-900/95 backdrop-blur-xl border-t border-sand-200/60 dark:border-sand-800/60 p-4">
+  <details class="group">
+    <summary class="flex items-center justify-between cursor-pointer text-sm font-medium text-sand-700 dark:text-sand-300">
+      Jump to version
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 transition-transform group-open:rotate-180"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
+    <div class="mt-3 space-y-1 max-h-[50vh] overflow-y-auto">
+      {{ if changelogs && changelogs.length > 0 }}
+        {{ for entry of changelogs }}
+          <a href="#{{ entry.slug }}"
+            class="block px-3 py-2 rounded-lg text-sm text-sand-600 dark:text-sand-400 hover:text-sand-900 dark:hover:text-white hover:bg-sand-100 dark:hover:bg-sand-800 transition-colors">
+            <span class="text-xs text-sand-400 dark:text-sand-500">{{ entry.date }}</span>
+            <span class="font-medium ml-2">v{{ entry.version }}</span>
+          </a>
+        {{ /for }}
+      {{ /if }}
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  const cards = document.querySelectorAll('.changelog-card');
+  const navLinks = document.querySelectorAll('.changelog-nav');
+  if (!cards.length || !navLinks.length) return;
+
+  function setActive(id) {
+    navLinks.forEach((link) => {
+      const target = link.getAttribute('href')?.slice(1);
+      const isActive = target === id;
+      link.classList.toggle('text-amber-600', isActive);
+      link.classList.toggle('dark:text-amber-400', isActive);
+      link.classList.toggle('bg-amber-50', isActive);
+      link.classList.toggle('dark:bg-amber-500/10', isActive);
+      link.classList.toggle('font-medium', isActive);
+      if (!isActive) {
+        link.classList.remove('text-amber-600', 'dark:text-amber-400', 'bg-amber-50', 'dark:bg-amber-500/10', 'font-medium');
+      }
+    });
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let activeId = '';
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) activeId = entry.target.id;
+      });
+      if (activeId) setActive(activeId);
+    },
+    { rootMargin: '-80px 0px -70% 0px' }
+  );
+
+  cards.forEach((c) => observer.observe(c));
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = link.getAttribute('href')?.slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.pushState(null, '', '#' + id);
+        setActive(id);
+      }
+    });
+  });
+
+  // Highlight on page load if URL has hash
+  if (location.hash) {
+    const id = location.hash.slice(1);
+    const target = document.getElementById(id);
+    if (target) setTimeout(() => target.scrollIntoView({ block: 'start' }), 100);
+  }
+})();
+</script>

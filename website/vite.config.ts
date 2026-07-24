@@ -2,9 +2,11 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import vitto from 'vitto';
 
+import changelogsHook from './src/hooks/changelogs';
 import docsHook from './src/hooks/docs';
 import postsHook from './src/hooks/posts';
 import type { BlogPost } from './types/blog';
+import type { ChangelogEntry } from './types/changelog';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -29,6 +31,7 @@ export default defineConfig({
       hooks: {
         docs: docsHook,
         doc: docsHook,
+        changelogs: changelogsHook,
         posts: postsHook,
         post: postsHook,
       },
@@ -51,6 +54,18 @@ export default defineConfig({
           pageSize: 5,
           getParams: (pageNum: number) => ({ _page: pageNum }),
           getPath: (pageNum: number) => (pageNum === 1 ? 'blog.html' : `blog/${pageNum}.html`),
+        },
+        {
+          template: 'changelog',
+          dataSource: 'changelogs',
+          getParams: () => ({}),
+          getPath: () => 'changelog.html',
+        },
+        {
+          template: 'release',
+          dataSource: 'changelogs',
+          getParams: (entry: ChangelogEntry) => ({ slug: entry.slug }),
+          getPath: (entry: ChangelogEntry) => `changelog/${entry.slug}.html`,
         },
       ],
     }),
